@@ -1,0 +1,258 @@
+<link rel="stylesheet" th:href="@{/css/admin/product/register.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{/js/productRegister.js}"></script>
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <input type="hidden" id="productCateAll" th:value="${prodCate}"/>
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <section class="container">
+        <div class="header">
+            <span class="header-title">상품등록</span>
+            <div class="header-right">
+                <span>HOME</span>
+                <span>></span>
+                <span>상품관리</span>
+                <span>></span>
+                <span class="bold">상품등록</span>
+            </div>
+        </div>
+
+        <div class="header-gubun"></div>
+        <form id="prodCategory">
+            <div class="main">
+                <div class="main-title">상품분류</div>
+                <div class="main-description">1차 , 2차 카테고리 기본분류는 반드시 선택하셔야 합니다.</div>
+                <table class="tb1">
+                    <tr>
+                        <th>1차 분류</th>
+                        <td>
+                            <select class="cate1" name="categoryId1" oninput="updateSelect2()">
+                                <option value="">1차분류 선택</option>
+                                <th:block th:each="category : ${prodCate}">
+                                    <option th:if="${category.getCategoryLevel() == 1}"
+                                            th:value="${category.getCategoryId()}"
+                                            th:text="${category.getCategoryName()}">
+                                    </option>
+                                </th:block>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>2차 분류</th>
+                        <td>
+                            <select class="cate2" name="categoryId2" oninput="updateSelect3()">
+                                <option value="">2차분류 선택</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>3차 분류</th>
+                        <td>
+                            <select class="cate3" name="categoryId3">
+                                <option value="">3차분류 선택</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+        <form id="productInfo" enctype="multipart/form-data">
+            <div class="main2">
+                <div class="main-title">기본정보</div>
+                <div class="main-description">기본정보는 반드시 선택하셔야 합니다.</div>
+                <table class="tb2">
+                    <tr class="name">
+                        <th>상품명</th>
+                        <td><input type="text" name="prodName" placeholder="상품명 입력"></td>
+                    </tr>
+                    <tr class="summary">
+                        <th>기본설명</th>
+                        <td><input type="text" name="prodSummary" placeholder="요약설명 입력"></td>
+                    </tr>
+                    <tr class="company">
+                        <th>제조사</th>
+                        <td><input type="text" name="manufacture" placeholder="제조사 입력"></td>
+                    </tr>
+                    <tr class="price">
+                        <th>상품금액</th>
+                        <td><input type="text" id="productPrice" name="prodPrice" placeholder="금액 입력"> 원</td>
+                    </tr>
+                    <tr class="discount">
+                        <th>할인율</th>
+                        <td><input type="text" name="prodDiscount" class="productDiscount" placeholder="할인율 입력"> %</td>
+                    </tr>
+                    <tr class="point">
+                        <th>포인트</th>
+                        <td><input type="text" id="productPoint" name="prodPoint" placeholder="포인트 입력"> p</td>
+                    </tr>
+                    <tr class="delivery">
+                        <th>배송비</th>
+                        <td><input type="text" name="prodDeliver" placeholder="배송비 입력"> 원</td>
+                    </tr>
+                    <input type="hidden" name="prodStock" id="prodStock">
+                    <tr class="images">
+                        <th>상품이미지</th>
+                        <td class="td-images">
+                            <div class="img1">
+                                <input type="file" name="listImage" id="prodListImg">
+                                <span>크기 190 x 190, 상품 목록에 출력될 이미지입니다.</span>
+                            </div>
+                            <div class="img2">
+                                <input type="file" name="basicImage" id="prodBasicImg">
+                                <span>크기 230 x 230, 상품 메인에 출력될 이미지입니다.</span>
+                            </div>
+                            <div class="img3">
+                                <input type="file" name="detailImage" id="prodDetailImg">
+                                <span>크기 450 x 450, 상품 상세에 출력될 이미지입니다.</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="detail">
+                        <th>상품 상세정보</th>
+                        <td class="td-detail">
+                            <div class="detail-img">
+                                <input type="file" name="description" id="description">
+                                <span>크기 가로 940px 세로 제약없음 , 크기 최대 1MB</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <input type="hidden" name="sellId" th:value="${#authentication.principal.user.seller.id}">
+                </table>
+            </div>
+        </form>
+        <form>
+            <div class="main3">
+                <div class="main-title">상품 재고</div>
+                <div class="main-description">옵션이 없을경우 재고량을 입력, 있을 경우 조합형 옵션 버튼을 눌러주세요.</div>
+                <div class="options">
+                    <table class="tb5" id="optionTable" border="1">
+                        <tr class="tr_option">
+                            <th style="text-align: left">옵션</th>
+                            <td class="optionTD" style="text-align: left">
+                                <div class="option_inputs">
+                                    <input type="text" id="optionStock" class="option_input option_input_stock" placeholder="재고량">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="addoption" type="button" onclick="confirmOption(event)">옵션저장</button>
+                <button type="button" class="addoption" id="mix" onclick="showMix()">조합형 옵션</button>
+                <button class="addoption" id="optionMix" type="button" onclick="showMixOption()" style="display: none">옵션 조합 생성</button>
+                <button class="addoption" id="optionMixPlus" type="button" onclick="addOptionRow()" style="display: none;">옵션 추가</button>
+            </div>
+
+            <div class="main3" id="mixOption" style="display: none;">
+                <div class="options-table">
+                    <table class="tb5">
+                        <thead>
+                        <tr class="option0">
+                            <th>옵션 조합</th>
+                            <th>추가금액</th>
+                            <th>수량</th>
+                        </tr>
+                        </thead>
+                        <tbody id="optionMixed">
+                        <!-- 옵션 조합이 여기에 추가됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+        <form id="detail">
+            <div class="main3">
+                <div class="main-title">상품정보 제공고시</div>
+                <div class="main-description">[전자상거래에 관한 상품정보 제공에 관한 고시] 항목에 의거하여 반드시 등록해야 합니다.</div>
+
+                <table class="tb3">
+                    <tr class="state">
+                        <th>상품상태</th>
+                        <td><input type="text" name="stat" value="새상품"></td>
+                    </tr>
+                    <tr class="taxation">
+                        <th>부가세 면세여부</th>
+                        <td><select name="tax">
+                            <option value="true">
+                                과세상품
+                            </option>
+                            <option value="false">
+                                비과세상품
+                            </option>
+                        </select></td>
+                    </tr>
+                    <tr class="recipt">
+                        <th>영수증 발행</th>
+                        <td><input class="recipt-inp" type="text" value="발행가능 - 신용카드전표 , 온라인현금영수증"></td>
+                    </tr>
+                    <tr class="business">
+                        <th>사업자 구분</th>
+                        <td><input class="business-inp" type="text" value="사업자판매자"></td>
+                    </tr>
+                    <tr class="origin">
+                        <th>원산지</th>
+                        <td><input type="text" name="origin" value=""></td>
+                    </tr>
+                    <tr class="manufacture">
+                        <th>제조자/수입국</th>
+                        <td><input type="text" name="manufacture" value=""></td>
+                    </tr>
+                    <tr class="made-in">
+                        <th>제조국</th>
+                        <td><input type="text" name="madein" value=""></td>
+                    </tr>
+                    <tr class="mdate">
+                        <th>제조연월</th>
+                        <td><input type="date" name="mDate1" style="text-indent: 0px;"></td>
+                    </tr>
+                    <tr class="caution">
+                        <th>취급시 주의사항</th>
+                        <td><input type="text" name="caution" value=""></td>
+                    </tr>
+                    <tr class="warranty">
+                        <th>품질보증기간</th>
+                        <td><input type="text" name="warranty" value=""></td>
+                    </tr>
+                    <tr class="deliAble">
+                        <th>해외배송여부</th>
+                        <td><select name="deliable">
+                            <option value="true">
+                                해외 배송 가능
+                            </option>
+                            <option value="false">
+                                해외 배송 불가능
+                            </option>
+                        </select></td>
+                    </tr>
+                    <tr class="card">
+                        <th>할부 가능 여부</th>
+                        <td><select name="installmentable">
+                            <option value="true">
+                                할부 가능
+                            </option>
+                            <option value="false">
+                                할부 불가능
+                            </option>
+                        </select></td>
+                    </tr>
+                    <tr class="cardEvent">
+                        <th>카드 혜택</th>
+                        <td><input type="text" name="cardEvent" value=""></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+        <div class="advice-footer">
+            전자상거래등에서의 상품등의 정보제공에 관한 고시에따라 총 35개 상품군에대해 상품특성들을 양식에따라 입력할 수 있습니다.
+        </div>
+        <div class="btn">
+            <button class="submit-btn">등록하기</button>
+        </div>
+    </section>
+</main>
+
+
+<script>
+
+</script>
+<footer th:replace="layout/admin/footer.html"></footer>

@@ -1,0 +1,638 @@
+/*
+     날짜 : 2024/10/16
+     이름 : 이상훈(최초 작성자)
+     내용 : 관리자 회원목록 레이아웃 css 생성
+
+     수정이력
+      - 2025/11/03 (일) 김민희 - tb1 각 td별 textover 효과 넣음
+*/
+
+
+@charset "UTF-8";
+
+*{margin: 0; padding:0; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 400;}
+html{color:#111; position:relative;}
+html, body{height:100%; }
+body{font-size:12px; line-height:18px; font-family: 'Noto Sans KR', sans-serif;}
+a, address, blockquote, br, fieldset, legend, label, form, input, select, textarea, button, cite, code, dl, dt, dd, h1, h2, h3, h4, h5, h6, p, div, iframe, ul, ol, li, hr, img {margin: 0; padding: 0; outline:none;}
+a{color:#111; text-decoration: none;}
+img{border:none; vertical-align: top;}
+ul, ol{list-style:none;}
+address{font-style: normal;}
+/* clearfix */
+.cf{}
+.cf::after {content: ""; display: block; clear: both;}
+
+/* hyper link */
+a, a:link, a:visited, a:active, a:hover{text-decoration: none; color: inherit;}
+
+/* input outline */
+input:active{outline: none;}
+input:focus{outline: none;}
+
+#wrap{
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* 메인 */
+.container {
+    width: 800px;
+    margin: 0 auto;
+}
+/* navi 부분 */
+#navi {
+    width: 786px;
+    height: auto;
+    display: flex;
+    justify-content: space-between; /* 두 요소를 양 끝에 배치 */
+    align-items: center;
+    border-bottom: 1.5px solid #000000;
+    margin: 0 auto;;
+}
+
+.sub_tit {
+   font-size: 20px;
+   font-weight: 700;
+   margin-left: 3px;
+   margin-bottom: 8px; 
+   margin-top: 5px;
+}
+
+/* 로케이션 */
+.location > span::after{content: ' \003E'; }
+.location > span:last-of-type{font-weight: 700;}
+.location > span:last-of-type:after{content:none;}
+
+/* 검색 부분 */
+.search{
+    margin-top: 20px;
+    height: 32.5px;
+    display: flex;
+    gap: 5px;
+}
+
+.search-option {
+    width: 70px;
+    text-align: center;
+    border: 1px solid #c7c7c7;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+}
+
+.search-keyword {
+    border: 1px solid #c7c7c7;
+    outline: none;
+    width: 150px;
+    border-radius: 5px;
+}
+
+.search-keyword::placeholder {
+    padding-left: 8px;
+}
+
+.search-btn {
+    background-color: #303644;
+    color: white;
+    width: 62px;
+    cursor: pointer;
+    border-radius: 5px;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.header-gubun-bottom {
+    text-align: right;
+    width: 800px;
+    height: auto;
+    background-image: url('/images/login-gubun-bottom.png');
+    margin-top: 30px;
+}
+
+
+/* 테이블1 회원목록 */
+
+.tb1 {
+    table-layout: fixed;
+    box-sizing: border-box;
+    border-collapse: collapse;
+    border-top: 1px solid #a6a6a6;
+    width: 100%;
+}
+.tb1 tr > th:nth-of-type(1){ width:  5%;}/* 체크박스 */
+.tb1 tr > th:nth-of-type(2){ width:  5%;}/* 번호 */
+.tb1 tr > th:nth-of-type(3){ width: 18%;}/* 아이디 */
+.tb1 tr > th:nth-of-type(4){ width:  8%;}/* 이름 */
+.tb1 tr > th:nth-of-type(5){ width:  5%;}/* 성별 */
+.tb1 tr > th:nth-of-type(6){ width: 10%;}/* 등급 */
+.tb1 tr > th:nth-of-type(7){ width: 10%;}/* 포인트 */
+.tb1 tr > th:nth-of-type(8){ width: 18%;}/* 이메일 */
+.tb1 tr > th:nth-of-type(9){ width: 13%;}/* 휴대폰번호 */
+.tb1 tr > th:nth-of-type(10){ width: 8%;}/* 가입일 */
+.tb1 tr > th:nth-of-type(11){ width: 5%;}/* 상태 */
+.tb1 tr > th:nth-of-type(12){ width: 5%;}/* 관리 */
+
+.tb1 th {
+    height: 50px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 2px solid #e8e8e8;
+}
+
+.tb1 td {
+    padding: 5px 0;
+    text-align: center;
+    font-weight: 400;
+    font-size: 12px;
+    border-bottom: 2px solid #e8e8e8;
+    height: 66px;
+}
+.tb1 tr>td:nth-of-type(2), .tb1 tr>td:nth-of-type(3), .tb1 tr>td:nth-of-type(7), .tb1 tr>td:nth-of-type(8) {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+
+.tb1 > tbody > td > input[type="text"] {cursor: pointer;}
+
+.grade {
+    text-indent: 6px;
+    margin: 0 auto;
+    width: 68px;
+    height: 23px;
+    border: 1px solid #c7c7c7;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* tb1 회원 상태 (memState 정지,정상,휴면,탈퇴) */
+.memState {color: #00b050; cursor: pointer;}
+
+.memState.stop{color:#67738e;} /* 정지 */
+.memState.basic{color:#4075ff;} /* 정상 */
+.memState.sleep{color:#b4c0d3;} /* 휴면 */
+.memState.leave{color:#eb413f;} /* 탈퇴 */
+
+
+/* 회원관리 7% */
+.td-admin input{
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin: 2px;
+    padding: 2px 6px;
+    background: rgba(48, 54, 68, 0.5);
+    border-radius: 3px;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+.td-admin > .stop{background: rgba(0, 176, 80, 0.7)}
+.td-admin > .basic{background: rgba(235, 65, 63, 0.7)}
+
+/* 삭제, 등록 버튼 */
+.btns {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: box-shadow 0.3s ease;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.insert-btn {
+    background-color: #8eb4e3;
+    border: none;
+    width: 94px;
+    height: 35px;
+    color: white;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.page {
+    margin: 30px 0;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.page a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.3;
+    }
+}
+
+.page .on {
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.popup, .popupbg {
+    display: none;
+}
+
+.popupbg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 735.53px;
+    background-color: white;
+    z-index: 1000;
+    height: auto;
+}
+
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    background-color: #404040;
+    color: white;
+    margin-bottom: 0;
+}
+/* popup 회원수정 */
+.popup .header-title{
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.popup .header-gubun {
+    height: 2px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+
+.popup::-webkit-scrollbar {
+    display: none;
+}
+
+/* tb4 style */
+.tb4 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tb4 tr {
+
+}
+
+.tb4 th {
+    background-color: #F2F2F2;
+    width: 100px;
+    text-align: left;
+    padding-left: 10px;
+    height: 40px;
+}
+
+.tb4 td {
+    height: 40px;
+    padding-left: 10px;
+}
+
+.tb4 input {
+    border: 0.5px solid #BFBFBF;
+    height: 26px;
+    padding-left: 10px;
+    color: #808080;
+    outline: none;
+}
+
+.tb4 select {
+    border: 0.5px solid #BFBFBF;
+    height: 26px;
+    padding-left: 10px;
+    color: #808080;
+    outline: none;
+}
+
+.tb4 textarea {
+    border: 0.5px solid #BFBFBF;
+    height: auto;
+    min-height: 200px;
+    width: 90%;
+    outline: none;
+    padding: 10px;
+    color: #808080;
+    resize: none;
+}
+
+/*.tb4 .custEmail{width: 300px;}*/
+
+/*.btns {*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+
+/*}*/
+
+/*.btns button {*/
+/*    background-color: #00B050;*/
+/*    width: 100px;*/
+/*    height: 40px;*/
+/*    cursor: pointer;*/
+/*    color: white;*/
+/*    margin-top: 20px;*/
+/*    border: none;*/
+/*    outline: none;*/
+/*    &:hover {*/
+/*        opacity: 0.8;*/
+/*    }*/
+/*}*/
+
+
+.popup,
+.popupbg {
+    display: none;
+}
+
+.popupbg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #868686;
+    opacity: 0.2;
+    z-index: 999;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 810px;
+    background-color: white;
+    z-index: 1000;
+    overflow: scroll;
+    height: 700px;
+}
+
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    background-color: #404040;
+    color: white;
+    margin-bottom: 0;
+}
+
+.popup .header .title {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    gap: 20px;
+
+}
+
+.btn {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.tb2 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tb2 tr {
+    border-top: 2px solid #BFBFBF;
+    border-bottom: 2px solid #BFBFBF;
+}
+
+.tb2 th {
+    height: 70px;
+}
+
+.tb2 td {
+    text-align: center;
+    height: 70px;
+    font-size: 12px;
+}
+
+.page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+.total {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.right-bg {
+    background-color: #F2F2F2;
+    padding: 20px;
+    width: 200px;
+}
+
+.right-bg div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup .header-title{
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.popup .header-gubun {
+    height: 2px;
+    background-image: url('/images/Vector.png');
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.header2 {
+    margin-top: 10px;
+    padding: 0 10px;
+}
+
+.tb3 {
+    border-collapse: collapse;
+    width: 100%;
+    border-bottom: 1.5px solid #BFBFBF;
+}
+.tb3 tr {
+
+}
+
+.tb3 th {
+    background-color: #F2F2F2;
+    width: 120px;
+    padding: 10px;
+    text-align: left;
+}
+
+.tb3 td {
+    padding-left: 10px;
+}
+
+.tb3 td input, .tb3 td select{height: 30px; text-indent: 5px; border: 1px solid #BFBFBF; margin: 3px 0; }
+.tb3 .input1{width: 300px;}
+.tb3 .input2{width: 150px;}
+.tb3 .input3{width: 450px;}
+.tb3 select{width: 120px;}
+.tb3 textarea{width: 450px; height: 80px; resize: none; text-indent: 5px; border: 1px solid #BFBFBF;  margin: 3px 0;}
+.popup_form{display: flex; flex-direction: column; align-items: center;}
+.popup_form button{margin-top: 40px;}
+
+.btn_green{width: 100px; height: 30px; background-color: #14AE5C; border: none; color: #fff;cursor: pointer;}
+.green2 {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+.btn_green2{background-color: #647264;
+    color: white !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: box-shadow 0.3s ease;}
+.total-price {
+    position: relative;
+    top: -40px;
+    right: -700px;
+}
+
+.popup::-webkit-scrollbar {
+    display: none;
+}
+
+.tb4 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tb4 tr {
+
+}
+
+.tb4 th {
+    background-color: #F2F2F2;
+    width: 100px;
+    text-align: left;
+    padding-left: 10px;
+    height: 40px;
+}
+
+.tb4 td {
+    height: 40px;
+    padding-left: 10px;
+}
+
+.tb4 input {
+    border: 0.5px solid #BFBFBF;
+    height: 26px;
+    padding-left: 10px;
+    color: #808080;
+    outline: none;
+}
+
+.tb4 select {
+    border: 0.5px solid #BFBFBF;
+    height: 26px;
+    padding-left: 10px;
+    color: #808080;
+    outline: none;
+}
+
+.tb4 textarea {
+    border: 0.5px solid #BFBFBF;
+    height: auto;
+    min-height: 200px;
+    width: 90%;
+    outline: none;
+    padding: 10px;
+    color: #808080;
+}
+
+.btns {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+.btns button {
+    background-color: #00B050;
+    width: 100px;
+    height: 40px;
+    cursor: pointer;
+    color: white;
+    margin-top: 20px;
+    border: none;
+    outline: none;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+

@@ -1,0 +1,191 @@
+<!-- Header 및 Font Awesome 불러오기 -->
+<header th:replace="layout/main/header.html"></header>
+<link rel="stylesheet" th:href="@{/css/product/list.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"> <!-- 최신 Font Awesome -->
+<script th:src="@{/js/main.js}"></script>
+
+<script>
+    window.onload = function () {
+        let currentURL = window.location.href;
+        let splitURL = currentURL.split('?')[1];
+        let sortCode = "";
+        let sortText = '';
+        if (splitURL !== undefined){
+            let params = new URLSearchParams(window.location.search);
+            sortCode = params.get('sort');
+        }
+        const sortNav = document.getElementsByClassName('sort')[0];
+        const aTag = sortNav.querySelectorAll('a');
+
+        switch (sortCode) {
+            case 'prodSold':
+                aTag[0].classList.add('navOn');
+                sortText = '판매많은순';
+                break;
+            case 'prodLowPrice':
+                aTag[1].classList.add('navOn');
+                sortText = '낮은가격순';
+                break;
+            case 'prodHighPrice':
+                aTag[2].classList.add('navOn');
+                sortText = '높은가격순';
+                break;
+            case 'prodScore':
+                aTag[3].classList.add('navOn');
+                sortText = '평점높은순';
+                break;
+            case 'prodReview':
+                aTag[4].classList.add('navOn');
+                sortText = '후기많은순';
+                break;
+            case 'prodRdate':
+                aTag[5].classList.add('navOn');
+                sortText = '최근등록순';
+                break;
+            default:
+                sortText = '';
+        }
+
+        document.getElementById('sortText').innerText = sortText;
+        renderPagination();
+    }
+
+    function sort(sortType) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('sort', sortType);
+        window.location.href = currentUrl.toString();
+    }
+
+    // 페이지네이션 함수
+    function renderPagination() {
+        const totalPages = 10;  // 예시 페이지 수
+        const currentPage = 1;  // 예시 현재 페이지
+        const paginationList = document.getElementById('pagination-list');
+        paginationList.innerHTML = '';
+
+        if (currentPage > 1) {
+            const prevButton = document.createElement('li');
+            prevButton.innerHTML = `<a href="#" onclick="goToPage(${currentPage - 1})">이전</a>`;
+            paginationList.appendChild(prevButton);
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('li');
+            pageButton.innerHTML = `<a href="#" onclick="goToPage(${i})">${i}</a>`;
+            if (i === currentPage) {
+                pageButton.querySelector('a').classList.add('active');
+            }
+            paginationList.appendChild(pageButton);
+        }
+
+        if (currentPage < totalPages) {
+            const nextButton = document.createElement('li');
+            nextButton.innerHTML = `<a href="#" onclick="goToPage(${currentPage + 1})">다음</a>`;
+            paginationList.appendChild(nextButton);
+        }
+    }
+
+    function goToPage(pageNumber) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('page', pageNumber);
+        window.location.href = currentUrl.toString();
+    }
+</script>
+
+<main style="margin-top: 230px;">
+    <aside th:replace="layout/main/aside.html" style="margin: 0; margin-right: 30px"></aside>
+    <div id="wrap">
+        <main id="main" class="content-container">
+            <!-- 상품 목록 네비게이션 -->
+            <nav id="navi" class="product-nav"  style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <div class="title-and-location">
+                    <h2 class="sub_tit">상품목록</h2>
+                    <ol  class="breadcrumb">
+                        <li class="breadcrumb-item">[[${location.level3Name}]]</li>
+                        <li class="breadcrumb-item">[[${location.level2Name}]]</li>
+                        <li class="breadcrumb-item">[[${location.level1Name}]]</li>
+                        <li class="breadcrumb-item" th:if="${param.sort != null}" id="sortText"></li>
+                    </ol>
+                </div>
+            </nav>
+
+            <!-- 정렬 탭 및 보기 옵션 -->
+            <ul class="sort">
+                <li><a href="#" onclick="sort('prodSold')">판매많은순</a></li>
+                <li><a href="#" onclick="sort('prodLowPrice')">낮은가격순</a></li>
+                <li><a href="#" onclick="sort('prodHighPrice')">높은가격순</a></li>
+                <li><a href="#" onclick="sort('prodScore')">평점높은순</a></li>
+                <li><a href="#" onclick="sort('prodReview')">후기많은순</a></li>
+                <li><a href="#" onclick="sort('prodRdate')">최근등록순</a></li>
+            </ul>
+            </nav>
+
+            <!-- 상품 목록 카드 스타일 -->
+            <div class="product-list">
+                <div class="product-item" th:each="product : ${products.getDtoList()}">
+                    <div class="product-image">
+                        <img th:src="@{'/file/'+${product.getProdListImg()}}" alt="상품 이미지">
+                    </div>
+                    <div class="product-info d-flex flex-column">
+                        <h3 class="product-name">
+                            <a th:href="@{/prod/product(prodId=${product.getId()})}">[[${product.getProdName}]]</a>
+                        </h3>
+                        <div class="price-info">
+                            <del class="original-price"  th:if="${product.getProdDiscount()>0.0}">[[${#numbers.formatInteger(product.getProdPrice(), 1,'COMMA')}]]원</del>
+                            <p>
+                                <span class="discount"  th:if="${product.getProdDiscount()>0.0}" style="font-size: 16px; margin-right: 5px; display: inline-block; color: #c00000;">[[${#numbers.formatInteger(product.getProdDiscount(), 1)}]]%</span>
+                                <span class="current-price">[[${#numbers.formatInteger(product.getTotalPrice(), 1,'COMMA')}]]원</span>
+                                <span class="shipping delivery" th:unless="${product.getProdDeliver() == 0}">
+                                    <i class="bi bi-truck"></i> [[${#numbers.formatInteger(product.getProdDeliver(), 1,'COMMA')}]]원
+                                </span>
+                                <span class="shipping free" th:if="${product.getProdDeliver() == 0}">
+                                    무료배송
+                                </span>
+                            </p>
+                        </div>
+
+                        <div style="display: flex; align-items: center" class="mt-auto">
+                            <span class="ratingBg">
+                                <span class="rating" th:style="'width:'+ ${product.prodRating * 2}+'%;'"></span>
+                            </span>
+                            <span class="product-summary">&nbsp;([[${product.prodReviewCnt}]]) · 판매 [[${product.prodOrderCnt}]]</span>
+                        </div>
+                    </div>
+                    <div class="badge-container">
+                        <div class="badge company">
+                            <span>[[${product.getSellCompany}]]</span>
+                        </div>
+                        <div class="badge grade">
+                            <i th:if="${product.seller.sellGrade} < 2" style="background: none; zoom:1; width: 14px; height: 14px; font-size: 14px" class="bi bi-bag"></i>
+                            <i th:if="${product.seller.sellGrade} == 2" style="background-position: -2066px -2420px;"></i>
+                            <i th:if="${product.seller.sellGrade} == 3" style="background-position: -2258px -2420px;"></i>
+                            <i th:if="${product.seller.sellGrade} == 4" style="background-position: -2162px -2420px;"></i>
+                            <i th:if="${product.seller.sellGrade} == 5" style="background-position: -2354px -2420px;"></i>
+                            <span th:if="${product.seller.sellGrade} < 2" th:text="${product.seller.sellGrade==0?'씨앗':'새싹'}" style="padding-top: 2px;"></span>
+                            <span th:if="${product.seller.sellGrade} == 2">파워</span>
+                            <span th:if="${product.seller.sellGrade} == 3">빅파워</span>
+                            <span th:if="${product.seller.sellGrade} == 4">프리미엄</span>
+                            <span th:if="${product.seller.sellGrade} == 5">플래티넘</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="page" th:if="${not #lists.isEmpty(products.dtoList)}">
+                <th:block th:if="${products.prev}">
+                    <a th:href="@{/prod/products/(pg=${products.start - 1}, cate=${cate})}" class="first"><<</a>
+                </th:block>
+                <th:block th:each="num:${#numbers.sequence(products.start, products.end)}">
+                    <a th:href="@{/prod/products(pg=${num}, cate=${cate})}" th:class="${num == products.pg} ? 'on' : 'num'">[[${num}]]</a>
+                </th:block>
+                <th:block th:if="${products.next}">
+                    <a th:href="@{/prod/products/(pg=${products.end + 1}, cate=${cate})}" class="first"><<</a>
+                </th:block>
+            </div>
+        </main>
+    </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>

@@ -1,0 +1,438 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* Body 스타일 */
+body {
+    padding-top: 60px;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fff;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+main {
+    width: 1200px;
+}
+
+/* 네비게이션 바 스타일 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #fff; /* 배경색 흰색 */
+    border-bottom: 1px solid #eaeaea; /* 하단에 얇은 경계선 */
+    position: fixed; /* 상단에 고정 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 하단 그림자 효과 */
+}
+
+/* 로고 스타일 */
+.navbar .logo img {
+    width: 150px; /* 로고 크기 */
+}
+
+/* 메뉴 스타일 */
+.navbar .menu {
+    display: flex;
+    list-style: none;
+}
+
+.navbar .menu li {
+    margin-left: 30px; /* 메뉴 항목 사이 간격 */
+}
+
+.navbar .menu li a {
+    text-decoration: none;
+    color: #333; /* 메뉴 항목 기본 텍스트 색상 */
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.navbar .menu li a:hover {
+    color: #e01401; /* 호버 시 텍스트 색상 변경 */
+    border-bottom: 2px solid #e01401; /* 하단에 선 추가 */
+}
+
+/* 스크롤 시 배경색 변경 */
+.navbar.scrolled {
+    background-color: rgba(255, 255, 255, 0.9); /* 약간 투명한 흰색 배경 */
+    transition: background-color 0.3s ease;
+}
+
+/* 메인 배너 스타일 */
+.main-banner {
+    background-color: #fff;
+    position: relative;
+    /* width: 100vw; */
+    height: 100vh;
+    overflow: hidden;
+    animation: slideIn 2s ease-in-out; /* 배너 전체 애니메이션 */
+    box-shadow: none; /* 그림자 제거 */
+}
+
+.main-banner img {
+    width: 1440px;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in {
+    animation: slideIn 1s ease-out;
+}
+
+.banner-text {
+    animation: fadeUp 2s ease-in-out;
+}
+
+@keyframes fadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px); /* 아래에서 위로 */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.main-banner-text {
+    text-align: left; /* 왼쪽 정렬 */
+    margin: 60px auto;
+    margin-left: 30px; /* 왼쪽 여백 추가 */
+    margin-bottom: 100px;
+    font-size: 22px; /* 폰트 크기 살짝 키움 */
+    line-height: 1.8; /* 줄 간격을 넉넉하게 */
+    color: #222; /* 약간 더 진한 색상 */
+    max-width: 900px; /* 텍스트가 너무 길지 않게 제한 */
+    font-weight: 600; /* 굵기를 적당히 굵게 설정 */
+    font-family: 'Noto Sans KR', sans-serif; /* 기존 폰트 유지 */
+    letter-spacing: 0.5px; /* 글자 간격 추가 */
+    word-spacing: 2px; /* 단어 간격을 조금 넓힘 */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* 미세한 그림자 효과 */
+}
+.banner-img {
+    /* width: 100%; */
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-text {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    z-index: 10;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.5em;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 성장 섹션 */
+.growth-section {
+    background-color: #fff;
+    margin: 50px 0;
+    padding: 20px;
+}
+
+.growth-section h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.growth-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.growth-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.growth-list .date {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.growth-list .description {
+    flex-grow: 1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+    margin-left: 20px;
+}
+
+.growth-list .arrow-icon {
+    display: flex;
+    align-items: center;
+}
+
+.growth-list .arrow-icon svg {
+    width: 40px;
+    height: 40px;
+    fill: #000;
+}
+
+/* 회사 역사 텍스트 섹션 */
+.historytext {
+    background-color: #fff;
+    text-align: left; /* 왼쪽 정렬 */
+    margin-bottom: 70px;
+    margin-left: 30px; /* 왼쪽 여백 추가 */
+    font-size: 28px; /* 글자 크기를 살짝 키움 */
+    font-weight: 700; /* 굵기를 더 두껍게 */
+    color: #222; /* 글자 색을 조금 더 진한 회색으로 변경 */
+    font-family: 'Noto Sans KR', sans-serif; /* 한글용 폰트 유지 */
+    line-height: 1.5; /* 줄 간격을 늘려 가독성 향상 */
+    letter-spacing: 0.5px; /* 글자 간격을 살짝 조정 */
+    word-spacing: 2px; /* 단어 간격을 넓혀 가독성 향상 */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 글자에 미세한 그림자 추가 */
+}
+
+/* 회사 역사 이미지 섹션 */
+.historyimg {
+    background-color: #fff;
+    width: 60%; /* 이미지 섹션 너비를 60%로 설정 */
+    height: auto;
+    margin-left: 30px; /* 왼쪽 여백 추가 */
+    overflow: hidden;
+}
+
+
+.historyimg img {
+    width: 60%; /* 이미지 너비를 100%로 설정 */
+    height: auto;
+    object-fit: cover;
+}
+
+/* AOS 애니메이션 */
+[data-aos="fade-up"] {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+[data-aos="fade-up"].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 핵심 가치 섹션 */
+/* 핵심 가치 섹션 레이아웃 */
+.value-item {
+    background-color: #fff; /* 핵심 가치 섹션 배경색 흰색 */
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-bottom: 40px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.value-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 이미지 스타일 */
+.value-item img {
+    width: 40%; /* 이미지를 40%로 설정하여 텍스트와 균형 맞추기 */
+    height: auto;
+    border-radius: 10px;
+    margin-right: 20px; /* 이미지와 텍스트 사이의 여백 */
+}
+
+/* 텍스트 영역 */
+.value-item .text-content {
+    width: 60%; /* 텍스트 영역을 이미지 옆에 60%로 배치 */
+}
+
+/* 제목 스타일 */
+.value-item h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 본문 텍스트 스타일 */
+.value-item p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: #555;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 0.5px;
+    word-spacing: 2px;
+}
+
+/* 미세한 글자 그림자 추가 */
+.value-item h2, .value-item p {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+
+/* Footer 스타일 */
+footer {
+    background-color: #fff;
+    color: #333;
+    padding: 40px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-menu ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.footer-menu ul li {
+    display: inline-block;
+    margin-right: 30px;
+}
+
+.footer-menu ul li:last-child {
+    margin-right: 0;
+}
+
+.footer-menu ul li a {
+    text-decoration: none;
+    color: #666;
+    font-size: 16px;
+}
+
+.footer-menu ul li a.active {
+    color: #87CEEB;
+    font-weight: bold;
+}
+
+.footer-contact {
+    margin: 10px 0 20px;
+}
+
+.footer-contact a {
+    color: #87CEEB;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.footer-social a {
+    display: inline-block;
+    margin: 0 15px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 5px;
+    background-color: #ddd;
+    font-size: 20px;
+    color: #666;
+    text-align: center;
+}
+
+.footer-social a.facebook {
+    background-color: #3b5998;
+    padding-top: 11px;
+    color: white;
+}
+
+.footer-social a.twitter {
+    background-color: #55acee;
+    padding-top: 11px;
+    color: white;
+}
+
+.footer-social a.google-plus {
+    background-color: #dd4b39;
+    padding-top: 11px;
+    color: white;
+}
+
+.footer-social a.pinterest {
+    background-color: #bd081c;
+    padding-top: 11px;
+    color: white;
+}
+
+.footer-social a:hover {
+    opacity: 0.8;
+}
+
+footer p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+.footer-menu {
+    margin-top: -20px; /* 위로 20px 이동 */
+    text-align: center; /* 중앙 정렬 */
+}
+
+.footer-menu a img {
+    width: 150px; /* 로고 크기 조정 (필요에 따라 변경 가능) */
+    display: inline-block;
+    margin-bottom: 50px;
+}
+/* job 섹션 스타일 */
+.job {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: #ffffff; */
+    margin: 100px;
+    padding: 20px;
+
+    border-image-width: 200px;
+}
+
+.job img {
+    border-radius: 40px;
+}
+
+header {
+    width: 1440px;
+}
+
+header img {
+    width: 1440px;
+}

@@ -1,0 +1,206 @@
+<link rel="stylesheet" th:href="@{/css/admin/cs/qna/view.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+  <aside th:replace="layout/admin/aside.html"></aside>
+  <section id="admin-product-list" class="container">
+    <script>
+      function checkSelection() {
+        const cate = document.getElementsByName("qnaCate")[0].value;
+        const type = document.getElementsByName("qnaType")[0].value;
+
+        if (cate === "유형선택" || type === "타입선택") {
+          alert("문의유형의 모든 항목을 선택해주세요.");
+          return false;
+        }
+        return true;
+      }
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+    <nav class="qna-nav">
+      <h3>문의하기 보기</h3>
+      <p>HOME > 고객센터 > <strong>문의하기</strong></p>
+    </nav>
+    <article>
+      <form class="formBox" method="post" onsubmit="return checkSelection()">
+        <table>
+          <tbody>
+          <tr style="height: 60px">
+            <th style="width: 100px">유형</th>
+            <td>
+              <span class="cate1" th:data-value="${qna.cate1.categoryName}"></span> -
+              <span class="cate2" th:data-value="${qna.cate2.categoryName}" th:data-parent="${qna.cate1.categoryName}"></span>
+            </td>          
+          </tr>
+          <tr style="height: 60px">
+            <th>제목</th>
+            <td class="qna-title" th:text="${qna.title}">개인회원과 법인회원에 차이가 있나요?</td>
+          </tr>
+          <tr style="height: 200px">
+            <th>내용</th>
+            <td class="qna-content" th:text="${qna.content}">
+              개인회원과 법인회원에 차이가 있나요? 혜택도 있나요? 알려주세요
+            </td>
+          </tr>
+          <tr style="height: 200px">
+            <th>답변</th>
+            <td class="qna-reply"  th:text="${qna.answer}">
+              대한민국 No.1 오픈마켓 LotteON을 이용해주셔서 감사합니다.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="button-group">
+          <!-- 삭제 버튼 클릭 시 폼 전송을 방지하고 JavaScript로만 삭제 동작을 수행 -->
+          <button th:data-id="${qna.id}" class="button--delete" th:onclick="|deleteQna(${qna.id}, event)|">삭제</button>
+          <button type="button" class="button--back" onclick="goToList();">목록</button>
+        </div>
+      </form>
+    </article>
+    <!-- 상품목록 컨텐츠 끝 -->
+  </section>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+
+<script>
+  function deleteQna1(event) {
+    const chk = confirm("정말 삭제하시겠습니까?");
+    if (!chk) {
+      return;
+    }
+    console.log(event.target.dataset.id)
+    window.location.href = "/admin/cs/qna/delete/" + event.target.dataset.id;
+  }
+
+  // 1차 카테고리와 2차 카테고리를 한글로 변환하는 객체
+  const firstCategoryMap = {
+    "user": "회원",
+    "coupon": "쿠폰/이벤트",
+    "order": "주문/결제",
+    "delivery": "배송",
+    "cancel": "취소/반품/환불",
+    "travel": "여행/숙박/항공",
+    "safe": "안전결제"
+  };
+
+  const secondCategoryMap = {
+    "user": {
+      "regi": "가입",
+      "leave": "탈퇴",
+      "info": "회원정보",
+      "login": "로그인"
+    },
+    "coupon": {
+      "lpoint": "L.POINT",
+      "coupon": "쿠폰",
+      "event": "이벤트/경품",
+      "attendance": "출석체크",
+      "gift": "사은품"
+    },
+    "order": {
+      "orderMethod": "주문방법",
+      "orderChange": "주문변경",
+      "paymentMethod": "결제방법",
+      "easyPayment": "간편결제",
+      "giftReceive": "선물받기",
+      "mobileGift": "모바일상품권",
+      "phonePayment": "휴대폰결제",
+      "applePay": "애플페이"
+    },
+    "delivery": {
+      "delivery": "배송",
+      "deliveryFee": "배송비",
+      "deliveryMethod": "배송방법",
+      "deliverySchedule": "배송일정",
+      "deliveryAddress": "배송지",
+      "todayArrival": "오늘도착",
+      "overseas": "해외직구",
+      "notReceived": "미수령신고",
+      "recipient": "수취인",
+      "purchaseConfirm": "구매확정"
+    },
+    "cancel": {
+      "orderCancel": "주문취소",
+      "refundMethod": "환불방법",
+      "cardRefund": "카드환불",
+      "refundSchedule": "환불일정",
+      "phoneRefund": "휴대폰결제환불"
+    },
+    "travel": {
+      "ecoupon": "e쿠폰",
+      "flight": "항공",
+      "accommodation": "숙박",
+      "ticket": "티켓"
+    },
+    "safe": {
+      "policyViolation": "법령 및 정책위반 상품",
+      "ipViolation": "지적재산권침해",
+      "serviceViolation": "서비스 이용규칙 위반",
+      "adViolation": "표시광고"
+    }
+  };
+
+  // 1차 및 2차 카테고리 한글 변환
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1차 카테고리 한글 변환
+    document.querySelectorAll('.cate1').forEach(function(item) {
+      const value = item.getAttribute('data-value');
+      item.textContent = firstCategoryMap[value] || value;
+    });
+
+    // 2차 카테고리 한글 변환
+    document.querySelectorAll('.cate2').forEach(function(item) {
+      const value = item.getAttribute('data-value');
+      const parent = item.getAttribute('data-parent');
+      if (secondCategoryMap[parent]) {
+        item.textContent = secondCategoryMap[parent][value] || value;
+      } else {
+        item.textContent = value;
+      }
+    });
+  });
+
+  function goToList() {
+    window.location.href = '/admin/cs/qnas'; // 원하는 목록 페이지의 URL로 변경
+  }
+
+  function validateForm() {
+    const answer = document.querySelector('textarea[name="answer"]').value.trim();
+    if (!answer) {
+      alert("답변을 입력해 주세요.");
+      return false;
+    }
+    return true;
+  }
+  // 개별 삭제 기능
+  function deleteQna(qnaId, event) {
+    // 기본 폼 제출 동작을 막아 POST 요청이 발생하지 않도록 합니다.
+    event.preventDefault();
+
+    if (confirm("정말로 이 문의를 삭제하시겠습니까?")) {
+      fetch(`/admin/cs/qna/delete/${qnaId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+              .then(response => {
+                if (response.ok) {
+                  alert("삭제가 완료되었습니다.");
+                  // 삭제가 완료된 후 목록 페이지로 이동
+                  window.location.href = "/admin/cs/qnas";
+                } else {
+                  return response.text().then(text => { throw new Error(text); });
+                }
+              })
+              .catch(error => {
+                console.error("삭제 중 오류가 발생했습니다:", error);
+                alert("삭제에 실패했습니다: " + error.message);
+              });
+    }
+  }
+</script>
+

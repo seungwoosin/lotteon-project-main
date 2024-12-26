@@ -1,0 +1,468 @@
+<link rel="stylesheet" th:href="@{/css/admin/config/basic.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+    <header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+        <aside th:replace="layout/admin/aside.html"></aside>
+        <div class="container">
+            <div class="header">
+                <span class="header-title">기본설정</span>
+                <div class="header-right">
+                    <span>HOME</span>
+                    <span>></span>
+                    <span>환경설정</span>
+                    <span>></span>
+                    <span class="bold">기본설정</span>
+                </div>
+            </div>
+            <div class="header-gubun"></div>
+
+            <section class="s2">
+                <article class="header-title1">버전 정보</article>
+                <article class="dis1">
+                    현재 사이트 버전입니다.
+                </article>
+                <table class="tb1">
+                    <tr>
+                        <th>사이트 버전</th>
+                        <td>[[${appVersion}]]</td>
+                    </tr>
+                </table>
+            </section>
+            <section class="s2">
+                <article class="header-title1">사이트</article>
+                <article class="dis1">
+                    브라우저 탭 , 헤더 및 푸터 노출정보입니다.
+                </article>
+                <table class="tb2">
+                    <tr>
+                        <th>제목</th>
+                        <td>
+                            <input class="inp" type="text" th:value="${site.configTitle}" id="configTitle">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            부제
+                        </th>
+                        <td>
+                            <input class="inp" type="text" th:value="${site.configSub}" id="configSub">
+                        </td>
+                    </tr>
+                </table>
+                <article class="btn">
+                    <input type="hidden" id="configId" th:value="${site.id}">
+                    <input type="hidden" id="updater" th:value="${#authentication.principal.user.memUid}">
+                    <button class="admin-btn" onclick="patch('siteInfo')">수정하기</button>
+                </article>
+            </section>
+            <section class="s2">
+                <article class="header-title2">로고</article>
+                <article class="dis1">
+                    브라우저 탭 , 헤더 및 푸터 노출 로고입니다.
+                </article>
+                <table class="tb3">
+                    <tr>
+                        <th>헤더 로고</th>
+                        <td>
+                            <input class="inp" type="file" onchange="readURL(this,'header');" id="configHeaderLogo">
+                            <span>크기 370 x 76 권장 </span><img id="headerpreview" style="max-width: 400px; display: none"/>
+                            <button type="button" id="headerDeleteBtn" class="admin-btn" style="display: none;" onclick="resetUpload('header')">삭제</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>푸터 로고</th>
+                        <td>
+                            <input class="inp" type="file" onchange="readURL(this,'footer');" id="configFooterLogo">
+                            <span>크기 155 x 36 권장</span><img id="footerpreview" style="max-width: 200px; display: none">
+                            <button type="button" id="footerDeleteBtn" class="admin-btn" style="display: none;" onclick="resetUpload('footer')">삭제</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>파비콘</th>
+                        <td>
+                            <input class="inp" type="file" onchange="readURL(this,'favicon');" id="configFabicon">
+                            <span>크기 32 x 32 권장</span><img id="faviconpreview" style="max-width: 50px; max-height: 50px; display: none"/>
+                            <button type="button" id="faviconDeleteBtn" class="admin-btn" style="display: none;" onclick="resetUpload('favicon')">삭제</button>
+                        </td>
+                    </tr>
+                </table>
+                <article class="btn">
+                    <button id="view-versions" onclick="toggleMenu()">수정 내역 보기</button>
+                    <div id="dropdown-menu" class="dropdown-hidden">
+                        <ul>
+                            <li>[[${site.createdStr}]] 저장됨</li>
+                        </ul>
+                    </div>
+                    <button class="admin-btn" onclick="patch('siteLogo')">수정하기</button>
+                </article>
+            </section>
+            <section class="s2">
+                <article class="header-title2">기업 정보</article>
+                <article class="dis1">
+                    푸터에 노출되는 기업정보 입니다.
+                </article>
+                <form id="fLotte">
+                <table class="tb2">
+                    <tr>
+                        <th>상호명</th>
+                        <td><input class="inp" type="text" name="busiCompany" th:value="${fLotte.busiCompany}"></td>
+                    </tr>
+                    <tr>
+                        <th>대표이사</th>
+                        <td><input class="inp" type="text" name="busiRepresentative" th:value="${fLotte.busiRepresentative}"></td>
+                    </tr>
+                    <tr>
+                        <th>사업자등록번호</th>
+                        <td><input class="inp" type="text" name="busiCode" th:value="${fLotte.busiCode}"></td>
+                    </tr>
+                    <tr>
+                        <th>통신판매업신고</th>
+                        <td><input class="inp" type="text" name="busiOrderCode" th:value="${fLotte.busiOrderCode}"></td>
+                    </tr>
+                    <tr>
+                        <th>기본주소</th>
+                        <td><input class="inp" type="text" name="busiAddr" th:value="${fLotte.busiAddr1}"></td>
+                    </tr>
+                    <tr>
+                        <th>상세주소</th>
+                        <td><input class="inp" type="text" name="busiAddr" th:value="${fLotte.busiAddr2}"></td>
+                    </tr>
+                </table>
+                </form>
+                <article class="btn">
+                    <button class="admin-btn" onclick="patch('fLotte')">수정하기</button>
+                </article>
+            </section>
+            <section class="s2">
+                <article class="header-title2">고객센터 정보</article>
+                <article class="dis1">
+                    푸터에 노출되는 고객센터 정보 입니다.
+                </article>
+                <form id="fCs">
+                <table class="tb2">
+                    <tr>
+                        <th>전화번호</th>
+                        <td><input class="inp" type="text" name="hp" th:value="${fCs.hp}"></td>
+                    </tr>
+                    <tr>
+                        <th>업무시간</th>
+                        <td>
+                            <input class="inp" type="time" id="start" name="stime" th:value="${fCs.stime}">
+                            ~
+                            <input class="inp" type="time" id="end" name="etime" th:value="${fCs.etime}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>이메일</th>
+                        <td><input class="inp" type="text" name="email" th:value="${fCs.email}"></td>
+                    </tr>
+                    <tr>
+                        <th>전자금융거래 분쟁담당</th>
+                        <td><input class="inp" type="text" name="call" th:value="${fCs.call}"></td>
+                    </tr>
+                </table>
+                </form>
+                <article class="btn">
+                    <button class="admin-btn" onclick="patch('fCs')">수정하기</button>
+                </article>
+            </section>
+            <section class="s2">
+                <article class="header-title2">카피라이트</article>
+                <article class="dis1">
+                    푸터에 노출되는 카피라이트 정보 입니다.
+                </article>
+                <table class="tb1">
+                    <tr>
+                        <th>카피라이트</th>
+                        <td>
+                            <input type="text" class="inp" id="copyright" th:value="${copy.copy}" th:data-copyid="${copy.id}">
+                        </td>
+                    </tr>
+                </table>
+                <article class="btn">
+                    <button class="admin-btn" onclick="patch('copy')">수정하기</button>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    <footer th:replace="layout/admin/footer.html"></footer>
+    <div class="popup"></div>
+    <div class="popupbg"></div>
+</body>
+<script>
+
+    const configId = document.getElementById('configId').value;
+    const updater = document.getElementById('updater').value;
+    const popup = document.querySelector(".popup");
+    const bg = document.querySelector(".popupbg");
+
+    function openPopup(event) {
+        event.preventDefault();
+        const configIndex = event.target.dataset.no;
+        fetch(`/admin/config/pop/${configIndex}`)
+            .then(resp=>resp.json())
+            .then(data=>{
+                console.log(data);
+                popup.innerHTML = `
+            <div class="header">
+                <div class="title">이전버전 내용</div>
+                <div onclick="closePopup()" class="btn">X</div>
+            </div>
+            <div class="body">
+                <div style="margin: -15px auto;text-align: center;height: 40px; display: flex;justify-content: space-between">
+                        <span style="font-size: 17px"> </span> <span>${data.createdStr} - ${data.configUpdatedAdmin}</span>
+                 </div>
+                <table class="tb2">
+                    <tr class="${+data.configUpdateLocation===1?'modified':''}">
+                        <th>사이트 버전</th>
+                        <td>${data.configVersion}</td>
+                    </tr>
+
+                    <tr class="${+data.configUpdateLocation===2?'modified':''}">
+                        <th>제목</th>
+                        <td>${data.configTitle}</td>
+                    </tr>
+                    <tr class="${+data.configUpdateLocation===2?'modified':''}">
+                        <th>부제</th>
+                        <td>${data.configSub}</td>
+                    </tr>
+
+                    <tr class="${+data.configUpdateLocation===3?'modified':''}">
+                        <th>헤더 로고</th>
+                        <td><img src="/file/${data.configHeaderLogo}"/></td>
+                    </tr>
+                    <tr class="${+data.configUpdateLocation===3?'modified':''}">
+                        <th>푸터 로고</th>
+                        <td><img src="/file/${data.configFooterLogo}"/></td>
+                    </tr>
+                    <tr class="${+data.configUpdateLocation===3?'modified':''}">
+                        <th>파비콘</th>
+                        <td><img src="/file/${data.configFabicon}"/></td>
+                    </tr>
+                </table>
+                <div class="indicator">
+                    ${+configIndex !== 9 ?
+                        `<a class='prev' data-no='${+configIndex + 1}' onclick='openPopup(event)'>이전</a>` : ''}
+                    ${+configIndex !== 0 ?
+                        `<a class='next' data-no='${+configIndex - 1}' onclick='openPopup(event)'>다음</a>` : ''}
+                </div>
+                <div class="btns">
+                    ${data.configIsUsed ?
+                        "현재 사용중인 설정입니다.":
+                        `<button class='submit-btn' onclick='changeVersion(event)' data-id='${data.id}' data-no='${configIndex}'>사용하기</button>`}
+                </div>
+            </div>`;
+                popup.style.display = "block";
+                bg.style.display = "block";
+            })
+            .catch(err=>{console.log(err)});
+
+    }
+    function closePopup() {
+        popup.style.display = "none";
+        bg.style.display = "none";
+        popup.innerHTML = ``;
+    }
+    function changeVersion(event) {
+        if (!confirm("정말 이 버전으로 변경하시겠습니까?")) {
+            return;
+        }
+        const changeId = event.target.dataset.id;
+        const changeNo = event.target.dataset.no;
+
+
+        fetch(`/admin/config/use/${changeId}/${changeNo}`,{
+            method:'PATCH'
+        })
+            .then(resp=>resp.json())
+            .then(data=>{
+                console.log(data);
+                if(data.success){
+                    alert(`성공적으로 적용되었습니다. \n새로 고침 후 확인해주세요`)
+                    const popBtns = popup.querySelector('.btns');
+                    popBtns.innerHTML=`현재 사용중인 설정입니다.`;
+                }
+            })
+            .catch(err=>{console.log(err)});
+    }
+
+
+    // 특정 요소들을 가져오는 공통 함수
+    function getElements(type) {
+        let elements = {};
+        if (type === "header") {
+            elements.input = document.getElementById('headerInput');
+            elements.preview = document.getElementById('headerpreview');
+            elements.deleteBtn = document.getElementById('headerDeleteBtn');
+        } else if (type === "footer") {
+            elements.input = document.getElementById('footerInput');
+            elements.preview = document.getElementById('footerpreview');
+            elements.deleteBtn = document.getElementById('footerDeleteBtn');
+        } else if (type === "favicon") {
+            elements.input = document.getElementById('faviconInput');
+            elements.preview = document.getElementById('faviconpreview');
+            elements.deleteBtn = document.getElementById('faviconDeleteBtn');
+        }
+        return elements;
+    }
+
+    function resetUpload(type) {
+        const { input, preview, deleteBtn } = getElements(type);
+        if (!input || !preview || !deleteBtn) return;
+
+        input.value = "";
+        preview.src = "";
+        preview.style.display = 'none';
+        deleteBtn.style.display = 'none';
+    }
+
+    function readURL(input, type) {
+        const { preview, deleteBtn } = getElements(type);
+        if (!preview || !deleteBtn) return;
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'inline-block';
+                deleteBtn.style.display = 'inline-block';  // 이미지가 보일 때 삭제 버튼 표시
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            resetUpload(type);
+        }
+    }
+
+    function toggleMenu() {
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const isHidden = dropdownMenu.classList.contains('dropdown-hidden');
+        const list = dropdownMenu.querySelector('ul');
+        // 메뉴를 토글
+        if (isHidden) {
+
+            fetch(`/admin/config/list`)
+                .then(resp=>resp.json())
+                .then(data=>{
+                    list.innerHTML = ``;
+                    data.forEach((config, i) => {
+                        const li = `
+                            <li onclick="openPopup(event)"
+                                data-no="${i}">
+                                ${config.createdStr} 저장됨 ${config.configIsUsed?'(사용중)':''}
+                            </li>`;
+
+                        list.innerHTML += li;  // 생성된 row를 테이블에 추가합니다.
+                    });
+                })
+                .catch(err=>{
+                    console.error(err);
+                })
+
+
+
+
+            dropdownMenu.classList.remove('dropdown-hidden');
+            dropdownMenu.classList.add('dropdown-visible');
+
+        } else {
+            dropdownMenu.classList.remove('dropdown-visible');
+            dropdownMenu.classList.add('dropdown-hidden');
+        }
+    }
+
+    // 클릭 외 다른 영역을 누르면 메뉴를 닫음
+    document.addEventListener('click', function(event) {
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const button = document.getElementById('view-versions');
+
+        if (!dropdownMenu.contains(event.target) && !button.contains(event.target)) {
+            dropdownMenu.classList.remove('dropdown-visible');
+            dropdownMenu.classList.add('dropdown-hidden');
+        }
+    });
+
+    async function fetchBasic(type,url,formData){
+        fetch(url, {
+            method: type,
+            body: formData
+        })
+            .then(resp => {
+                console.log(resp);
+                if (!resp.ok) {
+                    return resp.json().then(err => {
+                        console.error('Server responded with an error:', err); // 추가된 로그
+                        throw new Error(`Error ${resp.status}: ${err.message || JSON.stringify(err)}`);
+                    });
+                }
+                return resp.json();
+            })
+            .then(data => {
+                console.log('Response Data:', data);
+                if(data.id>0){
+                    alert('성공적으로 수정되었습니다.')
+                    document.getElementById('configId').value = data.id;
+                    location.href="/admin/config/index";
+                }
+            })
+            .catch(err => {
+                console.error('Error : '.err);
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            });
+    }
+
+    async function patch(type){
+        if(!confirm("정말 변경하시겠습니까?")){return;}
+        const formData = new FormData();
+
+        if(type==="siteInfo"){
+            const configTitle = document.getElementById('configTitle').value;
+            const configSub = document.getElementById('configSub').value;
+
+            formData.append("id", +configId);
+            formData.append("type", 2);
+            formData.append("updater", updater);
+            formData.append("title", configTitle);
+            formData.append("sub", configSub);
+
+            await fetchBasic('PATCH',`/admin/config/info`,formData);
+
+        }
+        else if(type==="siteLogo"){
+            const jsonData = {
+                "id" : +configId,
+                "updater" : updater
+            };
+
+            const headerFile = document.getElementById('configHeaderLogo').files[0];
+            const footerFile = document.getElementById('configFooterLogo').files[0];
+            const faviconFile = document.getElementById('configFabicon').files[0];
+
+            if(headerFile) formData.append('file1', headerFile);
+            if(footerFile) formData.append('file2', footerFile);
+            if(faviconFile) formData.append('file3', faviconFile);
+
+            formData.append('logoDTO', JSON.stringify(jsonData));
+
+            await fetchBasic('PATCH',`/admin/config/logo`, formData);
+
+        }
+        else if(type==="fLotte"){
+            const fLotteFormData = new FormData(document.getElementById("fLotte"));
+            await fetchBasic('POST',`/admin/config/footer`,fLotteFormData);
+        }
+        else if(type==="fCs"){
+
+            const fCsFormData = new FormData(document.getElementById("fCs"));
+            await fetchBasic('POST',`/admin/config/cs`,fCsFormData);
+        }
+        else if(type==="copy"){
+            const copy = document.getElementById("copyright");
+            formData.append("copy",copy.value);
+            formData.append("id", copy.dataset.copyid)
+            await fetchBasic('POST',`/admin/config/copy`,formData);
+        }
+    }
+
+</script>
+</html>

@@ -1,0 +1,144 @@
+ <title>공지사항 목록</title>
+  <link rel="stylesheet" th:href="@{/css/admin/cs/notice/list.css}" />
+  <link rel="stylesheet" th:href="@{/css/basic.css}" />
+</head>
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+  <aside th:replace="layout/admin/aside.html"></aside>
+  <section id="admin-product-list" class="container">
+    <div id="search_input">
+      <nav class="notice-nav">
+        <h3>공지사항 목록</h3>
+        <p>HOME > 고객센터 > <strong>공지사항</strong></p>
+      </nav>
+      <!-- 검색 및 카테고리 필터링 폼 -->
+      <form th:action="@{/admin/cs/notices}" method="get" class="search">
+        <select name="type" class="select_type search-input">
+          <option value="typeselect" th:selected="${selectedType == 'typeselect'}">유형선택</option>
+          <option th:each="category : ${cate1}"
+                  th:value="${category.categoryName}"
+                  th:text="${category.categoryName}"
+                  th:selected="${selectedType == category.categoryName}">
+          </option>
+        </select>
+
+        <!-- 제목 검색 필드 추가 -->
+        <input type="text" name="title" placeholder="제목 검색" th:value="${title}" class="search-input" />
+
+        <button type="submit">검색</button>
+      </form>
+    </div>
+
+    <article>
+      <table style="width: 100%">
+        <thead>
+        <tr>
+          <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
+          <th style="width: 5%">번호</th>
+          <th>유형</th>
+          <th>제목</th>
+          <th>조회</th>
+          <th>날짜</th>
+          <th>관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notice, iterStat : ${notices}" th:data-id="${notice.id}">
+          <td><input type="checkbox" /></td>
+          <td th:text="${notice.id}"></td> <!-- 번호 -->
+          <td th:text="${notice.cate1.categoryName}"></td> <!-- 카테고리 1 -->
+
+          <!-- 제목을 클릭 시 보기 페이지로 이동 -->
+          <td style="text-align: left">
+            <a th:href="@{/admin/cs/notice/view/{id}(id=${notice.id})}" th:text="${notice.noticeTitle}" style="text-decoration: none; color: inherit;">
+              공지사항 제목
+            </a>
+          </td>
+
+          <td th:text="${notice.noticeViews}"></td> <!-- 조회수 -->
+          <td th:text="${#dates.format(notice.noticeRdate, 'yyyy-MM-dd')}"></td> <!-- 날짜 -->
+          <td>
+            <div>
+              <!-- POST 요청으로 삭제 처리 -->
+              <form th:action="@{/admin/cs/notice/delete/{id}(id=${notice.id})}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <button type="submit" class="button--delete">삭제</button>
+              </form>
+            </div>
+            <div>
+              <a th:href="@{'/admin/cs/notice/modify/' + ${notice.id}}" class="button--edit">수정</a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <div class="button-group">
+      <a class="button--delete" onclick="deleteSelected();">선택삭제</a>
+      <a th:href="@{/admin/cs/notice/write}" class="button--write">작성하기</a>
+    </div>
+
+    <!-- 페이지네이션 -->
+    <div class="paging">
+      <!-- 처음 페이지로 이동 -->
+      <a class="first" th:href="@{|/admin/cs/notices?page=0|}" th:if="${page > 0}">처음</a>
+
+      <!-- 페이지 목록 -->
+      <ol>
+        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+          <a th:href="@{'/admin/cs/notices?page=' + ${i}}"
+             th:text="${i + 1}"
+             th:classappend="${page == i} ? 'active'">1</a>
+        </li>
+      </ol>
+
+      <!-- 마지막 페이지로 이동 -->
+      <a class="last" th:href="@{|/admin/cs/notices?page=${totalPages - 1}|}" th:if="${page < totalPages - 1}">마지막</a>
+    </div>
+  </section>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+
+<script>
+  // 선택 삭제 기능
+  function deleteSelected() {
+    const selectedIds = [];
+    document.querySelectorAll('tbody input[type="checkbox"]:checked').forEach((checkbox) => {
+      const row = checkbox.closest('tr');
+      const id = row.dataset.id;
+      selectedIds.push(Number(id));
+    });
+
+    if (selectedIds.length > 0) {
+      if (confirm('정말로 선택된 항목을 삭제하시겠습니까?')) {
+        fetch('/admin/cs/notice/deleteSelected', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(selectedIds)
+        })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    window.location.href = '/admin/cs/notices';
+                  } else {
+                    alert('삭제 실패: ' + data.message);
+                  }
+                })
+                .catch(error => {
+                  alert('삭제 중 오류 발생: ' + error.message);
+                });
+      }
+    } else {
+      alert('삭제할 항목을 선택하세요.');
+    }
+  }
+
+  // 전체 선택 / 해제 기능
+  document.getElementById('selectAll').addEventListener('change', function () {
+    const isChecked = this.checked;
+    document.querySelectorAll('tbody input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.checked = isChecked;
+    });
+  });
+</script>

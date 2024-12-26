@@ -1,0 +1,126 @@
+<link rel="stylesheet" th:href="@{/css/auth/signup.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{/js/validation.js}"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<header th:replace="~{layout/main/header.html}"></header>
+<main style="margin-top: 230px;">
+    <form action=""                                                                                                         >
+        <div class="container">
+            <h3 class="header-title">약관동의</h3>
+            <div class="header-gubun"></div>
+            <div class="box box1">
+            <th:block th:each="t : ${terms}" th:if="${t.termsName.trim()!='위치정보 이용약관'}">
+                <div class="title">
+                    <span class="red">( 필수 )</span>
+                    <span th:text="${t.termsName}"></span>
+                </div>
+                <!-- 이용약관 -->
+                <div readonly class="content" th:utext="${t.termsContent}"></div>
+                <div class="essential-check check">
+                    <label for="place"><input style="margin-top: 10px;" type="checkbox"></label>
+                    <span class="chk_txt">동의하기</span>
+                </div>
+            </th:block>
+            <th:block th:each="t : ${terms}" th:if="${t.termsName.trim() == '위치정보 이용약관' and t.termsType == 'customer'}">
+                <div class="title">
+                    <span class="blue">( 선택 )</span>
+                    <span th:text="${t.termsName}"></span>
+                </div><!-- .title -->
+                <!-- 이용약관 textarea -->
+                <div class="content" th:utext="${t.termsContent}"></div>
+                <div class="not-required-check check">
+                    <!-- 선택약관 동의여부  -->
+                    <!-- 체크박스 선택 여부에 따라 true=1, false=0  -->
+                    <label for="place">
+                        <input type="checkbox" id="place" onclick="toggleCheckboxValue(event)">
+                        <input type="hidden" id="placeHidden"  value="0" name="custOptional">
+                    </label>
+                    <span class="chk_txt">동의하기</span>
+                </div><!-- .not-required-check .check  -->
+            </th:block>
+            </div><!-- .box .box1 -->
+
+            <div th:if="${termsType == 'customer'}" class="signup">
+                <button onclick="submitData(1)" type="button" disabled id="next-btn" class="btnSignUp next-btn">동의하기</button>
+            </div><!-- .signup 일반회원 이용약관 동의하기 버튼 -->
+            <div th:if="${termsType == 'seller'}" class="signup">
+                <button onclick="submitData(2)" type="button" disabled id="next-btn2" class="btnSignUp next-btn">동의하기</button>
+            </div><!-- .signup 판매자회원 이용약관 동의하기 버튼 -->
+        </div><!-- .container -->
+    </form>
+</main>
+<footer th:replace="~{layout/main/footer.html}"></footer>
+
+
+
+    <script>
+        const essentialCheckboxes = document.querySelectorAll('.essential-check input');
+        const nextBtn = document.getElementById('next-btn');
+        const nextBtn2 = document.getElementById('next-btn2');
+        const page1 = document.querySelector('.container')
+        const page2 = document.querySelector('.container2')
+
+        function checkAllEssentialChecked() {
+            const allChecked = Array.from(essentialCheckboxes).every((checkbox) => checkbox.checked);
+            if (allChecked) {
+                nextBtn.style.pointerEvents = 'auto';
+                nextBtn.style.cursor = 'pointer';
+                nextBtn.style.opacity = '1';
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.style.pointerEvents = 'none';
+                nextBtn.style.opacity = '0.5';
+                nextBtn.disabled = true;
+            }
+        }
+
+        function checkAllEssentialChecked2() {
+            const allChecked = Array.from(essentialCheckboxes).every((checkbox) => checkbox.checked);
+            if (allChecked) {
+                nextBtn2.style.pointerEvents = 'auto';
+                nextBtn2.style.cursor = 'pointer';
+                nextBtn2.style.opacity = '1';
+                nextBtn2.disabled = false;
+            } else {
+                nextBtn2.style.pointerEvents = 'none';
+                nextBtn2.style.opacity = '0.5';
+                nextBtn2.disabled = true;
+            }
+        }
+
+        essentialCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', checkAllEssentialChecked);
+            checkbox.addEventListener('change', checkAllEssentialChecked2);
+        });
+
+        function nextFunction(){
+        }
+        // 선택약관 동의 여부
+        function toggleCheckboxValue(event) {
+            const hiddenInput = document.getElementById('placeHidden')
+            if (event.target.checked) {
+                hiddenInput.value = "1";  // 체크되면 1
+            } else {
+                hiddenInput.value = "0";  // 체크 안되면 0
+            }
+        }
+
+        function submitData(a){
+
+            console.log("a : " + a);
+
+            if(a==1){
+                const hiddenInput = document.getElementById('placeHidden')
+                console.log(hiddenInput.value);  // hidden input의 값 확인
+                let url = "/auth/customer/" + hiddenInput.value;
+                window.location.href = url;
+            } else {
+                window.location.href = "/auth/seller"
+            }
+
+        }
+
+
+    </script>
+</body>
+</html>

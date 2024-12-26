@@ -1,0 +1,228 @@
+.container {
+  width: 800px;
+}
+
+/* 보더 추가 */
+.notice-nav {
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 70px;
+}
+
+.select_type {
+  height: 32px;
+  appearance: none;
+  width: 110px;
+}
+
+table {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  border-top: 1px solid #999999;
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+tr {
+  height: 42.5px;
+}
+
+th {
+  background-color: #fbfbfb;
+  border-bottom: 1px solid #999999;
+}
+
+td {
+  height: 80px;
+  border-bottom: 1px solid #999999;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 12px;
+}
+
+/* 공통 버튼 스타일 */
+.button {
+  background-color: #f44336;
+  color: white !important;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  transition: box-shadow 0.3s ease;
+}
+
+/* 호버 시 섀도우 효과 */
+.button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 삭제 버튼 스타일 */
+.button--delete1, .button--edit {
+  padding: 10px 20px; /* 삭제 버튼과 수정 버튼 크기 동일하게 설정 */
+  font-size: 13px;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.button--delete1 {
+  background-color: #f44336;
+  color: white !important;
+}
+
+.button--edit {
+  background-color: #617280;
+  color: white !important;
+}
+
+/* 삭제 버튼 */
+.button--delete {
+  background-color: #f44336;
+  color: white !important;
+  padding: 10px 20px;
+  text-align: center;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  transition: box-shadow 0.3s ease;
+}
+
+/* 작성 버튼 */
+.button--write {
+  background-color: #647264;
+  color: white !important;
+  padding: 10px 20px;
+  text-align: center;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  transition: box-shadow 0.3s ease;
+}
+
+/* 삭제 버튼 호버 효과 */
+.button--delete1:hover {
+  background-color: #d32f2f;
+}
+.button--delete:hover {
+  background-color: #d32f2f;
+}
+
+/* 수정 버튼 호버 효과 */
+.button--edit:hover {
+  background-color: #8f9ba6;
+}
+
+/* 작성 버튼 호버 효과 */
+.button--write:hover {
+  background-color: #616861;
+}
+
+.paging {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+/* 처음과 마지막 페이지 링크 스타일 */
+.paging .first,
+.paging .last {
+  color: #333;
+  text-decoration: none;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.paging .first:hover,
+.paging .last:hover {
+  background-color: #f0f0f0; /* 호버 시 배경색 */
+}
+
+/* 페이지 번호 목록 스타일 */
+.paging ol {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 5px;
+}
+
+.paging ol li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px; /* 페이지 버튼 너비 */
+  height: 30px; /* 페이지 버튼 높이 */
+  color: #333;
+  text-decoration: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 페이지 번호 호버 효과 */
+.paging ol li a:hover {
+  background-color: #f0f0f0;
+}
+
+/* 현재 활성 페이지 스타일 */
+.paging ol li a.active {
+  background-color: #333;
+  color: white !important;
+  font-weight: bold;
+  cursor: default;
+}
+/* 검색 버튼 스타일 (삭제, 수정 버튼 크기에 맞춤) */
+.search button[type="submit"] {
+  background-color: #333;  /* 검은색 계열 배경 */
+  color: white;  /* 흰색 글자색 */
+  padding: 10px 20px;  /* 삭제, 수정 버튼과 동일한 패딩 */
+  font-size: 13px;  /* 동일한 폰트 크기 */
+  border-radius: 4px;  /* 동일한 테두리 둥글기 */
+  border: none;  /* 테두리 제거 */
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+/* 호버 시 섀도우 효과 및 색상 변경 */
+.search button[type="submit"]:hover {
+  background-color: #555;  /* 호버 시 좀 더 밝은 검은색 계열 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+/* 공통 클래스 for 유형선택과 제목 검색 */
+.search-input {
+  width: 150px;  /* 원하는 크기로 설정 */
+  height: 32px;  /* 동일한 높이 */
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.select_type {
+  appearance: none;  /* Select 화살표 제거 (브라우저 기본 스타일 제거) */
+}

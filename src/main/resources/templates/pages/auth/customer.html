@@ -1,0 +1,383 @@
+<link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+<link rel="stylesheet" th:href="@{/css/auth/customer.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<!--<script th:src="@{/js/validation.js}"></script>-->
+
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<header th:replace="layout/main/header.html"></header>
+<main style="margin-top: 230px;">
+    <div class="container">
+        <h3 class="header-title">일반 회원가입</h3>
+        <div class="header-gubun"></div>
+        <form class="customer" id="signup-form" action="/auth/customer" method="post">
+            <input type="hidden" name="option" th:value="${isOptional}"/>
+            <table class="tb1">
+                <tr>
+                    <th>아이디</th>
+                    <td>
+                        <input id="id" name="memId" type="text" placeholder="아이디 입력" required/>
+                        <span class="noti_txt1">영문 , 숫자 4~12자리 설정</span>
+                        <span id="resultUid" class="resultId"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td>
+                        <input id="password" name="memPwd" type="password"  class="inputPass" placeholder="비밀번호 입력"/>
+                        <span>영문, 숫자 , 특수문자 8~12자리 설정</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>비밀번호확인</th>
+                    <td>
+                        <input id="confirm" type="password" name="pass2" class="inputPass" placeholder="비밀번호 확인 입력"/>
+                        <span class="resultPass desc" id="resultPass"></span>
+                    </td>
+                </tr>
+            </table>
+            <table class="tb2">
+                <tr>
+                    <th>이름</th>
+                    <td>
+                        <input id="name" name="custName" class="inp" placeholder="이름입력" type="text">
+                        <span class="resultName" id="resultName"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>성별</th>
+                    <td>
+                        <label for=""><input id="maleClick" value="true" type="radio" name="custGender">남</label>
+                        <label for=""><input id="femaleClick" value="false" type="radio" name="custGender">여</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>이메일</th>
+                    <td class="email-validation">
+                        <input id="email" class="inp" name="custEmail" type="email" placeholder="이메일입력">
+                        <span class="resultEmail" id="resultEmail"></span><br>
+                    </td>
+                    <!-- 이메일 주소가 정확한지 확인해 주세요. -->
+                </tr>
+                <tr>
+                    <th>휴대폰</th>
+                    <td>
+                        <input name="custHp" id="hp" class="inp" type="text" placeholder="-없이 입력해주세요">
+                        <span class="resultHp" id="resultHp"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>생년월일</th>
+                    <td>
+                        <input name="custBirth" id="birth" class="inp" type="date" placeholder="생년월일을 입력해주세요">
+                        <span class="resultBirth" id="resultBirth"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="th-addr">주소</th>
+                    <td class="td-addr">
+                        <input readonly onclick="execDaumPostcode()" id="addr1" name="addr1" class="addr1" type="text" placeholder="우편번호검색 클릭" >
+                        <input readonly id="addr2" name="addr2" class="addr2" type="text" placeholder="기본주소">
+                        <input onclick="testCheck()" id="addr3" name="addr3" class="addr3" type="text" placeholder="상세주소">
+                    </td>
+                </tr>
+            </table>
+            <div class="signup">
+                <button type="submit" id="signup-btn" class="signup-btn">회원가입</button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+<script>
+    let url;
+    let uidChecker = false;
+    let pwdChecker = false;
+    let confirmChecker = false;
+    let nameChecker = false;
+    let genderChecker = false;
+
+    let emailChecker = false;
+    let validationChecker = false;
+    let hpChecker = false;
+    let addrChecker = false;
+    let randomCode;
+
+    function testCheck(){
+        console.log(uidChecker)
+        console.log('pwd'+pwdChecker)
+        console.log('confirm'+confirmChecker)
+        console.log('name'+nameChecker)
+        console.log('gender'+genderChecker)
+        console.log('email'+emailChecker)
+        console.log('vali'+validationChecker)
+        console.log('hp'+hpChecker)
+        console.log('addr'+addrChecker)
+    }
+
+    document.getElementById('id').addEventListener('input',(e)=>{
+        delay(e,'uid')
+    })
+    document.getElementById('password').addEventListener('input',(e)=>{
+        delay(e,'password')
+    })
+    document.getElementById('confirm').addEventListener('input',(e)=>{
+        delay(e,'confirm')
+    })
+    document.getElementById('name').addEventListener('input',(e)=>{
+        delay(e,'name')
+    })
+    document.getElementById('maleClick').addEventListener('click',()=>{
+        genderChecker = true;
+    })
+    document.getElementById('femaleClick').addEventListener('click',()=>{
+        genderChecker = true;
+    })
+    document.getElementById('email').addEventListener('input',(e)=>{
+        delay(e,'email')
+    })
+    document.getElementById('hp').addEventListener('input',(e)=>{
+        delay(e,'hp')
+    })
+
+
+
+    function delay(event,type){
+        clearTimeout(timer);  // 이전 타이머를 초기화하여 중복 요청 방지
+
+        // 새로운 타이머 설정 (2초 후에 연관 검색어 표시)
+        timer = setTimeout(() => {
+            const currentValue = event.target.value;
+            if (currentValue) {
+                if(type === "uid"){
+                    checkUid(currentValue)
+                } else if(type === "password"){
+                    checkPwd(currentValue)
+                } else if(type === "confirm"){
+                    checkConfirm(currentValue)
+                } else if(type === "name"){
+                    checkName(currentValue)
+                } else if(type === "email"){
+                    checkEmail(currentValue)
+                } else if(type === "validation"){
+                    checkValidation(currentValue)
+                } else if(type === "hp"){
+                    checkHp(currentValue)
+
+                }
+            }
+
+
+        }, 500);
+    }
+
+    async function checkUid(currentValue){
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,12}$/;
+        let validation = regex.test(currentValue);
+        if(!validation){
+            document.getElementById('resultUid').innerText = '형식이 맞지 않습니다.'
+            document.getElementById('resultUid').classList.remove('success-color')
+            document.getElementById('resultUid').classList.add('error-color')
+            uidChecker = false;
+            return;
+        }
+        try {
+            const resp = await axios.post(`/auth/check/uid?uid=${currentValue}`, null, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const data = resp.data
+            console.log(data)
+            if(data.code==="SU"){
+                uidChecker = true;
+                document.getElementById('resultUid').innerText= data.msg
+                document.getElementById('resultUid').classList.remove('error-color')
+                document.getElementById('resultUid').classList.add('success-color')
+            } else {
+                uidChecker = false;
+                document.getElementById('resultUid').innerText= data.msg
+                document.getElementById('resultUid').classList.remove('success-color')
+                document.getElementById('resultUid').classList.add('error-color')
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    function checkName(currentValue){
+        const regex = /^[가-힣]+$/;
+        let validation = regex.test(currentValue);
+        if(!validation){
+            document.getElementById('resultName').innerText = '형식이 맞지 않습니다.'
+            document.getElementById('resultName').classList.remove('success-color')
+            document.getElementById('resultName').classList.add('error-color')
+            nameChecker = false;
+        } else {
+            document.getElementById('resultName').innerText = '형식이 일치합니다.'
+            document.getElementById('resultName').classList.add('success-color')
+            document.getElementById('resultName').classList.remove('error-color')
+            nameChecker = true;
+        }
+
+    }
+
+    async function checkEmail(currentValue){
+
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/;
+        let validation = regex.test(currentValue);
+        if(!validation){
+            document.getElementById('resultEmail').innerText = '형식이 맞지 않습니다.'
+            document.getElementById('resultEmail').classList.remove('success-color')
+            document.getElementById('resultEmail').classList.add('error-color')
+            emailChecker = false;
+            return;
+        }
+        try {
+            const resp = await axios.post(`/auth/check/email?email=${currentValue}`, null, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const data = resp.data
+            console.log(data)
+            if(data.code==="SU"){
+                alert('이메일이 발송되었습니다.')
+                emailChecker = true;
+                randomCode = data.validation
+                document.querySelector('.email-validation').innerHTML = `
+                    <input style="margin-bottom: 10px;" id="email" class="inp" name="custEmail" value="${currentValue}" type="email" placeholder="이메일입력">
+                    <button class="retry-btn" type="button" onclick="checkEmail('${currentValue}')">재요청</button>
+                    <span class="resultEmail" id="resultEmail"></span><br>
+                    <input id="validation" class="validation inp" type="text" placeholder="인증번호를 입력해주세요">
+                    <span class="resultValidation" id="resultValidation"></span>
+                `
+                document.getElementById('resultEmail').innerText= data.msg
+                document.getElementById('resultEmail').classList.remove('error-color')
+                document.getElementById('resultEmail').classList.add('success-color')
+                document.getElementById('validation').addEventListener('input',(e)=>{
+                    delay(e,'validation')
+                    console.log(randomCode)
+                })
+            } else {
+                emailChecker = false;
+                document.getElementById('resultEmail').innerText= data.msg
+                document.getElementById('resultEmail').classList.remove('success-color')
+                document.getElementById('resultEmail').classList.add('error-color')
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    function  checkValidation(currentValue){
+        if(randomCode === currentValue){
+            validationChecker = true;
+            document.getElementById('resultValidation').innerText= '인증이 완료되었습니다.'
+            document.getElementById('resultValidation').classList.remove('error-color')
+            document.getElementById('resultValidation').classList.add('success-color')
+        } else {
+            validationChecker = false;
+            document.getElementById('resultValidation').innerText= '인증번호가 일치하지 않습니다.'
+            document.getElementById('resultValidation').classList.add('error-color')
+            document.getElementById('resultValidation').classList.remove('success-color')
+        }
+    }
+
+    function checkHp(currentValue){
+        const regex = /^(01[016789])\d{3,4}\d{4}$/;
+        let validation = regex.test(currentValue);
+        if(!validation){
+            hpChecker = false;
+            document.getElementById('resultHp').innerText= '-을 빼고 입력해주세요.'
+            document.getElementById('resultHp').classList.add('error-color')
+            document.getElementById('resultHp').classList.remove('success-color')
+        } else {
+            hpChecker = true;
+            document.getElementById('resultHp').innerText= '형식이 일치합니다.'
+            document.getElementById('resultHp').classList.remove('error-color')
+            document.getElementById('resultHp').classList.add('success-color')
+        }
+
+    }
+
+    function checkPwd(currentValue){
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,12}$/;
+        let validation = regex.test(currentValue);
+        if(!validation){
+            document.getElementById('resultPass').innerText = '형식이 맞지 않습니다.'
+            document.getElementById('resultPass').classList.remove('success-color')
+            document.getElementById('resultPass').classList.add('error-color')
+            pwdChecker = false;
+        } else {
+            document.getElementById('resultPass').innerText = '사용할 수 있는 비밀번호입니다.'
+            document.getElementById('resultPass').classList.add('success-color')
+            document.getElementById('resultPass').classList.remove('error-color')
+            pwdChecker = true;
+        }
+    }
+
+    function checkConfirm(currentValue){
+        const resultPass = document.getElementById('password')
+        if(resultPass.value === currentValue){
+            document.getElementById('resultPass').innerText = '비밀번호 확인이 일치합니다.'
+            document.getElementById('resultPass').classList.add('success-color')
+            document.getElementById('resultPass').classList.remove('error-color')
+            confirmChecker = true;
+        } else {
+            document.getElementById('resultPass').innerText = '비밀번호 확인이 일치하지않습니다.'
+            document.getElementById('resultPass').classList.remove('success-color')
+            document.getElementById('resultPass').classList.add('error-color')
+            confirmChecker = false;
+        }
+    }
+
+    function execDaumPostcode() {
+        event.preventDefault();
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 우편번호와 주소 정보를 해당 입력 필드에 채워줍니다.
+                document.getElementById('addr1').value = data.zonecode; // 우편번호
+                document.getElementById('addr2').value = data.roadAddress; // 도로명 주소
+
+                // 사용자가 선택한 주소에 추가 정보가 있다면 추가
+                var extraAddr = '';
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extraAddr !== '') {
+                    document.getElementById('addr2').value += ' (' + extraAddr + ')';
+                }
+
+                document.getElementById('addr3').focus();
+                addrChecker = true;
+            }
+        }).open();
+    }
+
+    document.getElementById('signup-form').addEventListener('submit', function(event) {
+        // 모든 체크 변수가 true인지 확인
+        if (!(
+            uidChecker &&
+            pwdChecker &&
+            confirmChecker &&
+            nameChecker &&
+            genderChecker &&
+            emailChecker &&
+            validationChecker &&
+            hpChecker &&
+            addrChecker
+        )) {
+            // 모든 체크가 true가 아닐 경우 폼 제출 방지
+            event.preventDefault(); // 기본 폼 제출 동작 방지
+            alert("모든 필드를 올바르게 입력해 주세요."); // 사용자에게 알림
+        }
+    });
+</script>
+
+
+    

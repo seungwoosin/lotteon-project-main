@@ -1,0 +1,113 @@
+.container {
+  width: 800px;
+}
+
+/* 보더 추가 */
+.notice-nav {
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 70px;
+}
+
+table {
+  width: 100%;
+  height: auto;
+  /* text-align: center; */
+  border-top: 1px solid #999999;
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+tr {
+  height: 42.5px;
+}
+
+th {
+  border-bottom: 1px solid #999999;
+}
+
+td {
+  border-bottom: 1px solid #999999;
+  padding: 8px 0;
+}
+
+/* 공통 버튼 스타일 */
+.button-group {
+  display: flex;
+  justify-content: space-between; /* 버튼을 양 끝에 배치 */
+  align-items: center; /* 버튼들을 수직으로 가운데 정렬 */
+  width: 100%; /* 가로 폭을 100%로 */
+  padding: 0 16px; /* 좌우 여백을 줄임 */
+  margin-top: 16px; /* 상단 여백을 줄임 */
+}
+
+/* 공통 버튼 그룹 스타일 */
+.button-group {
+  display: flex;
+  justify-content: space-between; /* 버튼을 양 끝에 배치 */
+  align-items: center; /* 버튼들을 수직으로 가운데 정렬 */
+  width: 100%; /* 가로 폭을 100%로 */
+  padding: 0 8px; /* 좌우 여백을 최소화 */
+  margin-top: 8px; /* 상단 여백을 최소화 */
+}
+
+/* 공통 버튼 스타일 */
+.button {
+  width: 120px; /* 버튼의 고정 너비 설정 */
+  padding: 10px 0; /* 동일한 패딩 */
+  font-size: 13px; /* 동일한 글자 크기 */
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+/* 취소하기 버튼 스타일 */
+.button--delete {
+  background-color: #f44336; /* 빨간색 배경 */
+}
+
+/* 작성하기 버튼 스타일 */
+.button--write {
+  background-color: #647264; /* 초록색 배경 */
+}
+
+/* 취소하기 버튼 호버 효과 */
+.button--delete:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 작성하기 버튼 호버 효과 */
+.button--write:hover {
+  background-color: #556b54;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.paging {
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.noticeCate {
+  height: 36px;
+  appearance: none;
+  width: 100px;
+}
+
+.noticeTitle {
+  width: 100% !important;
+  height: 36px !important;
+}
+.noticeContent {
+  width: 100% !important;
+  height: 200px !important;
+}

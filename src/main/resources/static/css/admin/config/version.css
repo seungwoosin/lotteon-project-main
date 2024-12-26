@@ -1,0 +1,268 @@
+.container {
+    width: 800px;
+    user-select: none;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.header-title{
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.header-right {
+    font-size: 14px;
+}
+
+.header-right .bold {
+    font-weight: 600;
+}
+
+.header-gubun {
+    height: 3px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.header-gubun2 {
+    height: 2px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+}
+
+section {
+    width: 780px;
+    margin: 0 auto;
+}
+
+.header-title2{
+    font-weight: 600;
+    font-size: 15px;
+    margin: 20px 0;
+}
+
+.dis1 {
+    background-color: #f2f2f2;
+    font-size: 14px;
+    font-weight: 400;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+.tb1 {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tb1 tr {
+    border-top: 2px solid #d2d2d2;
+    border-bottom: 2px solid #d2d2d2;
+    height: 50px;
+}
+
+.tb1 td {
+    text-align: center;
+    font-size: 12px;
+}
+
+.tb1 button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.btns {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-btn {
+    background-color: #bfbfbf;
+    border: none;
+    width: 94px;
+    height: 35px;
+    color: white;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.insert-btn {
+    background-color: #8eb4e3;
+    border: none;
+    width: 94px;
+    height: 35px;
+    color: white;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.page {
+    margin: 30px 0;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.page a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.3;
+    }
+}
+
+.page .on {
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.popup, .bg {
+    display: none;
+}
+
+.bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    background-color: white;
+    z-index: 1000;
+    height: 450px;
+}
+
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    background-color: #404040;
+    color: white;
+    margin-bottom: 0;
+}
+
+.popup .header .title {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+}
+
+.btn {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+
+.tb2 {
+    border-collapse: collapse;
+    width: 750px;
+}
+
+.tb2 tr {
+    border-top: 2px solid #d2d2d2;
+    border-bottom: 2px solid #d2d2d2;
+}
+
+.tb2 th:nth-child(1) {
+    width: 107px;
+    background-color: #F2F2F2;
+    padding: 10px 0;
+}
+
+.tb2 td {
+    padding: 10px;
+}
+
+.td div {
+    height: 200px;
+    overflow: scroll;
+}
+
+.td div::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨기기 */
+}
+
+.popup>.btns {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.popup .submit-btn {
+    background-color: #00B050;
+    width: 130px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    color: white;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.popup .inp {
+    width: 237px;
+    height: 29px;
+    border: 1px solid #BFBFBF;
+    outline: none;
+    padding-left: 10px;
+}
+
+.tb-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 320px;
+}
+
+.ta {
+    width: 100%;
+    height: 200px;
+    overflow: scroll;
+    border: 1px solid #BFBFBF;
+}
+
+.ta::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨기기 */
+}

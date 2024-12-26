@@ -1,0 +1,60 @@
+<link rel="stylesheet" th:href="@{/css/policy/customer.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<header th:replace="layout/main/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 230px;">
+    <div class="container">
+        <section class="header">
+            <h3 class="title">LotteON 서비스 이용약관</h3>
+            <div class="navs" th:data-type="${type}">
+                <a th:href="@{/policy/{type}(type='customer')}">
+                    <div th:class="${type==0?'nav1 active':'nav1'}">
+                        <div class="nav-img">
+                            <img src="https://via.placeholder.com/80x60" alt="구매회원약관">
+                        </div>
+                        <div class="nav-name">구매회원약관</div>
+                    </div>
+                </a>
+                <a th:href="@{/policy/{type}(type='seller')}">
+                    <div th:class="${type==1?'nav1 active':'nav1'}">
+                        <div class="nav-img">
+                            <img src="https://via.placeholder.com/80x60" alt="판매회원약관">
+                        </div>
+                        <div class="nav-name">판매회원약관</div>
+                    </div>
+                </a>
+                <a th:href="@{/policy/{type}(type='finance')}">
+                    <div th:class="${type==2?'nav1 active':'nav1'}">
+                        <div class="nav-img">
+                            <img src="https://via.placeholder.com/80x60" alt="전자금융거래">
+                        </div>
+                        <div class="nav-name">전자금융거래</div>
+                    </div>
+                </a>
+                <a th:href="@{/policy/{type}(type='location')}">
+                    <div th:class="${type==3?'nav1 active':'nav1'}">
+                        <div class="nav-img">
+                            <img src="https://via.placeholder.com/80x60" alt="위치정보입력">
+                        </div>
+                        <div class="nav-name">위치정보입력</div>
+                    </div>
+                </a>
+                <a th:href="@{/policy/{type}(type='privacy')}">
+                    <div th:class="${type==4?'nav1 active':'nav1'}">
+                        <div class="nav-img">
+                            <img src="https://via.placeholder.com/80x60" alt="개인정보처리">
+                        </div>
+                        <div class="nav-name">개인정보처리</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <h4 id="terms-name" th:text="${terms.getTermsTitle()}"></h4>
+        <section class="main" th:utext="${terms.getTermsContent()}">
+        </section>
+    </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+
+
+

@@ -1,0 +1,70 @@
+<link rel="stylesheet" th:href="@{/css/admin/cs/qna/view.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+  <aside th:replace="layout/admin/aside.html"></aside>
+  <section id="admin-product-list" class="container">
+    <script>
+      function checkSelection() {
+        const cate = document.getElementsByName("qnaCate")[0].value;
+        const type = document.getElementsByName("qnaType")[0].value;
+
+        if (cate === "유형선택" || type === "타입선택") {
+          alert("문의유형의 모든 항목을 선택해주세요.");
+          return false;
+        }
+        return true;
+      }
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+    <nav class="qna-nav">
+      <h3>문의하기 보기</h3>
+      <p>HOME > 고객센터 > <strong>문의하기</strong></p>
+    </nav>
+    <!-- 글작성 컨텐츠 시작 -->
+    <article>
+      <form class="formBox" method="post" onsubmit="return checkSelection()">
+        <table>
+          <tbody>
+          <input type="hidden" name="qnaHit" value="1" />
+          <tr style="height: 60px">
+            <th style="width: 100px">유형</th>
+            <td class="qna-type">회원 - 가입</td>
+          </tr>
+          <tr style="height: 60px">
+            <th>제목</th>
+            <td class="qna-title">개인회원과 법인회원에 차이가 있나요?</td>
+          </tr>
+          <tr style="height: 200px">
+            <th>내용</th>
+            <td class="qna-content">
+              개인회원과 법인회원에 차이가 있나요? 혜택도 있나요? 알려주세요
+            </td>
+          </tr>
+          <tr style="height: 200px">
+            <th>답변</th>
+            <td class="qna-reply">
+              대한민국 No.1 오픈마켓 LotteON을 이용해주셔서 감사합니다.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="button-group">
+          <button class="button--delete">삭제</button>
+          <button class="button--back">목록</button>
+        </div>
+      </form>
+    </article>
+    <!-- 상품목록 컨텐츠 끝 -->
+  </section>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+
+
+
+<!--내용 끝-->
+
+<!--내용 끝-->

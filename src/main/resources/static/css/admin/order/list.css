@@ -1,0 +1,339 @@
+li {list-style: none;}
+
+.container {
+    width: 800px;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 50px auto 20px;
+
+}
+.fixed {
+    position: sticky;
+    top: 0;
+    z-index: 10; /* 헤더가 다른 콘텐츠 위에 표시되도록 설정 */
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 20px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title{
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.header-right {
+    font-size: 14px;
+}
+
+.header-right .bold {
+    font-weight: 600;
+}
+
+.header-gubun {
+    height: 3px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.order-search{
+    margin-bottom: 30px;
+}
+
+.order-search select {
+    border: 1px solid #BFBFBF;
+    width: 108px;
+    height: 32px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+}
+
+.order-search input {
+    border: 1px solid #BFBFBF;
+    width: 108px;
+    height: 32px;
+    outline: none;
+    border-radius: 5px;
+}
+
+.order-search button {
+    background-color: #303644;
+    color: white;
+    width: 62px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+}
+
+.tb1 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tb1 tr {
+    border-top: 2px solid #BFBFBF;
+    border-bottom: 2px solid #BFBFBF;
+}
+
+.tb1 th {
+    height: 70px;
+}
+
+.tb1 td {
+    text-align: center;
+    height: 120px;
+    font-size: 12px;
+}
+
+.page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+/*.popup {*/
+/*    position: fixed;*/
+/*    z-index: 1000;*/
+/*    top: 100px;*/
+/*    left: 400px;*/
+/*}*/
+
+.popup,
+.popupbg {
+    display: none;
+}
+
+.popupbg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #868686;
+    opacity: 0.2;
+    z-index: 999;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 810px;
+    background-color: white;
+    z-index: 1000;
+    overflow: scroll;
+    height: 550px;
+}
+
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    background-color: #404040;
+    color: white;
+    margin-bottom: 0;
+}
+
+.popup .header .title {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    gap: 20px;
+
+}
+
+.btn {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.tb2 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tb2 tr {
+    border-top: 2px solid #BFBFBF;
+    border-bottom: 2px solid #BFBFBF;
+}
+
+.tb2 th {
+    height: 70px;
+}
+
+.tb2 td {
+    text-align: center;
+    height: 70px;
+    font-size: 12px;
+}
+
+.page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+.total {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.right-bg {
+    background-color: #F2F2F2;
+    padding: 20px;
+    width: 200px;
+}
+
+.right-bg div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup .header-title{
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.popup .header-gubun {
+    height: 2px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.header2 {
+    margin-top: 10px;
+    padding: 0 10px;
+}
+
+.tb3 {
+    border-collapse: collapse;
+    width: 100%;
+    border-bottom: 1.5px solid #BFBFBF;
+}
+.tb3 tr {
+
+}
+
+.tb3 th {
+    background-color: #F2F2F2;
+    width: 120px;
+    padding: 10px;
+    text-align: left;
+}
+
+.tb3 td {
+    padding-left: 10px;
+}
+
+.tb3 td input, .tb3 td select{height: 30px; text-indent: 5px; border: 1px solid #BFBFBF; margin: 3px 0; }
+.tb3 .input1{width: 300px;}
+.tb3 .input2{width: 150px;}
+.tb3 .input3{width: 450px;}
+.tb3 select{width: 120px;}
+.tb3 textarea{width: 450px; height: 80px; resize: none; text-indent: 5px; border: 1px solid #BFBFBF;  margin: 3px 0;}
+.popup_form{display: flex; flex-direction: column; align-items: center;}
+.popup_form button{margin-top: 40px;}
+
+.btn_green{width: 100px; height: 30px; background-color: #14AE5C; border: none; color: #fff;}
+
+
+.total-price {
+    position: relative;
+    top: -40px;
+    right: -700px;
+}
+
+.popup::-webkit-scrollbar {
+    display: none;
+}
+
+.tb4 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tb4 tr {
+
+}
+
+.tb4 th {
+    background-color: #F2F2F2;
+    width: 100px;
+    text-align: left;
+    padding-left: 10px;
+    height: 40px;
+}
+
+.tb4 td {
+    height: 40px;
+    padding-left: 10px;
+}
+
+.tb4 input {
+    border: 0.5px solid #BFBFBF;
+    height: 26px;
+    padding-left: 10px;
+    color: #808080;
+    outline: none;
+}
+
+.tb4 select {
+    border: 0.5px solid #BFBFBF;
+    height: 26px;
+    padding-left: 10px;
+    color: #808080;
+    outline: none;
+}
+
+.tb4 textarea {
+    border: 0.5px solid #BFBFBF;
+    height: auto;
+    min-height: 200px;
+    width: 90%;
+    outline: none;
+    padding: 10px;
+    color: #808080;
+}
+
+.btns {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+.btns button {
+    background-color: #00B050;
+    width: 100px;
+    height: 40px;
+    cursor: pointer;
+    color: white;
+    margin-top: 20px;
+    border: none;
+    outline: none;
+    &:hover {
+        opacity: 0.8;
+    }
+}

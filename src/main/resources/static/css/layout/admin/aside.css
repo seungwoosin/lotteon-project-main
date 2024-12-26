@@ -1,0 +1,75 @@
+#sidebar {
+    width: 200px;
+    max-height: 700px;
+    background-color: white;
+    border-radius: 15px;
+}
+
+.menues {
+    width: 200px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 0;
+    overflow: hidden; /* 이 부분이 필요합니다 */
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+}
+
+.menues.open {
+    max-height: 600px; /* 메뉴에 따른 최대 높이 설정 */
+    padding: 20px 0;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+.menues a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    padding-left: 30px;
+    &:hover {
+        color: brown;
+    }
+}
+
+.menues.open a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    padding-left: 30px;
+    &:hover {
+        color: brown;
+    }
+}
+
+.navi .open .active {
+    color: brown;
+}
+
+.navi li {
+    padding: 20px 0;
+    cursor: pointer;
+    padding-left: 30px;
+    font-size: 15px;
+    margin-left: 20px;
+}
+
+.asideBg{
+    background-color: #303644;
+    border-radius: 10px;
+    color: white;
+}
+
+/*#sidebar::before {*/
+/*    content: '';*/
+/*    position: absolute;*/
+/*    top: 303px;*/
+/*    left: 161px;*/
+/*    width: 0.3px;*/
+/*    height: 533px;*/
+/*    background: #ccc;*/
+/*    display: block;*/
+/*}*/
+

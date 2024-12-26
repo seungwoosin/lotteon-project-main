@@ -1,0 +1,134 @@
+<link rel="stylesheet" th:href="@{/css/admin/user/point.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div id="wrap">
+        <div class="container">
+            <nav id="navi">
+                <h2 class="sub_tit">포인트관리</h2>
+                <p class="location">
+                    <span>HOME</span>
+                    <span>회원관리</span>
+                    <span>포인트관리</span>
+                </p>
+            </nav>
+            <form class="search" th:action="@{/admin/user/point}" method="get">
+                <select name="searchType" class="search-option">
+                    <option th:selected="${searchType == 'uid'}" value="uid">아이디</option>
+                    <option th:selected="${searchType == 'name'}" value="name">이름</option>
+                    <option th:selected="${searchType == 'email'}" value="email">이메일</option>
+                    <option th:selected="${searchType == 'hp'}" value="hp">휴대폰</option>
+                </select>
+                <input class="search-keyword" type="text" name="keyword" placeholder="키워드 입력">
+                <button class="search-btn" type="submit">검색</button>
+            </form>
+
+            <div class="header-gubun-bottom">
+            </div>
+            <table class="tb1">
+                <colgroup>
+                    <col style="width: 8%;">
+                    <col style="width: 8%;">
+                    <col style="width: 12%;">
+                    <col style="width: 12%;">
+                    <col style="width: 12%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                </colgroup>
+                <tr>
+                    <th class="checkbox">
+                        <input type="checkbox" id="allCheckbox">
+                    </th>
+                    <th>번호</th>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>지급 포인트</th>
+                    <th>지급 내용</th>
+                    <th>지급 날짜</th>
+                </tr>
+                <tr th:each="point : ${points}">
+                    <td>
+                        <input th:value="${point.id}" type="checkbox" class="checkbox check2">
+                    </td>
+                    <td th:text="${point.id}">5</td>
+                    <td th:text="${point.custId}">xxx...</td>
+                    <td th:text="${point.custName}">정우성</td>
+                    <td th:text="${point.pointVar}">1,000</td>
+                    <td th:text="${point.pointEtc}">구매확정 포인트 지급</td>
+                    <td th:text="${point.rdate}">0000-00-00 00:00:00</td>
+                </tr>
+            </table>
+            <div class="btns">
+                <button onclick="deletePoint()" class="delete-btn">선택삭제</button>
+            </div>
+            <div class="page">
+                <a class="none" th:href="@{/admin/user/point(page=0, searchType=${searchType}, keyword=${keyword})}"><<</a>
+                <a class="none" th:href="@{/admin/user/point(page=${page - 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/admin/user/point(page=${page - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/admin/user/point(page=${page + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/admin/user/point(page=${page + 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/admin/user/point(page=${totalPages - 1}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+            </div>
+        </div><!--container-->
+    </div>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+
+<script>
+    const selectAllCheckbox = document.getElementById('allCheckbox');
+    const itemCheckboxes = document.querySelectorAll('.check2');
+    let selectedIds = [];
+
+    selectAllCheckbox.addEventListener('change', function() {
+        const isChecked = selectAllCheckbox.checked; // 전체 체크박스가 체크되었는지 확인
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked; // 전체 체크박스의 상태를 개별 체크박스에 반영
+            updateDeleteNumbers(checkbox);
+        });
+    });
+
+    // 개별 체크박스 상태 변경 시 선택된 항목을 업데이트
+    itemCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = [...itemCheckboxes].every(item => item.checked); // 모든 체크박스가 체크되었는지 확인
+            selectAllCheckbox.checked = allChecked; // 전체 선택 체크박스 상태 갱신
+            updateDeleteNumbers(checkbox);
+        });
+    });
+
+    function updateDeleteNumbers(checkbox) {
+        console.log("Selected IDs:", selectedIds);
+        const itemId = checkbox.value; // 각 체크박스의 value 속성 (heart.id)
+
+        if (checkbox.checked) {
+            // 체크된 경우 배열에 추가
+            if (!selectedIds.includes(itemId)) {
+                selectedIds.push(itemId);
+            }
+        } else {
+            // 체크 해제된 경우 배열에서 제거
+            selectedIds = selectedIds.filter(id => id !== itemId);
+        }
+    }
+
+    async function deletePoint(){
+        console.log("Selected IDs:", selectedIds); // 선택된 항목 ID 배열을 콘솔에 출력 (확인용)
+        let confirmMsg = confirm('선택된 포인트를 삭제하시겠습니까?');
+        if(!confirmMsg){
+            return;
+        }
+        try {
+            const resp = await axios.delete(`/admin/user/point?id=${selectedIds}`,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            })
+            window.location.href = "/admin/user/point"
+        } catch (e) {
+
+        }
+    }
+</script>

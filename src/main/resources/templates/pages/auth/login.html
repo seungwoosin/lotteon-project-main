@@ -1,0 +1,56 @@
+<link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+<link rel="stylesheet" th:href="@{/css/auth/login.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{/js/validation.js}"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<header th:replace="layout/main/header.html"></header>
+<main style="margin-top: 200px;">
+    <div id="lsh-container">
+        <h3 class="header-title">로그인</h3>
+        <div class="header-gubun"></div>
+        <div class="main">
+            <div class="main-inp">
+                <form action="/auth/login" method="post" class="inp-top">
+                    <div class="inp-top">
+                        <input name="userName" class="id inp" type="text" placeholder="아이디 입력">
+                        <input name="pwd" class="pwd inp" type="password" placeholder="8~15자리 영문+숫자+특수문자 조합">
+                        <button style="border :none;" type="submit" class="login-btn">로그인</button>
+                    </div>
+                    <div class="inp-bottom">
+                        <div class="link-auto link"><label class="link"><input class="auto" type="checkbox" name="remember-me" value="true">자동로그인</label></div>
+
+                        <div class="link">|</div>
+                        <div class="link-find-id link">
+                            <a th:href="@{/auth/findid}">아이디 찾기</a>
+                        </div>
+                        <div class="link">|</div>
+                        <div class="link-find-pwd link">
+                            <a th:href="@{/auth/findpwd}">비밀번호 찾기</a>
+                        </div>
+                        <div class="link">|</div>
+                        <div class="link-signup link">
+                            <a th:href="@{/auth/join}">회원가입</a>
+                        </div>
+                    </div>
+                    <article class="social-ctn">
+                        <a class="social kakao" th:href="@{/oauth2/authorization/kakao}"></a>
+                        <a class="social google" th:href="@{/oauth2/authorization/google}"></a>
+                        <a class="social naver" th:href="@{/oauth2/authorization/naver}"></a>
+                    </article>
+                </form>
+            </div>
+            <div class="main-img">
+                <th:block th:each="b:${banner}">
+                <a th:href="@{'/'+${b.getBannerLink()}}">
+                    <img th:src="@{'/file/'+${b.getBannerImg()}}" alt="" class="login-banner">
+                </a>
+                </th:block>
+            </div>
+        </div>
+        <div class="header-gubun-bottom"></div>
+        <div class="award-logos">
+            <div style="display: flex; justify-content: center; width: 1200px; margin: 0 auto;" class="logo logo1"><img th:src="@{/images/award-logo.png}" style="width: 700px ;height: 100px" alt=""></div>
+        </div>
+    </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>

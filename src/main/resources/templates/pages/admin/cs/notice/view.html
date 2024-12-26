@@ -1,0 +1,57 @@
+<link rel="stylesheet" th:href="@{/css/admin/cs/notice/view.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+  <aside th:replace="layout/admin/aside.html"></aside>
+  <section id="admin-product-list" class="container">
+    <script>
+      function deleteNotice(event) {
+        const chk = confirm("정말 삭제하시겠습니까?");
+        if (!chk) {
+          event.preventDefault();
+        }
+      }
+
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+    <nav class="notice-nav">
+      <h3 class="viewTit">공지사항 보기</h3>
+      <p>
+        HOME > 고객센터 > <strong>공지사항</strong>
+      </p>
+    </nav>
+    <!-- 공지사항 컨텐츠 시작 -->
+    <article class="sectionBox">
+      <table>
+        <tbody>
+        <input type="hidden" name="noticeHit" value="1"/>
+        <tr style="height: 60px;">
+          <th>유형</th>
+          <td class="notice-type" th:text="${notice.cate1.categoryName}">고객서비스</td> <!-- 공지사항 유형 출력 -->
+        </tr>
+        <tr style="height: 60px;">
+          <th>제목</th>
+          <td class="notice-title" th:text="${notice.noticeTitle}">공지사항 제목</td> <!-- 공지사항 제목 출력 -->
+        </tr>
+        <tr style="height: 200px;">
+          <th>내용</th>
+          <td class="notice-content" th:text="${notice.noticeContent}">공지사항 내용</td> <!-- 공지사항 내용 출력 -->
+        </tr>
+        </tbody>
+      </table>
+      <div class="button-group">
+        <form th:action="@{/admin/cs/notice/delete/{id}(id=${notice.id})}" method="post"
+              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+          <button type="submit" class="button--delete">삭제</button>
+          <!-- 수정 버튼 -->
+          <a th:href="@{/admin/cs/notice/modify/{id}(id=${notice.id})}" class="button--modify">수정</a>
+          <!-- 목록으로 돌아가기 버튼 -->
+          <button class="button--back" type="button" onclick="window.location.href='/admin/cs/notices';">목록</button>
+      </div>
+    </article>
+  </section>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>

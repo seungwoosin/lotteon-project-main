@@ -1,0 +1,134 @@
+
+<link rel="stylesheet" th:href="@{/css/company/index.css}">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}">
+<link th:href="@{https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css}">
+<header th:replace="layout/company/header.html"></header>
+<style>
+    /* 전체 페이지의 너비를 1200px로 제한하고 중앙에 배치 */
+    body {
+        max-width: 1200px;
+        margin: 100px auto;
+    }
+
+    /* 메인 배너와 같은 섹션은 전체 너비를 100%로 유지 */
+    .main-banner, .banner-img, .navbar, footer {
+        max-width: 100%;
+    }
+</style>
+
+<!-- Navigation Bar -->
+
+
+<!-- 메인 배너 -->
+<section class="main-banner" data-aos="fade-in" data-aos-duration="1500">
+    <img th:src="@{/images/bg_company_index.jpg}" alt="Main Banner" class="banner-img">
+    <div class="banner-text" data-aos="fade-up" data-aos-duration="1500">
+        <p>취향을, 브랜드를, 혜택을 발견하는 즐거움<br>지금 롯데온에서 만나요</p>
+    </div>
+</section>
+<!-- 메인 배너 아래 추가 텍스트 섹션 -->
+<main>
+    <section class="main-banner-text" data-aos="fade-up">
+        <p>쇼핑 좀 해본 사람들이 만든 플랫폼,<br>
+            롯데ON은 풍부한 오프라인 쇼핑 인프라, 온라인 쇼핑 노하우,<br>
+            IT기술로 세상에 없던 새로운 쇼핑 경험을 제공하고<br>
+            꼭 이용하고 싶은 온라인 쇼핑 플랫폼으로 발전하고 있어요.</p>
+    </section>
+
+    <!-- 회사 소개 섹션 -->
+    <section class="slide company-overview">
+        <div class="owl-carousel owl-theme core-values">
+            <div class="value-item" data-aos="flip-right">
+                <img th:src="@{/images/index_slide_1.png}" alt="혁신">
+                <div class="text-content">
+                    <h2>고객이 원하고 만족하는<br>서비스를 만들어요</h2>
+                    <p>롯데ON은 단순히 상품만을 판매하는 플랫폼이 아니라<br>
+                        상품에 대한 경험을 함께 제공할 수 있는 플랫폼을 목표로 하고 있어요.<br>
+                        해외직구, 뷰티, 그로서리, 선물하기 등 다양한 영역에서<br>
+                        새로운 서비스를 만들어가고 있어요.</p>
+                </div>
+            </div>
+            <div class="value-item" data-aos="zoom-in">
+                <img th:src="@{/images/index_slide_2.jpg}" alt="신뢰">
+                <div class="text-content">
+                    <h2>하이앤드테크로 온/오프라인<br>시너지를 만들어요</h2>
+                    <p>롯데ON은 단순히 상품만을 판매하는 플랫폼이 아니라<br>
+                        상품에 대한 경험을 함께 제공할 수 있는 플랫폼을 목표로 하고 있어요.<br>
+                        롯데 오프라인 매장과 연계한 다양한 서비스로<br>
+                        고객들에게 온-오프라인을 넘나드는 새로운 쇼핑 경험을 드려요.</p>
+                </div>
+            </div>
+            <div class="value-item" data-aos="zoom-in">
+                <img th:src="@{/images/index_slide_3.jpg}" alt="성장">
+                <div class="text-content">
+                    <h2>함께하는 성장,<br>세상을 더 이롭게 만들어요</h2>
+                    <p>'Dream Together for Better Earth'<br>
+                        ESG를 실천해나가고 있으며, 롯데ON 플랫폼을 활용한<br>
+                        크라우드 펀딩 기부 릴레이, 상품기부 등 이로운 세상을 위한<br>
+                        다양한 사회공헌 활동들을 진행하고 있어요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 성장 섹션 -->
+    <section class="growth-section" data-aos="fade-up">
+        <h2 >롯데ON은 이렇게 성장해가고 있어요.</h2>
+        <ul class="growth-list">
+            <li>
+                <div class="date">2024.07</div>
+                <div class="description">AI 기반 개인화 추천형 광고 솔루션 ‘스마트매출업’ 론칭!</div>
+                <a href="#" class="arrow-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <div class="date">2024.07</div>
+                <div class="description">롯데온에서 ‘롯데면세점 도쿄 긴자점’ 상품을 한 번에 쇼핑!</div>
+                <a href="#" class="arrow-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- 회사 역사 섹션 -->
+    <section class="historytext" data-aos="zoom-in">
+        <p>국내 최초의 온라인 종합쇼핑몰로 출발해<br>쇼핑 경험의 변화를 이끌어내고 있어요.</p>
+    </section>
+    <!-- 회사 역사 이미지 -->
+    <section class="historyimg" data-aos="fade-up">
+        <img th:src="@{/images/company_history.png}" alt="역사 이미지">
+    </section>
+
+    <!-- 배너 섹션 -->
+    <section class="job img" data-aos="fade-in">
+        <div class="service-list">
+            <div class="service-item">
+                <img th:src="@{/images/0621_배너-이미지.png}" alt="배너 이미지">
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+
+
+<!-- AOS 라이브러리 초기화 -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js}"></script>
+<script>
+    AOS.init({
+        duration: 1200, // 애니메이션 지속 시간
+        easing: 'ease', // 애니메이션 가속 방식
+        once: true, // 한번만 애니메이션 실행
+        mirror: false, // 요소가 다시 나타날 때 애니메이션 실행 여부
+    });
+</script>
+
+<footer th:replace="layout/company/footer.html"></footer>
+

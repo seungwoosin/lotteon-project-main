@@ -1,0 +1,137 @@
+<!-- 타임리프 문법으로 변환된 HTML -->
+
+<!-- AOS CSS 및 타임리프 문법 적용 -->
+<link rel="stylesheet" th:href="@{/css/company/culture.css}">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}">
+<link th:href="@{https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css}">
+
+<header th:replace="layout/company/header.html"></header>
+
+<main class="container">
+    <div class="header">
+        <span class="header-title">기업문화</span>
+        <div class="header-right">
+            <span>HOME</span>
+            <span>></span>
+            <span>회사소개</span>
+            <span>></span>
+            <span class="bold">기업문화</span>
+        </div>
+    </div>
+    <div class="header-gubun"></div>
+
+    <!-- 첫 번째 섹션 -->
+    <section class="s1" data-aos="fade-up">
+        <article class="content">
+            <p class="highlight-title">롯데홈쇼핑은 기존 패러다임을 뛰어넘어 <br> '게임의 규칙'을 바꾸어 왔습니다.</p>
+            <p class="highlight-subtitle">
+                많은 도전과 어려움이 있었지만 <span class="highlight">끊임없이 발전</span>하고 성장해 왔습니다.<br>
+                이제 우리는 더 큰 발걸음으로 나아가고자 합니다.<br>
+                <strong>함께 만들어가는 롯데온의 성공방정식</strong>에 여러분을 초대합니다.
+            </p>
+        </article>
+    </section>
+
+    <!-- 주체적으로 일하는 사람 섹션 -->
+    <section class="s3">
+        <h3 data-aos="fade-up">주체적으로 일하는 '사람'</h3>
+
+        <article class="a1" data-aos="fade-right">
+            <img th:src="@{/images/05_함께성장.png}" alt="">
+            <div class="con2">
+                <p class="h3">직원과 회사는 <em class="border">Partner</em> 입니다.</p>
+                <p>좋은 기업일수록 회사와 직원의 관계는 Partnership 에 가깝습니다.<br>
+                    회사는 직원의 만족을 위해 최선을 다하고, 직원은 회사에 기여하기 위해 노력<br>
+                    한다는 점에서 그렇습니다.<br>
+                    모든 이익과 성과는 회사와 직원이 함께 만들어내는 것이기 때문입니다.</p>
+            </div>
+        </article>
+
+        <article class="a1" data-aos="fade-left">
+            <img th:src="@{/images/06_clipdrop-enhance.png}" alt="">
+            <div class="con2">
+                <p class="h3">모두가 <em class="border">사업가</em> 처럼 일합니다.</p>
+                <p>자신의 모든 것을 걸고 일에 임하는 사업가는 학습에 대한 열의,<br>
+                    고민의 깊이, 몰입의 정도 등 모든 면에서 단지 성실하고<br>
+                    열심히 하는 샐러리맨을 압도합니다.
+                </p>
+            </div>
+        </article>
+
+        <article class="a1" data-aos="fade-right">
+            <img th:src="@{/images/teamwork-3213924_960_720.webp}" alt="">
+            <div class="con2">
+                <p class="h3">모두가 리더이고 <em class="border">스스로</em> 결정합니다.</p>
+                <p>임원과 리더는 목표와 방향만 제시합니다.<br>
+                    목표에 도달하는 길은 실무자 스스로 찾고 결정할 수 있습니다.<br>
+                    각자가 업무에 대한 자기결정권을 갖습니다.<br>
+                </p>
+            </div>
+        </article>
+    </section>
+
+    <!-- 효율적으로 일하는 문화 섹션 -->
+    <section class="s3">
+        <h3 data-aos="fade-up">효율적으로 일하는 ‘문화’</h3>
+
+        <article class="a1" data-aos="fade-right">
+            <img th:src="@{/images/토론하는이미지.jpg}" alt="">
+            <div class="con2">
+                <em class="border">수평적 조직</em> 을 추구합니다.</p>
+                <p>부서장은 ‘리더’, 그 외 모든 구성원은 ‘님’으로 부릅니다.<br>
+                    리더는 중간 관리자 없이 모든 구성원과 직접 소통하고,<br>
+                    리더 이외의 모든 구성원은 동등한 관계입니다.</p>
+            </div>
+        </article>
+
+        <article class="a1" data-aos="fade-left">
+            <div class="con2">
+                <em class="border">공기처럼</em> 소통합니다.</p>
+                <p>솔직한 소통문화야말로 다양한 의견을 검토하게 함으로써,<br>
+                    환경에 대한 창조적 대응을 가능하게 합니다.<br>
+                    모두가 벽이 없이 원활하게 소통하고,<br>
+                    리더의 승인을 받지 않아도 공기처럼 자유롭게 정보를<br>
+                    공유할 수 있는 소통의 문화를 추구합니다.</p>
+            </div>
+            <img th:src="@{/images/img_culture_list_5.jpg}" alt="">
+        </article>
+
+        <article class="a1" data-aos="fade-right">
+            <img th:src="@{/images/img_culture_list_6.jpg}" alt="">
+            <div class="con2">
+                <p class="h3">쓸데없는 격식은 모두 <em class="border">내려놓았습니다.</em></p>
+                <p>편한 옷 입고, 편하게 일합니다.<br>
+                    불필요한 보고절차는 모두 OUT!<br>
+                    PPT 작성을 금지하고, 사안에 따라 이메일이나 문자로도 편하게 보고합니다.</p>
+            </div>
+        </article>
+
+        <article class="a1" data-aos="fade-left">
+            <div class="con2">
+                <em class="border">자율적으로 일하고, 편하게 쉽니다.</em></p>
+                <p>탄력근무제 시행으로 유연하게 출퇴근하고,<br>
+                    특별한 일이 없으면 정시 퇴근(PC-OFF) 합니다.<br>
+                    누구나 승인 없이 자유롭게 휴가를 사용하고,<br>
+                    5년마다 Refresh 할 수 있는 안식월 제도를 운영하고 있습니다.</p>
+            </div>
+            <img th:src="@{/images/img_culture_list_7.jpg}" alt="">
+        </article>
+    </section>
+
+    <!-- 배너 섹션 -->
+    <section class="job img" data-aos="fade-in">
+        <div class="service-list">
+            <div class="service-item">
+                <img th:src="@{/images/기업문화_banner.png}" alt="LotteON 기업문화">
+            </div>
+        </div>
+    </section>
+</main>
+
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js}"></script>
+<script>
+    AOS.init();
+</script>
+
+<footer th:replace="layout/company/footer.html"></footer>

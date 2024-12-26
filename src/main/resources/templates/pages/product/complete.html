@@ -1,0 +1,178 @@
+<link rel="stylesheet" th:href="@{/css/product/complete.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{/js/main.js}"></script>
+<header th:replace="layout/main/header.html"></header>
+<main style="margin-top: 230px; gap: 0">
+  <aside th:replace="layout/main/aside.html" style="margin: 0; margin-right: 30px"></aside>
+  <div id="wrap">
+    <!-- .aside -->
+    <main id="main" style="height: auto;">
+      <nav id="navi" style="width: 810px">
+        <h2 class="sub_tit">주문완료</h2>
+        <p class="location">
+          <span>HOME</span>
+          <span>주문하기</span>
+          <span>주문완료</span>
+        </p>
+      </nav>
+      <!-- .navi-->
+      <div class="clear">
+        <span>고객님의 주문이 정상적으로 완료되었습니다.</span> <br/><br/>
+        <span
+        >즐거운 쇼핑이 되셨나요? 항상 고객님을 위한 롯데ON이
+            되겠습니다.</span
+        >
+      </div>
+      <!-- .clear-->
+      <table class="tb1">
+        <colgroup>
+          <col style="width: 10%" />
+          <col style="width: 25%" />
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+        </colgroup>
+        <tr>
+          <th>상품이미지</th>
+          <th>상품명</th>
+          <th>옵션</th>
+          <th>수량</th>
+          <th>상품금액</th>
+          <th>할인금액</th>
+          <th>포인트</th>
+          <th>배송비</th>
+          <th>총합</th>
+        </tr>
+        <tr th:each="orderItem : ${order.orderItemDtos}">
+          <td>
+            <div class="img">
+              <img style="width: 80px; height: 80px;" th:src="@{'/file/'+${orderItem.getProdListImg()}}" />
+            </div>
+          </td>
+          <td  class="name_box">
+            <span th:text="${orderItem.prodName}">상품명</span><br>
+            <span th:text="${orderItem.prodSummary}">상품설명</span>
+          </td>
+          <td th:text="${orderItem.optionId}">옵션</td>
+          <td th:text="${orderItem.quantity}">1</td>
+          <td th:text="${orderItem.prodPrice}">27,000</td>
+          <td th:text="${orderItem.discount}">-1,350</td>
+          <td th:text="${orderItem.prodPoint}">포인트</td>
+          <td th:text="${orderItem.delivery}">배송비</td>
+          <td th:text="${orderItem.totalPrice}">25,650</td>
+        </tr>
+      </table>
+      <!-- .tb1-->
+      <div class="total">
+        <table class="tb2">
+          <tr>
+            <td>총 상품금액</td>
+            <td class="totalProdPrice">27,000원</td>
+          </tr>
+          <tr>
+            <td>총 할인금액</td>
+            <td class="discountPrice">-1,350원</td>
+          </tr>
+          <tr>
+            <td>배송비</td>
+            <td class="deliPrice">0원</td>
+          </tr>
+          <tr>
+            <td>총 결제금액</td>
+            <td th:text="${order.orderTotal}" style="color: #c00000">25,650원</td>
+          </tr>
+        </table>
+        <!-- .tb2-->
+      </div>
+      <!-- .total-->
+      <h2 class="sub_tit2">주문정보</h2>
+      <table class="tb3">
+        <tr>
+          <th>주문번호</th>
+          <td th:text="${order.orderId}">1111111111</td>
+        </tr>
+        <tr>
+          <th>결제방법</th>
+          <td class="payment" th:switch="${order.payment}">
+            <span th:case="1">신용카드</span>
+            <span th:case="2">체크카드</span>
+            <span th:case="3">계좌이체</span>
+            <span th:case="4">무통장입금</span>
+            <span th:case="5">휴대폰결제</span>
+            <span th:case="6">카카오페이</span>
+          </td>
+        </tr>
+        <tr>
+          <th>주문자/연락처</th>
+          <td th:text="${order.custName}+' / '+${order.custHp}">홍길동 / 1111111111</td>
+        </tr>
+        <tr>
+          <th>총 결제금액</th>
+          <td th:text="${order.orderTotal}" style="color: #c00000">24,650원</td>
+        </tr>
+      </table>
+      <!-- .tb3-->
+      <h2 class="sub_tit3">배송정보</h2>
+      <table class="tb4">
+        <tr>
+          <th>수취인</th>
+          <td th:text="${order.receiverName}">홍길동</td>
+        </tr>
+        <tr>
+          <th>연락처</th>
+          <td th:text="${order.receiverHp}">11111111111</td>
+        </tr>
+        <tr>
+          <th>배송지 주소</th>
+          <td  th:text="${order.receiverAddr1}">부산 금정구 123123 10층</td>
+        </tr>
+      </table>
+      <!-- .tb4-->
+    </main>
+    <!-- #main-->
+  </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+<script>
+  window.onload=function (){
+    const listItems = document.querySelectorAll('table.tb1 tr');
+
+    let totalAllPrice = 0;
+    let totalAllDiscount = 0;
+    let totalAllDeliver = 0;
+    let discountPrice = 0;
+
+    listItems.forEach((row, index) => {
+      if (index === 0) return;
+
+      const cells = row.querySelectorAll('td');  // 각 행의 모든 td 선택
+
+      const quantity =cells[3]?.textContent.trim();     // 수량 (그대로 정수로 변환)
+      let productPrice = parseInt(cells[4]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 상품금액 (숫자 이외의 문자 제거 후 정수로 변환)
+      let discount = parseInt(cells[5]?.textContent.replace(/[^\d]/g, '').trim()) || 0;  // 할인율 (% 제거)
+      const deliveryFee = parseInt(cells[7]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 배송비 (숫자 외 제거)
+
+      productPrice = productPrice*quantity;
+      discount = discount*quantity;
+
+      totalAllPrice += productPrice;
+      totalAllDiscount += discount;
+      totalAllDeliver += deliveryFee;
+    })
+    const totalAllDelivery= (totalAllDeliver === 0) ? "무료배송" : totalAllDeliver;
+
+    const totalProdPrice = document.querySelector('.totalProdPrice');
+    const totalDiscountPrice = document.querySelector('.discountPrice');
+    const totalDeliPrice = document.querySelector('.deliPrice');
+
+    totalProdPrice.innerText = totalAllPrice;
+    totalDiscountPrice.innerText = totalAllDiscount;
+    totalDeliPrice.innerText = totalAllDelivery;
+
+  }
+</script>
+

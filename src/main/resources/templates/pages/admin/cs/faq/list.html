@@ -1,0 +1,370 @@
+<link rel="stylesheet" th:href="@{/css/admin/cs/faq/list.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <section id="admin-product-list" class="container" th:fragment="admin-product-list">
+        <div id="search_input">
+            <nav class="faq-nav">
+                <h3>자주묻는질문 목록</h3>
+                <p>HOME > 고객센터 > <strong>자주묻는질문</strong></p>
+            </nav>
+            <form th:action="@{/admin/cs/faqs}" method="get" id="cateSearch" class="search">
+                <input type="hidden" name="cate1" id="selectedcate1" value="list"/>
+                <input th:data-page="${faqsPage.number}" type="hidden" name="cate2" id="selectedcate2"/>
+                <!-- 1차 선택 -->
+                <select id="select1" class="faqCate" onchange="updateSecondCategory()">
+                    <option disabled selected>1차선택</option>
+                    <option value="user">회원</option>
+                    <option value="coupon">쿠폰/이벤트</option>
+                    <option value="order">주문/결제</option>
+                    <option value="delivery">배송</option>
+                    <option value="cancel">취소/반품/환불</option>
+                    <option value="travel">여행/숙박/항공</option>
+                    <option value="safe">안전결제</option>
+                </select>
+                <!-- 2차 선택 -->
+                <select id="select2" class="faqType">
+                    <option disabled selected>2차선택</option>
+                    <option value="regi">가입</option>
+                    <option value="leave">탈퇴</option>
+                    <option value="info">회원정보</option>
+                    <option value="login">로그인</option>
+                </select>
+            </form>
+        </div>
+        <article>
+            <table style="width: 100%">
+                <tr>
+                    <th style="width: 5%"><input type="checkbox" id="selectAll"/></th>
+                    <th style="width: 5%">번호</th>
+                    <th>1차유형</th>
+                    <th>2차유형</th>
+                    <th>제목</th>
+                    <th>조회</th>
+                    <th>날짜</th>
+                    <th>관리</th>
+                </tr>
+                <!-- totalFaqCount를 기준으로 페이지당 내림차순 번호 계산 -->
+                <tr th:each="faq, stat : ${faqs}" th:data-id="${faq.id}">
+                    <td><input type="checkbox"/></td>
+                    <!-- 전체 개수에서 현재 페이지 첫 글의 시작 번호를 계산 -->
+<!--
+                    <td th:text="${totalFaqCount - ((pageable?.pageNumber ?: 0) * (pageable?.pageSize ?: 1)) - stat.index}">1</td>
+-->
+                    <!-- totalFaqCount에서 현재 페이지의 첫 번째 글 번호부터 각 글의 순서를 감소 -->
+                    <td th:text="${totalFaqCount - (faqsPage.number * faqsPage.size) - stat.index}">번호</td>
+
+                    <!-- 한글 변환 후 출력 -->
+                    <td class="cate1" th:data-value="${faq.cate1.categoryName}">회원</td>
+                    <td class="cate2" th:data-value="${faq.cate2.categoryName}" th:data-parent="${faq.cate1.categoryName}">로그인
+                    </td>
+
+                    <!-- 글 제목을 클릭하면 해당 글의 상세보기 페이지로 이동 -->
+                    <td style="text-align: left">
+                        <a th:href="@{'faq/view/' + ${faq.id}}" th:text="${faq.title}">글 제목이 표시됩니다</a>
+                    </td>
+
+                    <td th:text="${faq.views}">120</td>
+                    <td th:text="${#temporals.format(faq.rdate, 'yy.MM.dd')}">작성일</td>
+                    <td>
+                        <div>
+                            <div>
+                                <button th:data-id="${faq.id}" class="button--delete" th:onclick="|deleteFaq(${faq.id})|">삭제</button>
+                            </div>
+                        </div>
+                        <div>
+                            <a th:href="@{'/admin/cs/faq/modify/' + ${faq.id}}" class="button--edit">수정</a>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </article>
+
+        <div class="button-group">
+            <a class="button--delete" onclick="deleteSelected();">선택삭제</a>
+            <button class="button--write" onclick="goToWrite();">작성하기</button>
+        </div>
+
+        <!-- 페이지 네비게이션 -->
+        <div class="paging">
+            <!-- 처음 페이지로 이동 -->
+            <a class="first" th:href="@{|/admin/cs/faqs?page=0|}" th:if="${faqsPage.number > 0}">처음</a>
+
+            <!-- 현재 페이지 목록을 표시하며, 현재 페이지에 클래스 추가 -->
+            <ol>
+                <li th:each="i : ${#numbers.sequence(0, faqsPage.totalPages - 1)}">
+                    <a th:href="@{'/admin/cs/faqs?page=' + ${i}}"
+                       th:text="${i + 1}"
+                       th:classappend="${faqsPage.number == i} ? 'active'">1</a>
+                </li>
+            </ol>
+
+            <!-- 끝 페이지로 이동 -->
+            <a class="last" th:href="@{|/admin/cs/faqs?page=${faqsPage.totalPages - 1}|}" th:if="${faqsPage.number < faqsPage.totalPages - 1}">마지막</a>
+        </div>
+    </section>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+</body>
+
+<script>
+    // 1차 및 2차 카테고리를 한글로 변환하는 객체
+    const firstCategoryMap = {
+        "user": "회원",
+        "coupon": "쿠폰/이벤트",
+        "order": "주문/결제",
+        "delivery": "배송",
+        "cancel": "취소/반품/환불",
+        "travel": "여행/숙박/항공",
+        "safe": "안전결제"
+    };
+
+    const secondCategoryMap = {
+        "user": {
+            "regi": "가입",
+            "leave": "탈퇴",
+            "info": "회원정보",
+            "login": "로그인"
+        },
+        "coupon": {
+            "lpoint": "L.POINT",
+            "coupon2": "쿠폰",
+            "event": "이벤트/경품",
+            "attendance": "출석체크",
+            "gift": "사은품"
+        },
+        "order": {
+            "orderMethod": "주문방법",
+            "orderChange": "주문변경",
+            "paymentMethod": "결제방법",
+            "easyPayment": "간편결제",
+            "giftReceive": "선물받기",
+            "mobileGift": "모바일상품권",
+            "phonePayment": "휴대폰결제",
+            "applePay": "애플페이",
+            "product": "상품"
+        },
+        "delivery": {
+            "delivery2": "배송",
+            "deliveryFee": "배송비",
+            "deliveryMethod": "배송방법",
+            "deliverySchedule": "배송일정",
+            "deliveryAddress": "배송지",
+            "todayArrival": "오늘도착",
+            "overseas": "해외직구",
+            "notReceived": "미수령신고",
+            "recipient": "수취인",
+            "purchaseConfirm": "구매확정"
+        },
+        "cancel": {
+            "orderCancel": "주문취소",
+            "refundMethod": "교환/환불",
+            "cardRefund": "카드환불",
+            "refundSchedule": "환불일정",
+            "phoneRefund": "휴대폰결제환불"
+        },
+        "travel": {
+            "ecoupon": "e쿠폰",
+            "flight": "항공",
+            "accommodation": "숙박",
+            "ticket": "티켓"
+        },
+        "safe": {
+            "policyViolation": "법령 및 정책위반 상품",
+            "ipViolation": "지적재산권침해",
+            "serviceViolation": "서비스 이용규칙 위반",
+            "adViolation": "표시광고"
+        }
+    };
+
+    // DOMContentLoaded 시 1차 및 2차 카테고리를 한글로 변환하여 표시하는 함수
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1차 카테고리 변환
+        document.querySelectorAll('.cate1').forEach(function (item) {
+            const value = item.getAttribute('data-value');
+            item.textContent = firstCategoryMap[value] || value; // 1차 카테고리 한글 변환
+        });
+
+        // 2차 카테고리 변환
+        document.querySelectorAll('.cate2').forEach(function (item) {
+            const value = item.getAttribute('data-value');
+            const parentValue = item.getAttribute('data-parent'); // 상위 카테고리 참조
+            item.textContent = secondCategoryMap[parentValue]?.[value] || value; // 2차 카테고리 한글 변환
+        });
+    });
+
+    // 2차 선택 항목 설정을 위한 객체
+    const secondOptions = {
+        "user": [
+            { value: "regi", text: "가입" },
+            { value: "leave", text: "탈퇴" },
+            { value: "info", text: "회원정보" },
+            { value: "login", text: "로그인" }
+        ],
+        "coupon": [
+            { value: "lpoint", text: "L.POINT" },
+            { value: "coupon2", text: "쿠폰" },
+            { value: "event", text: "이벤트/경품" },
+            { value: "attendance", text: "출석체크" },
+            { value: "gift", text: "사은품" }
+        ],
+        "order": [
+            { value: "orderMethod", text: "주문방법" },
+            { value: "orderChange", text: "주문변경" },
+            { value: "paymentMethod", text: "결제방법" },
+            { value: "easyPayment", text: "간편결제" },
+            { value: "giftReceive", text: "선물받기" },
+            { value: "mobileGift", text: "모바일상품권" },
+            { value: "phonePayment", text: "휴대폰결제" },
+            { value: "applePay", text: "애플페이" },
+            { value: "product", text: "상품" }
+        ],
+        "delivery": [
+            { value: "delivery2", text: "배송" },
+            { value: "deliveryFee", text: "배송비" },
+            { value: "deliveryMethod", text: "배송방법" },
+            { value: "deliverySchedule", text: "배송일정" },
+            { value: "deliveryAddress", text: "배송지" },
+            { value: "todayArrival", text: "오늘도착" },
+            { value: "overseas", text: "해외직구" },
+            { value: "notReceived", text: "미수령신고" },
+            { value: "recipient", text: "수취인" },
+            { value: "purchaseConfirm", text: "구매확정" }
+        ],
+        "cancel": [
+            { value: "orderCancel", text: "주문취소" },
+            { value: "refundMethod", text: "환불방법" },
+            { value: "cardRefund", text: "카드환불" },
+            { value: "refundSchedule", text: "환불일정" },
+            { value: "phoneRefund", text: "휴대폰결제환불" }
+        ],
+        "travel": [
+            { value: "ecoupon", text: "e쿠폰" },
+            { value: "flight", text: "항공" },
+            { value: "accommodation", text: "숙박" },
+            { value: "ticket", text: "티켓" }
+        ],
+        "safe": [
+            { value: "policyViolation", text: "법령 및 정책위반 상품" },
+            { value: "ipViolation", text: "지적재산권침해" },
+            { value: "serviceViolation", text: "서비스 이용규칙 위반" },
+            { value: "adViolation", text: "표시광고" }
+        ]
+    };
+
+    // 1차 선택 변경 시 2차 선택 항목을 동적으로 갱신하는 함수
+    function updateSecondCategory() {
+        const selectedValue = document.getElementById("select1").value;
+        const select2 = document.getElementById("select2");
+
+        // 기존 옵션 초기화
+        select2.innerHTML = '<option value="" selected>2차선택</option>';
+
+        // 1차 선택에 해당하는 2차 선택 옵션을 추가
+        if (secondOptions[selectedValue]) {
+            secondOptions[selectedValue].forEach(option => {
+                const newOption = document.createElement("option");
+                newOption.value = option.value;
+                newOption.textContent = option.text;
+                select2.appendChild(newOption);
+            });
+        }
+    }
+
+
+    function goToWrite() {
+        window.location.href = '/admin/cs/faq/write';
+    }
+
+    // 수정 버튼 클릭 이벤트
+    document.querySelectorAll('.modify-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const faqId = this.getAttribute('data-id');
+            window.location.href = `/admin/cs/faq/modify/${faqId}`; // 수정 페이지로 이동
+        });
+    });
+
+    // 개별 삭제 기능
+    function deleteFaq(faqId) {
+        console.log("Deleting FAQ with ID:", faqId); // ID 확인용 콘솔 로그
+        if (confirm('정말로 이 자주묻는질문을 삭제하시겠습니까?')) {
+            fetch(`/admin/cs/faq/delete/${faqId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('삭제가 완료되었습니다.');
+                        window.location.reload(); // 페이지 새로고침
+                    } else {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                })
+                .catch(error => {
+                    console.error('삭제 중 오류가 발생했습니다.', error);
+                    alert('삭제에 실패했습니다: ' + error.message);
+                });
+        }
+    }
+
+    // 선택 삭제 기능
+    function deleteSelected() {
+        const selectedIds = [];
+        document.querySelectorAll('tbody input[type="checkbox"]:checked').forEach((checkbox) => {
+            const row = checkbox.closest('tr');
+            const id = row.dataset.id;
+            selectedIds.push(Number(id));
+        });
+
+        if (selectedIds.length > 0) {
+            if (confirm('정말로 선택된 항목을 삭제하시겠습니까?')) {
+                fetch('/admin/cs/faq/deleteSelected', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(selectedIds)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '/admin/cs/faqs';
+                        } else {
+                            alert('삭제 실패: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('삭제 중 오류 발생: ' + error.message);
+                    });
+            }
+        } else {
+            alert('삭제할 항목을 선택하세요.');
+        }
+    }
+
+    // 전체 선택 / 해제 기능
+    document.getElementById('selectAll').addEventListener('change', function () {
+        const isChecked = this.checked;
+        document.querySelectorAll('tbody input[type="checkbox"]').forEach((checkbox) => {
+            checkbox.checked = isChecked;
+        });
+    });
+
+
+    document.getElementById("select2").addEventListener("change", function (e) {
+        const selectedCate1 = document.getElementById("select1").value;
+        const selectedCate2 = this.value;
+
+        if (selectedCate1 && selectedCate2) {
+            window.location.href = `/admin/cs/faqs?cate1=${selectedCate1}&cate2=${selectedCate2}&page=${e.target.dataset.page}`
+        }
+    });
+
+
+
+</script>

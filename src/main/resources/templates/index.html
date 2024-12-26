@@ -1,0 +1,726 @@
+
+    <link rel="stylesheet" as="style" crossorigin th:href="@{https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css}" /> <!-- 가변 다이나믹 서브셋 (fontfamily : pretendard) -->
+    <link th:href="@{/css/reset.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script defer th:src="@{/js/main.js}"></script>
+    <script defer th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js}"></script>
+    <link th:href="@{/js/jquery.bxslider.min.css}" rel="stylesheet" />
+    <script defer th:src="@{/js/jquery.bxslider.min.js}"></script>
+    <style>
+        #prevBtn {left:10px;background:url(/images/icon_prev_arrow.png) no-repeat}
+        #nextBtn {right:10px;background:url(/images/icon_next_arrow.png) no-repeat}
+        #header{margin-top: 80px}
+        #main{margin-top: 160px}
+        #main, #header {
+            transition: transform 0.3s ease, opacity 0.3s ease; /* 위치와 불투명도 애니메이션 */
+        }
+    </style>
+
+<header th:replace="layout/main/header.html"></header>
+<div id="wrap" style="margin-top: 80px;">
+    <main id="main">
+        <div class="mainIn">
+
+            <aside id="aside">
+                <nav id="menu" class="menu">
+                    <ul th:each="cate1 : ${category1}">
+                        <li class="dep1">
+                            <a href="#" class="m">
+                                <span onclick="openCategory(event)" th:data-id="${cate1.id}" th:text="${cate1.name}" class="d1_tit">패션 · 의류 · 뷰티</span>
+                            </a></li>
+                    </ul>
+                    <ul>
+
+                        <li class="dep1">
+                            <a href="#">
+                                <div class="dep2">
+                                    <button onclick="closePopupCategory()">X</button>
+                                    <ul class="cf flex" id="data-response">
+
+                                    </ul>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </nav><!-- #memu .memu -->
+                <div class="memuBg"></div><!-- .memuBg -->
+
+                <div id="bestRank" class="best">
+                    <h3 class="tit_sty02 cf">
+                        <img src="/images/ico_best.png" alt="베스트 상품 아이콘">
+                        베스트상품
+                    </h3><!--.tit_sty02 -->
+                    <ul class="bestRank">
+                        <li th:each="v : ${best}">
+                            <a th:href="@{/prod/product(prodId=${v.id})}">
+                            <div class="photo1">
+                                <img style="width:140px;" th:src="@{'/file/' + ${v.img}}" class="bImg" alt="베스트 상품 이미지 1">
+                            </div><!--.photo-->
+                            <dl>
+                                <dt class="Btit cf">
+                                    <p>[[${v.prodName}]]</p>
+                                    <p class="oPrice cf" th:if="${v.prodDiscount>0.0}">[[${#numbers.formatInteger(v.prodPrice, 1,'COMMA')}]]원&nbsp; </p>
+                                    <em class="dis cf" th:if="${v.prodDiscount>0.0}">[[${#numbers.formatInteger(v.prodDiscount, 1)}]]%&#8595;</em>
+                                </dt><!--.Btit-->
+                                <dd class="dPrice">
+                                    [[${#numbers.formatInteger(v.prodPrice * (1 - v.prodDiscount / 100), 0, 'COMMA')}]]원
+                                </dd><!--.price-->
+                            </dl>
+                        </a></li>
+                    </ul>
+                </div><!--.best-->
+
+            </aside><!-- #aside -->
+
+
+
+
+            <section id="sec">
+
+                <div id="mainSlider">
+                    <ul class="bxslider">
+                        <li th:each="b:${sliderb}">
+                            <a th:href="@{'/'+${b.getBannerLink()}}"
+                               th:style="'background: url(' + @{'/file/' + ${b.bannerImg}} + ') ' + ${b.bannerBg} + ';'"></a>
+                        </li>
+                    </ul>
+                    <div id="sliderPage"><span class="currentSlider">1</span> <span class="totalSlider"> / 3</span></div>
+                </div>
+
+                <div id="hit" class="cont1">
+                    <div class="inner">
+                        <h2 class="tit cf">히트상품</h2><!--.tit-->
+                        <div class="pro1 cf">
+                            <ul class="hit">
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/240x200(1).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            히트 상품명 1
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/240x200(2).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            히트 상품명 2
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/240x200(3).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            히트 상품명 3
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li class="last"><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/240x200(5).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            히트 상품명 4
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li><!-- .last -->
+                            </ul>
+                        </div><!--.brsite-->
+                    </div><!--.inner-->
+                </div><!-- .cont1 히트상품 -->
+
+                <div id="recommend" class="cont1">
+                    <div class="inner">
+                        <h2 class="tit cf">추천상품</h2><!--.tit-->
+                        <div class="pro1 cf">
+                            <ul class="recommend">
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img2_1(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            추천 상품명 1
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img2_2(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            추천 상품명 2
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img2_3(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            추천 상품명 3
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+
+                                <li class="last"><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img2_4(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            추천 상품명 4
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li><!-- .last -->
+
+                            </ul>
+                        </div><!--.brsite-->
+                    </div><!--.inner-->
+                </div><!-- .cont1 추천상품 -->
+
+                <div id="recent" class="cont1">
+                    <div class="inner">
+                        <h2 class="tit cf">최신상품</h2><!--.tit-->
+                        <div class="pro1 cf">
+                            <ul class="recent">
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_1(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 1
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_2(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 2
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_3(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 3
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li class="last"><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_4(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 4
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li><!-- .last -->
+                            </ul>
+                        </div><!--.brsite-->
+                    </div><!--.inner-->
+                </div><!-- .cont1 최신상품 -->
+
+                <div id="discount" class="cont1">
+                    <div class="inner">
+                        <h2 class="tit cf">할인상품</h2><!--.tit-->
+                        <div class="pro1 cf">
+                            <ul class="discount">
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_1(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 1
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_2(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 2
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_3(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 3
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li class="last"><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_4(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 4
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li><!-- .last -->
+                            </ul>
+                        </div><!--.brsite-->
+                    </div><!--.inner-->
+                </div>
+
+                <div id="manyPoint" class="cont1">
+                    <div class="inner">
+                        <h2 class="tit cf">적립이벤트상품</h2><!--.tit-->
+                        <div class="pro1 cf">
+                            <ul class="manyPoint">
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_1(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 1
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_2(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 2
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_3(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 3
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li>
+                                <li class="last"><a href="#">
+                                    <div class="photo">
+                                        <img src="./images/index_img3_4(240x200).jpg" alt="hit photo1">
+                                    </div><!--.photo-->
+                                    <dl>
+                                        <dt class="proTit cf">
+                                            최신 상품명 4
+                                        </dt>
+                                        <dd>
+                                            <p class="oPrice cf">30,000원 </p>
+                                            <em class="dis cf">10%&#8595;</em>
+                                        </dd>
+                                        <dd class="dPrice">
+                                            27,000원
+                                        </dd><!--.price-->
+                                        <dd><a href="#" class="free">
+                                            <img src="/images/btn_free.png" class="free" alt="무료배송">
+                                        </a></dd>
+                                    </dl>
+                                </a></li><!-- .last -->
+                            </ul>
+                        </div><!--.brsite-->
+                    </div><!--.inner-->
+                </div>
+            </section><!--#sec-->
+
+        </div><!-- .mainIn -->
+    </main><!--#main-->
+
+</div><!--#wrap-->
+<footer th:replace="layout/main/footer.html"></footer>
+
+<script>
+    let birth = `[[${birth}]]` ;
+    if(birth=='true'){
+        alert('생일 축하합니다.')
+    }
+
+    let memState = `[[${memState}]]` ;
+    if(memState=='stop'){
+        alert('정지된 회원입니다. 반성하세요.')
+    }
+    if(memState=='leave'){
+        alert('탈퇴한 계정입니다. 새로 가입해주세요.')
+    }
+    $(document).ready(function() {
+        var slider = $('.bxslider').bxSlider({
+            auto: true,               // 자동 슬라이드
+            pause: 3000, // 슬라이드 간의 대기 시간 (밀리초)
+            pager: true, // 페이지 네비게이션 표시
+            controls: true, // 이전/다음 버튼 표시
+            nextText: '>', // 다음 버튼 텍스트
+            prevText: '<', // 이전 버튼 텍스트
+            touchEnabled : (navigator.maxTouchPoints > 0),
+            autoHover: true,
+            autoControls:true,
+            autoControlsCombine:true,
+            onSlideBefore: function($slideElement, oldIndex, newIndex) {
+                // 현재 슬라이드 페이지 업데이트
+                $('.currentSlider').text((newIndex + 1));
+            }
+        });
+        // 초기 페이지 설정
+        $('.totalSlider').text(' / ' + slider.getSlideCount());
+    });
+    const main = document.getElementById("main");
+    window.addEventListener("click", function (e) {
+        if(e.target.classList.contains("bnClose")){
+            document.getElementById("header").style.transform = `translateY(-80px)`;
+            document.getElementsByClassName("bnClose")[0].style.transform = `translateY(-80px)`;
+            document.getElementsByClassName("bnClose")[0].style.display = `none`;
+            document.getElementById("topBanner").style.transform = `translateY(-80px)`;
+            main.style.transform = `translateY(-80px)`;
+        }
+    });
+
+    let isLoading = false;
+    const sections = [ 'hit', 'recommend', 'recent', 'discount', 'manyPoint'];
+    const loadedSections = new Set(); // 이미 로드된 섹션을 저장하여 중복 요청 방지
+
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function () {
+        stompClient.subscribe('/topic/bestProducts', function (message) {
+            const bestProducts = JSON.parse(message.body);
+            console.log(bestProducts)
+
+            // 클라이언트에 베스트 상품 정보를 표시
+            document.querySelector('.bestRank').innerHTML = bestProducts.map(v => `
+            <li><a href="/prod/product?prodId=${v.id}">
+                    <div class="photo1">
+                        <img style="width:140px;" src="/file/${v.img}" class="bImg" alt="베스트 상품 이미지 1">
+                    </div><!--.photo-->
+                    <dl>
+                        <dt class="Btit cf">
+                            <p>${v.prodName}</p>
+                            <p class="oPrice cf" style="${v.prodDiscount > 0 ? '' : 'display:none'}">${v.prodPrice.toLocaleString('en-US')}원 </p>
+                            <em class="dis cf" style="${v.prodDiscount > 0 ? '' : 'display:none'}">${v.prodDiscount}%&#8595;</em>
+                        </dt><!--.Btit-->
+                        <dd class="dPrice">
+                           ${(Math.ceil((v.prodPrice * (1 - v.prodDiscount / 100)) / 10) * 10).toLocaleString('en-US')}원
+                           <span style="display: `+(v.deli > 0.0 ? 'none':'inline-block')+`;width: 60px;text-align: center;
+                    margin-left: 5px;border: 1px solid #0e77f7;color: #0e77f7;border-radius: 10px;">
+                             무료배송
+                           </span>
+                        </dd><!--.price-->
+                    </dl>
+                </a></li>
+            `).join('');
+        });
+    });
+
+    window.addEventListener('scroll', () => {
+        if (isLoading) return;
+        sections.forEach(section => {
+            const sectionElement = document.getElementById(`${section}`);
+            if(!sectionElement){
+                return;
+            }
+            // 각 섹션의 위치를 계산
+            const sectionTop = sectionElement.offsetTop;
+            const sectionHeight = sectionElement.offsetHeight;
+            const scrollPosition = window.scrollY + window.innerHeight;
+
+            // 섹션의 상단에 가까워지면 데이터 로드
+            if (scrollPosition >= sectionTop && scrollPosition <= sectionTop + sectionHeight) {
+                if (!loadedSections.has(section)) {
+                    loadProducts(section);
+                    loadedSections.add(section); // 중복 로딩 방지
+                }
+            }
+        });
+    });
+
+    // 상품 데이터 로딩 함수
+    async function loadProducts(category) {
+        let addItems = document.querySelector(`.${category}`)
+        addItems.innerHTML = `<img src="/images/spinner.gif">`
+        let url = "/prod/main?type="+category
+        if (isLoading) return; // 이미 로딩 중이면 실행하지 않음
+        try {
+            const resp = await axios.get(url,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            })
+            const product = resp.data.products
+            if(product[0].type==='best'){
+                addItems.innerHTML = product.map(v=>`
+                <li><a href="/prod/product?prodId=${v.id}">
+                    <div class="photo1">
+                        <img style="width:140px;" src="/file/${v.img}" class="bImg" alt="베스트 상품 이미지 1">
+                    </div><!--.photo-->
+                    <dl>
+                        <dt class="Btit cf">
+                            <p>${v.prodName}</p>
+                            <p class="oPrice cf" style="${v.prodDiscount>0?'':'display:none'}">${v.prodPrice.toLocaleString('en-US')}원 </p>
+                            <em class="dis cf" style="${v.prodDiscount>0?'':'display:none'}">${v.prodDiscount}%&#8595;</em>
+                        </dt><!--.Btit-->
+                        <dd class="dPrice">
+                           ${(Math.ceil((v.prodPrice * (1 - v.prodDiscount / 100)) / 10) * 10).toLocaleString('en-US')}원
+                           <span style="display: `+(v.deli > 0 ? 'none':'inline-block')+`;width: 55px;text-align: center;
+                    margin-left: 5px;border: 1px solid #0e77f7;color: #0e77f7;border-radius: 10px;height: 17px">
+                             무료배송
+                           </span>
+                        </dd><!--.price-->
+                    </dl>
+                </a></li>
+            `).join('');
+            } else if(product[0].type==='hit'){
+                addItems.innerHTML = product.map(v=>`
+                    <li><a href="/prod/product?prodId=${v.id}">
+                        <div class="photo" style="align-items: flex-end; margin: 0">
+                            <img src="/file/${v.img}" alt="hit photo1">
+                        </div><!--.photo-->
+                        <dl>
+                            <dt class="proTit cf">
+                                ${v.prodName}
+                            </dt>
+                            <dd>
+                                <p class="oPrice cf" style="${v.prodDiscount>0?'':'color:#FFF'}">${v.prodPrice.toLocaleString('en-US')}원</p>
+                                <em class="dis cf" style="${v.prodDiscount>0?'':'display:none'}">${v.prodDiscount}%&#8595;</em>
+                            </dd>
+                            <dd class="dPrice" style="display: inline-block">
+                           ${(Math.ceil((v.prodPrice * (1 - v.prodDiscount / 100)) / 10) * 10).toLocaleString('en-US')}원
+                           <span style="display: `+(v.deli > 0 ? 'none':'inline-block')+`;width: 55px;text-align: center;
+                    margin-left: 5px; margin-top:1px;border: 1px solid #0e77f7;color: #0e77f7;border-radius: 10px;height: 18px; font-size: 11px">
+                             무료배송
+                           </span>
+                        </dd><!--.price-->
+                    </dl>
+                    </a></li>
+                    `
+                ).join('');
+            }
+
+        } catch (e) {
+            console.error('상품 데이터를 불러오지 못했습니다.', error);
+        } finally {
+            // isLoading = false;
+        }
+
+    }
+
+
+</script>
+

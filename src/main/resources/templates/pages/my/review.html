@@ -1,0 +1,61 @@
+<link rel="stylesheet" th:href="@{/css/my/my.css}">
+<link rel="stylesheet" th:href="@{/css/my/popup.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<header th:replace="layout/main/header.html"></header>
+<th:block th:replace="layout/my/modal.html"></th:block>
+<main style="margin-top: 230px">
+  <div id="my">
+    <th:block th:replace="layout/my/aside.html"></th:block>
+    <main>
+      <th:block th:replace="layout/my/banner.html"></th:block>
+    <section>
+      <h3>나의리뷰</h3>
+
+      <article>
+        <table th:if="${noReview == false}" border="0" class="review">
+          <tr>
+            <th>번호</th>
+            <th>상품명</th>
+            <th>내용</th>
+            <th>평점</th>
+            <th>작성일</th>
+          </tr>
+          <tr th:each="review, stat : ${reviews}">
+            <td th:text="${stat.index + 1}">1</td>
+            <td><span th:text="${review.prodId}">상품번호</span> / <span> [[${#strings.length(review.prodName) > 10 ? #strings.substring(review.prodName, 0, 10) + '...' : review.prodName}]]</span></td>
+            <td style="text-align: center;" th:text="${review.review}">배송이 빠릅니다. 잘 사용하겠습니다.</td>
+            <td>
+                <span class="ratingBg">
+                    <span class="rating" th:style="'width:'+ ${review.score * 2}+'%;'"></span>
+                </span>
+            </td>
+            <td th:text="${review.rdate}">2024-12-10</td>
+          </tr>
+        </table>
+        <div th:if="${noReview}"
+                style="
+              width: 100%;
+              height: 150px;
+              font-size: 14px;
+              line-height: 150px;
+              text-align: center;
+            "
+        >
+          작성한 리뷰가 없습니다.
+        </div>
+
+        <div th:if="${noItem==false}" class="page">
+          <a class="none prev" th:href="@{/my/reviews(page=0,type=${type},keyword=${keyword})}">이전</a>
+          <a class="none" th:href="@{/my/reviews(page=${page - 2},type=${type},keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+          <a class="none" th:href="@{/my/reviews(page=${page - 1},type=${type},keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+          <a class="active" style="font-weight: 600; background-color: #f2f3f7; color: #000;" th:text="${page}+1"></a>
+          <a class="none" th:href="@{/my/reviews(page=${page + 1},type=${type},keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+          <a class="none" th:href="@{/my/reviews(page=${page + 2},type=${type},keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+          <a class="none next" th:href="@{/my/reviews(page=${totalPages - 1},type=${type},keyword=${keyword})}">다음</a>
+        </div>
+      </article>
+    </section>
+    </main>
+  </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>

@@ -1,0 +1,40 @@
+<footer>
+    <div class="footer-menu">
+        <!-- 이미지 경로를 Thymeleaf 문법으로 변경 -->
+        <a th:href="@{/index}">
+            <img th:src="@{/images/footer_logo.png}" alt="LotteOn 로고">
+        </a>
+
+        <ul>
+            <!-- 링크들을 Thymeleaf 문법으로 변경 -->
+            <li><a th:href="@{/company/index}" class="active">HOME</a></li>
+            <li><a th:href="@{/company/culture}">기업문화</a></li>
+            <li><a th:href="@{/company/story}">소식과 이야기</a></li>
+            <li><a th:href="@{/company/recruit}">채용</a></li>
+            <li><a th:href="@{/company/media}">미디어</a></li>
+        </ul>
+    </div>
+
+    <div class="footer-contact">
+        <!-- 메일 링크를 그대로 유지 -->
+        <p><a href="mailto:2조팀@lotte.net">2조팀@lotte.net</a></p>
+    </div>
+
+    <div class="footer-social">
+        <!-- 외부 링크는 Thymeleaf 문법을 사용할 필요 없음 -->
+        <a href="https://www.facebook.com/" class="social-icon facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://x.com/?lang=ko" class="social-icon twitter">
+            <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.google.com" class="social-icon google-plus">
+            <i class="fab fa-google-plus-g"></i>
+        </a>
+        <a href="https://kr.pinterest.com/" class="social-icon pinterest">
+            <i class="fab fa-pinterest"></i>
+        </a>
+    </div>
+
+    <p th:text="2조- + ${appName} + ${appVersion}">&copy; 2024 All rights Reserved</p>
+</footer>

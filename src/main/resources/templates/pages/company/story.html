@@ -1,0 +1,421 @@
+<link rel="stylesheet" th:href="@{/css/company/story.css}">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}">
+<link th:href="@{https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap}" rel="stylesheet">
+<!-- AOS CSS -->
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css}">
+
+<header th:replace="layout/company/header.html"></header>
+
+<!-- 컨텐츠 섹션 -->
+<main>
+    <div class="contentHead" data-aos="fade-down">
+        <h1>롯데ON을 더 알고 싶다면!</h1>
+        <p>우리의 다양한 이야기를 소개합니다</p>
+    </div>
+    <!-- Story Navigation (카테고리 네비게이션) -->
+    <div class="storyNav" data-aos="fade-up">
+
+        <a th:href="@{/company/story}" th:classappend="${storyCate == '' ? 'navOn' : ''}" onclick="filterCards('', event)" class="nav-link">전체보기</a>
+        <a th:href="@{/company/story(storyCate='culture')}" th:classappend="${storyCate == 'culture' ? 'navOn' : ''}" onclick="filterCards('culture', event)" class="nav-link">기업문화</a>
+        <a th:href="@{/company/story(storyCate='interview')}" th:classappend="${storyCate == 'interview' ? 'navOn' : ''}" onclick="filterCards('interview', event)" class="nav-link">인터뷰</a>
+        <a th:href="@{/company/story(storyCate='recruit')}" th:classappend="${storyCate == 'recruit' ? 'navOn' : ''}" onclick="filterCards('recruit', event)" class="nav-link">채용</a>
+        <a th:href="@{/company/story(storyCate='lotteon')}" th:classappend="${storyCate == 'lotteon' ? 'navOn' : ''}" onclick="filterCards('lotteon', event)" class="nav-link">롯데ON</a>
+        <a th:href="@{/company/story(storyCate='report')}" th:classappend="${storyCate == 'report' ? 'navOn' : ''}" onclick="filterCards('report', event)" class="nav-link">보도자료</a>
+        <a th:href="@{/company/story(storyCate='ESG')}" th:classappend="${storyCate == 'ESG' ? 'navOn' : ''}" onclick="filterCards('ESG', event)" class="nav-link">ESG</a>
+
+    </div>
+
+    <!-- 카드 그리드 레이아웃 -->
+    <div class="card-grid" data-aos="fade-up">
+        <!-- 카드 1 -->
+        <div class="card" data-category="interview">
+            <div class="card-badge">인터뷰</div>
+            <img th:src="@{/images/companyStoryList/최원준.jpg}" alt="롯데커머스 사람들" class="card-img">
+            <div class="card-content">
+                <h3>롯데커머스 사람들 시리즈 19</h3>
+                <p>8월 M.O.M 대상 최원준 님의 패션MD 이야기 함께 들어보아요😄</p>
+            </div>
+        </div>
+
+        <!-- 카드 2 -->
+        <div class="card" data-category="culture">
+            <div class="card-badge">기업문화</div>
+            <img th:src="@{/images/companyStoryList/말복이벤트.jpg}" alt="말복 이벤트" class="card-img">
+            <div class="card-content">
+                <h3>말복 이벤트&Floor Meeting</h3>
+                <p>8월 말복 이벤트&Floor Meeting 현장을 만나보아요🐥</p>
+            </div>
+        </div>
+
+        <!-- 카드 3 -->
+        <div class="card" data-category="interview">
+            <div class="card-badge">인터뷰</div>
+            <img th:src="@{/images/companyStoryList/e커머스사람들_e18.png}" alt="롯데커머스 사람들 시리즈 18" class="card-img">
+            <div class="card-content">
+                <h3>롯데커머스 사람들 시리즈 18</h3>
+                <p>경진님이 들려주는 딜로킷 이야기부터 G-TFT 이야기까지 함께 들어보아요</p>
+            </div>
+        </div>
+
+        <!-- 카드 4 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/롯데온18일-선착순-한정판매-진행하는_갤럭시워치FE-골프패키지-1.jpg}" alt="갤럭시워치" class="card-img">
+            <div class="card-content">
+                <h3>롯데온, ‘갤럭시워치 FE 골프패키지’ 선착순 한정 판매</h3>
+                <p>롯데온이 18일 '갤럭시워치 FE 골프패키지' 출시를 기념해 300명에게만 선착순 판매</p>
+            </div>
+        </div>
+
+        <!-- 카드 5 -->
+        <div class="card" data-category="interview">
+            <div class="card-badge">인터뷰</div>
+            <img th:src="@{/images/companyStoryList/e커머스사람들_e17.png}" alt="롯데커머스 사람들" class="card-img">
+            <div class="card-content">
+                <h3>롯데e커머스 사람들 시리즈 17</h3>
+                <p>트렌드패션팀 영춘님의 고감도 신규브랜드 확대부터 직무 이야기까지! 함께 들어볼까요?👏🏻</p>
+            </div>
+        </div>
+
+        <!-- 카드 6 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-대명아임레디-론칭-기념-단독-혜택.jpg}" alt="대명아임레디" class="card-img">
+            <div class="card-content">
+                <h3>‘대명아임레디’ 라이프 서비스 론칭 기념 단독 혜택! 선착순 한정 판매</h3>
+                <p>롯데온이 상품 다변화를 통해 라이프스타일 플랫폼으로 도약에 나선다. 롯데온이 이달</p>
+            </div>
+        </div>
+
+        <!-- 카드 7 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-릴레이-뷰티-데이즈.png}" alt="릴레이뷰티" class="card-img">
+            <div class="card-content">
+                <h3>‘릴레이 뷰티 데이즈’서 ‘트렌드 뷰티’ 최대 혜택!</h3>
+                <p>럭셔리에서 트렌드까지 뷰티 영역 확대 나선 롯데온!</p>
+            </div>
+        </div>
+
+        <!-- 카드 8 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-복날위크-기획전-1024x702.jpeg}" alt="복날위크" class="card-img">
+            <div class="card-content">
+                <h3>롯데온 ‘복날위크’서 무더위 날리고 기력 보충하세요!</h3>
+                <p>“복날 몸보신은 고기 VS 간편하게 챙기는 건강식품?</p>
+            </div>
+        </div>
+
+        <!-- 카드 9 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-신규-광고-솔루션-스마트매출업-론칭.jpg}" alt="스마트매출업" class="card-img">
+            <div class="card-content">
+                <h3>AI 기반 개인화 추천형 광고 솔루션 ‘스마트매출업’ 론칭!</h3>
+                <p>“파트너사 마케팅 돕고, 고객 쇼핑 만족도 높인다!”</p>
+            </div>
+        </div>
+
+        <!-- 카드 10 -->
+        <div class="card" data-category="culture">
+            <div class="card-badge">기업문화</div>
+            <img th:src="@{/images/companyStoryList/캡처-1024x560.jpg}" alt="START Day" class="card-img">
+            <div class="card-content">
+                <h3>NEW-START Day!</h3>
+                <p>롯데ON이 새로운 공간에서 새롭게 출발합니다🙌🏻</p>
+            </div>
+        </div>
+
+        <!-- 카드 11 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-쿼터노트-윤곽-메이크업-3종.jpg}" alt="메이크업" class="card-img">
+            <div class="card-content">
+                <h3>단독 뷰티 브랜드 ‘쿼터노트’로 2030 뷰티 팬(Fan) 잡는다!</h3>
+                <p>이색 콘셉트로 SNS 뒤흔든 ‘쿼터노트’!</p>
+            </div>
+        </div>
+
+        <!-- 카드 12 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-월간-롯데-7월호.jpg}" alt="월간롯데" class="card-img">
+            <div class="card-content">
+                <h3>롯데 계열사 단독 혜택으로 똘똘 뭉친 롯데온 ‘월간 롯데’!</h3>
+                <p>여름 휴가 준비는 ‘롯데’가 책임진다!</p>
+            </div>
+        </div>
+
+
+        <!-- 카드 13 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온X롯데면세점-긴자-일본-직구몰-입점-1024x512.jpg}" alt="롯데면세점 도쿄" class="card-img">
+            <div class="card-content">
+                <h3>롯데온에서 ‘롯데면세점 도쿄 긴자점’ 상품 한 번에 쇼핑!</h3>
+                <p>엔저로 날아오른 ‘일본 직구’ 잡는다!</p>
+            </div>
+        </div>
+
+        <!-- 카드 14 -->
+        <div class="card" data-category="ESG">
+            <div class="card-badge">ESG</div>
+            <img th:src="@{/images/companyStoryList/캡처-1024x560.jpg}" alt="지속가능경영보고서" class="card-img">
+            <div class="card-content">
+                <h3>지속가능경영보고서</h3>
+                <p>롯데쇼핑은 매년 경제ㆍ환경ㆍ사회ㆍ<Br>지배구조 부문에 대한 성과와 지속가능경영의<Br>방향성을 담은 지속가능경영보고서를</p>
+            </div>
+        </div>
+
+        <!-- 카드 15 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-클린뷰티-기획전-1024x539.jpeg}" alt="클린뷰티" class="card-img">
+            <div class="card-content">
+                <h3>롯데온 단독 혜택 받고, ‘클린뷰티’ 동참하세요!</h3>
+                <p>친환경 고체 샴푸바부터 못난이 채소 업사이클링 상품까지!</p>
+            </div>
+        </div>
+
+        <!-- 카드 16 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-시즌헌터-슬기로운-장마생활.jpg}" alt="장마생활" class="card-img">
+            <div class="card-content">
+                <h3>역대급 장마에 대처하는 ‘슬기로운 장마생활’!</h3>
+                <p>긴 장마 예보에 5월부터 관련 상품 매출 ‘쑥’!</p>
+            </div>
+        </div>
+
+        <!-- 카드 17 -->
+        <div class="card" data-category="interview">
+            <div class="card-badge">인터뷰</div>
+            <img th:src="@{/images/companyStoryList/e커머스사람들_e16.png}" alt="롯데커머스 사람들" class="card-img">
+            <div class="card-content">
+                <h3>롯데e커머스 사람들 시리즈 16</h3>
+                <p>롯데ON의 효율적 배송을 책임지는 라스트마일팀 신욱님의 이야기 함께 들어보아요👍🏻</p>
+            </div>
+        </div>
+
+        <!-- 카드 18 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-갓생쇼핑-기획전.jpg}" alt="여름특가" class="card-img">
+            <div class="card-content">
+                <h3>역대급 무더위에 대비하는 롯데온 ‘여름 특가전’!</h3>
+                <p>일찍 찾아온 무더위에 6월부터 여름 용품 매출 급증!</p>
+            </div>
+        </div>
+
+        <!-- 카드 19 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온X롯데홈쇼핑-홈쇼핑데이-1024x645.jpeg}" alt="스마트팜" class="card-img">
+            <div class="card-content">
+                <h3>롯데가 키운 상품, 롯데온에서 단독 혜택으로!</h3>
+                <p>홈쇼핑 단독 브랜드부터 정보통신 스마트팜 채소까지!</p>
+            </div>
+        </div>
+        <!-- 카드 20 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-해외-온라인-명품-편집숍-에센스-입점.png}" alt="에센스" class="card-img">
+            <div class="card-content">
+                <h3>‘에센스(SSENSE)’ 공식 오픈으로 15만여 개 명품 한 번에 쇼핑!</h3>
+                <p>치열한 해외직구 시장서 신뢰도 및 다양성으로 승부!</p>
+            </div>
+        </div>
+        <!-- 카드 21 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-AI-챗봇-샬롯-개편.png}" alt="샬룻" class="card-img">
+            <div class="card-content">
+                <h3>나만의 똑똑한 쇼핑 도우미 ‘샬롯’ 재탄생!</h3>
+                <p>AI로 맞춤형 상품 추천부터 정확한 고객 응대까지!</p>
+            </div>
+        </div>
+        <!-- 카드 22 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온X롯데캐피탈-신차-상담-서비스-개편-오픈.jpg}" alt="롯데캐피탈" class="card-img">
+            <div class="card-content">
+                <h3>롯데온X롯데캐피탈 ‘신차 상담 서비스’ 국산차 전 브랜드 전 차종으로 상품 확대!</h3>
+                <p>롯데온이 롯데캐피탈과 손잡고 6일 ‘신차 상담 서비스’ 기획전을 개편하고, 국산차</p>
+            </div>
+        </div>
+        <!-- 카드 23 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-패션페스티벌-기획전-659x1024.jpeg}" alt="롯데레드페스티벌" class="card-img">
+            <div class="card-content">
+                <h3>‘롯데레드페스티벌’에서 만나는 여름 특가 상품!</h3>
+                <p>뜨거운 여름을 대비하는 뜨거운 특가 축제!</p>
+            </div>
+        </div>
+        <!-- 카드 24 -->
+        <div class="card" data-category="report">
+            <div class="card-badge">보도자료</div>
+            <img th:src="@{/images/companyStoryList/첨부사진-롯데온-레드페스티벌.jpg}" alt="롯데레드페스티벌" class="card-img">
+            <div class="card-content">
+                <h3>온라인 세상에서 만나는 ‘롯데레드페스티벌’!</h3>
+                <p>프리미엄 브랜드부터 계열사 상품까지 롯데 단독 혜택!</p>
+            </div>
+        </div>
+
+        <!-- 카드 25 -->
+        <div class="card" data-category="recruit">
+            <div class="card-badge">채용</div>
+            <img th:src="@{/images/companyStoryList/채용-768x567.jpg}" alt="롯데레드페스티벌" class="card-img">
+            <div class="card-content">
+                <h3>2023년 IT개발 채용연계형 교육생을 모집합니다!</h3>
+                <p>롯데e커머스에서 IT개발직무 채용 연계형 교육생을 모집합니다!</p>
+            </div>
+        </div>
+
+        <!-- 카드 26 -->
+        <div class="card" data-category="lotteon">
+            <div class="card-badge">롯데ON</div>
+            <img th:src="@{/images/companyStoryList/정보보호-표지.png}" alt="롯데레드페스티벌" class="card-img">
+            <div class="card-content">
+                <h3>2024년 개인정보 중장기 목표</h3>
+                <p>롯데쇼핑e커머스 정보보호정책 공유</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 콘텐츠 더보기 버튼 -->
+        <div class="parent-element">
+            <div class="elementor-button-wrapper">
+                <a href="#" id="loadMore" class="elementor-button-link elementor-button" role="button">
+            <span class="elementor-button-content-wrapper">
+                <span class="elementor-button-text">콘텐츠 더보기</span>
+            </span>
+                    <span class="e-load-more-spinner">
+                <i aria-hidden="true" class="fas fa-spinner"></i>
+            </span>
+                </a>
+            </div>
+        </div>
+</main>
+
+<footer th:replace="layout/company/footer.html"></footer>
+
+<!-- AOS JS -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js}"></script>
+<script>
+    // AOS 초기화
+    AOS.init({
+        duration: 1000, // 애니메이션 지속 시간
+        once: true // 한 번만 애니메이션 실행
+    });
+
+    // 부드러운 스크롤
+    document.querySelectorAll('.nav-link').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // 스크롤 위치에 따라 네비게이션 링크 활성화
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        let currentSection = "";
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSection}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+
+    // 카테고리 필터링 함수 추가
+    function filterCards(category, event) {
+        event.preventDefault();  // 링크의 기본 동작 막기 (페이지 리로드 방지)
+
+        const cards = document.querySelectorAll('.card');  // 모든 카드 가져오기
+        let visibleCardsCount = 0;  // 현재 보이는 카드 개수
+
+        cards.forEach(card => {
+            if (category === '' || card.getAttribute('data-category') === category) {
+                if (visibleCardsCount < cardsToShow) {
+                    card.style.display = 'block';  // 처음에 6개만 보여줌
+                } else {
+                    card.style.display = 'none';  // 나머지는 숨김
+                }
+                visibleCardsCount++;
+            } else {
+                card.style.display = 'none';  // 필터에 맞지 않는 카드 숨김
+            }
+        });
+
+        // 활성화된 네비게이션 링크 업데이트
+        document.querySelectorAll('.storyNav a').forEach(link => {
+            link.classList.remove('navOn');  // 모든 링크에서 'navOn' 클래스 제거
+        });
+
+        // 현재 클릭된 링크에 'navOn' 클래스 추가
+        event.target.classList.add('navOn');
+
+        // 더보기 버튼 보이기 및 로드된 카드 수 초기화
+        cardsLoaded = cardsToShow;  // 초기 로드된 카드 수 설정
+        document.getElementById('loadMore').style.display = 'block';  // 더보기 버튼 보이기
+    }
+
+    let cardsToShow = 6; // 처음에 보여줄 카드 개수
+    let totalCards = document.querySelectorAll('.card').length; // 총 카드 개수
+    let cardsLoaded = 6; // 현재까지 로드된 카드 수 (초기값 6)
+
+    // 처음에 6개 카드만 표시하고 나머지 숨김 처리
+    document.querySelectorAll('.card').forEach((card, index) => {
+        if (index < cardsToShow) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+            card.classList.add('hidden');
+        }
+    });
+
+    // 콘텐츠 더보기 기능
+    document.getElementById('loadMore').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // 숨겨진 카드 중 다음 6개만 표시
+        const hiddenCards = document.querySelectorAll('.card.hidden');
+        let displayedCount = 0;
+
+        for (let i = 0; i < hiddenCards.length; i++) {
+            if (displayedCount < cardsToShow) {
+                hiddenCards[i].style.display = 'block';
+                hiddenCards[i].classList.remove('hidden');
+                displayedCount++;
+            }
+        }
+
+        // 로드된 카드 수를 업데이트
+        cardsLoaded += displayedCount;
+
+        // 모든 카드를 로드한 경우 더보기 버튼을 숨김 처리
+        if (cardsLoaded >= totalCards) {
+            this.style.display = 'none';
+        }
+
+    });
+</script>

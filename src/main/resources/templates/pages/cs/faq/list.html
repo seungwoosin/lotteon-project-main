@@ -1,0 +1,112 @@
+
+    <link rel="stylesheet" th:href="@{/css/cs/cs_common.css}">
+    <link rel="stylesheet" th:href="@{/css/cs/cs_faq.css}">
+    <link rel="stylesheet" th:href="@{/css/basic.css}">
+    <header th:replace="layout/main/header.html"></header>
+    <main style="margin: 0 auto; margin-bottom: 50px; margin-top: 230px;">
+            <aside class="cs_aside">
+                <h3 class="aside_title">자주묻는질문</h3>
+                <ul class="aside_cate">
+                    <!-- 각 카테고리별 링크, 선택된 카테고리에 따라 'active' 클래스 추가 -->
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='user')}" th:classappend="${selectedCate1 == 'user'} ? 'active' : ''">회원</a></li>
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='coupon')}" th:classappend="${selectedCate1 == 'coupon'} ? 'active' : ''">쿠폰/이벤트</a></li>
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='order')}" th:classappend="${selectedCate1 == 'order'} ? 'active' : ''">주문/결제</a></li>
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='delivery')}" th:classappend="${selectedCate1 == 'delivery'} ? 'active' : ''">배송</a></li>
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='cancel')}" th:classappend="${selectedCate1 == 'cancel'} ? 'active' : ''">취소/반품/교환</a></li>
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='travel')}" th:classappend="${selectedCate1 == 'travel'} ? 'active' : ''">여행/숙박/항공</a></li>
+                    <li class="cate_list"><a th:href="@{/cs/faqs(category='safe')}" th:classappend="${selectedCate1 == 'safe'} ? 'active' : ''">안전거래</a></li>
+                </ul>
+                </ul>
+            </aside>
+            <div id="main" style="height: auto">
+                <nav class="cs_nav">
+                    <p class="cs_nav_tit"><span>홈</span> > <span>자주묻는질문</span></p>
+                </nav>
+                <section class="cs_faq">
+                    <div class="cate_bar">
+                        <h3 class="cate_title" th:text="${selectedCate1 == 'user' ? '회원' :
+                                      selectedCate1 == 'coupon' ? '쿠폰/이벤트' :
+                                      selectedCate1 == 'order' ? '주문/결제' :
+                                      selectedCate1 == 'delivery' ? '배송' :
+                                      selectedCate1 == 'cancel' ? '취소/반품/교환' :
+                                      selectedCate1 == 'travel' ? '여행/숙박/항공' :
+                                      selectedCate1 == 'safe' ? '안전거래' : '안전거래'}"></h3>
+                        <p class="cate_des" th:text="${selectedCate1 == 'user' ? '회원 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'coupon' ? '쿠폰/이벤트 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'order' ? '주문/결제 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'delivery' ? '배송 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'cancel' ? '취소/반품/교환 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'travel' ? '여행/숙박/항공 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'safe' ? '안전거래 관련 자주 묻는 질문입니다.' : '안전거래 자주 묻는 질문입니다.'}">
+                        </p>
+                    </div>
+
+
+                    <!-- 2차 카테고리별 FAQ 반복 출력 -->
+                    <div th:each="entry : ${faqMap.entrySet()}" class="faq_main">
+                        <!-- 2차 카테고리 제목 -->
+                        <h3 class="cate_title q_cate" th:data-value="${entry.key}" th:data-parent="${selectedCate1}" th:text="${entry.key}"></h3>
+
+                        <table class="faq_list">
+                            <!-- FAQ 항목 반복 출력 -->
+                            <tr th:each="faq, iterStat : ${entry.value}"
+                                th:classappend="${iterStat.index >= 3} ? 'hidden' : ''"
+                                style="display: [[${iterStat.index >= 3} ? 'none' : 'table-row']]">
+                                <td>
+                                    <p><span class="Q">Q.</span>
+                                        <a th:href="@{'/cs/faq/view/' + ${faq.id}}" th:text="${faq.title}"></a> <!-- 제목 출력 -->
+                                    </p>
+                                </td> <!-- 제목 출력 -->
+                            </tr>
+
+                            <!-- 더보기/접기 버튼 -->
+                            <tr class="faq_simple">
+                                <td><span class="loadMore" onclick="toggleMore(this)">더보기</span></td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                </section>
+            </div>
+        </main>
+    <footer th:replace="layout/main/footer.html"></footer>
+
+    <script>
+
+
+        const secondCategoryMap = {
+            "user": { "regi": "가입", "leave": "탈퇴", "info": "회원정보", "login": "로그인" },
+            "coupon": { "lpoint": "L.POINT", "coupon2": "쿠폰", "event": "이벤트/경품", "attendance": "출석체크", "gift": "사은품" },
+            "order": { "orderMethod": "주문방법", "orderChange": "주문변경", "paymentMethod": "결제방법", "easyPayment": "간편결제", "giftReceive": "선물받기", "mobileGift": "모바일상품권", "phonePayment": "휴대폰결제", "applePay": "애플페이", "product": "상품" },
+            "delivery": { "delivery2": "배송", "deliveryFee": "배송비", "deliveryMethod": "배송방법", "deliverySchedule": "배송일정", "deliveryAddress": "배송지", "todayArrival": "오늘도착", "overseas": "해외직구", "notReceived": "미수령신고", "recipient": "수취인", "purchaseConfirm": "구매확정" },
+            "cancel": { "orderCancel": "주문취소", "refundMethod": "환불방법", "cardRefund": "카드환불", "refundSchedule": "환불일정", "phoneRefund": "휴대폰결제환불" },
+            "travel": { "ecoupon": "e쿠폰", "flight": "항공", "accommodation": "숙박", "ticket": "티켓" },
+            "safe": { "policyViolation": "법령 및 정책위반 상품", "ipViolation": "지적재산권침해", "serviceViolation": "서비스 이용규칙 위반", "adViolation": "표시광고" }
+        };
+
+        // 카테고리명을 한글로 변환하여 표시
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.q_cate').forEach(function (item) {
+                const value = item.getAttribute('data-value');
+                const parentValue = item.getAttribute('data-parent');
+                item.textContent = secondCategoryMap[parentValue]?.[value] || value; // 한글로 변환
+            });
+        });
+
+
+        function toggleMore(button) {
+            const table = button.closest('table');
+            const hiddenRows = table.querySelectorAll('.hidden');
+
+            if (button.innerText === "더보기") {
+                hiddenRows.forEach(row => row.style.display = "table-row"); // 숨긴 항목 보이기
+                button.innerText = "접기";
+            } else {
+                hiddenRows.forEach(row => row.style.display = "none"); // 숨긴 항목 숨기기
+                button.innerText = "더보기";
+            }
+        }
+
+
+    </script>

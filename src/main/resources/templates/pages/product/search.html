@@ -1,0 +1,215 @@
+<link rel="stylesheet" th:href="@{/css/product/search.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<header th:replace="layout/main/header.html"></header>
+<script th:src="@{/js/main.js}"></script>
+<main style="margin-top: 230px;">
+    <aside th:replace="layout/main/aside.html" style="margin: 0; margin-right: 30px"></aside>
+    <div id="wrap">
+        <!-- .aside -->
+        <div id="main" style="height: auto;">
+            <nav id="navi" class="product-nav"  style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <div class="title-and-location">
+                    <h2 class="sub_tit">상품목록</h2>
+                    <ol  class="breadcrumb">
+                        <li class="breadcrumb-item">HOME</li>
+                        <li class="breadcrumb-item">상품검색</li>
+                        <li class="breadcrumb-item">검색결과</li>
+                    </ol>
+                </div>
+            </nav> <!-- #navi-->
+            <table class="tb_search">
+                <tr>
+                    <th>
+                        <span th:if="${search != '0'}" style="color: #c00000;" th:text="${search}">셔츠</span>
+                        <span th:if="${search == '0'}" style="color: #c00000;">전체 판매상품</span>
+                        <span>검색결과</span>
+                        <span>&#40;총 :</span>
+                        <span th:text="${totalCnt}" style="color: #c00000;"> 20 </span>
+                        <span>건&#41;</span>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <form>
+                            <input th:if="${keyword != '0'}" type="text" th:value="${keyword}" name="keyword" class="search">
+                            <input th:if="${keyword == '0'}" type="text" value="" name="keyword" class="search">
+                            <input type="hidden" th:value="${searchType}" name="searchType" class="searchType">
+                            <input type="hidden" th:value="${min}" id="min" name="min">
+                            <input type="hidden" th:value="${max}" id="max" name="max">
+                            <input type="hidden" name="search" th:value="${search}">
+                            <input type="hidden" name="page" th:value="${page}">
+                            <input type="hidden" name="sortBy" th:value="${sortBy}">
+                            <button type="submit" class="btn_search">검색</button>
+                        </form>
+                        <div class="center-align-container">
+                            <input onchange="updateSearchType(event, '판매자')" type="radio" name="additional">판매자
+                            <input onchange="updateSearchType(event, '설명')" type="radio" name="additional">설명
+                            <input th:value="${min}" oninput="updatePriceRange()" type="number" id="minPrice">
+                            <span>&#126;</span>
+                            <input th:value="${max}" oninput="updatePriceRange()" type="number" id="maxPrice">
+                        </div>
+                    </td>
+                </tr>
+            </table> <!-- .tb_search-->
+            <!-- 정렬 탭 및 보기 옵션 -->
+            <ul class="array">
+                <li><a th:href="@{/prod/products/search(page=0,min=${min},max=${max},search=${search},sortby='order',searchType=${searchType}, keyword=${keyword})}">판매많은순</a></li>
+                <li><a th:href="@{/prod/products/search(page=0,min=${min},max=${max},search=${search},sortby='asc',searchType=${searchType}, keyword=${keyword})}">낮은가격순</a></li>
+                <li><a th:href="@{/prod/products/search(page=0,min=${min},max=${max},search=${search},sortby='desc',searchType=${searchType}, keyword=${keyword})}">높은가격순</a></li>
+                <li><a th:href="@{/prod/products/search(page=0,min=${min},max=${max},search=${search},sortby='rating',searchType=${searchType}, keyword=${keyword})}">평점높은순</a></li>
+                <li><a th:href="@{/prod/products/search(page=0,min=${min},max=${max},search=${search},sortby='review',searchType=${searchType}, keyword=${keyword})}">후기많은순</a></li>
+                <li><a th:href="@{/prod/products/search(page=0,min=${min},max=${max},search=${search},sortby='rdate',searchType=${searchType}, keyword=${keyword})}">최근등록순</a></li>
+            </ul>
+            <div class="product-list">
+                <div class="product-item" th:each="product : ${products}">
+                    <div class="product-image">
+                        <img th:src="'/file/' + ${product.img}" th:alt="${product.title}">
+                    </div>
+                    <div class="product-info d-flex flex-column">
+                        <h3 class="product-name">
+                            <span th:data-id="${product.id}" onclick="getProduct(event)" >[[${product.title}]]</span>
+                        </h3>
+                        <div class="price-info">
+                            <del class="originalPrice original-price" th:if="${product.discount>0}">[[${#numbers.formatInteger(product.getPrice(), 1,'COMMA')}]]원</del>
+                            <p>
+                                <span class="discountRate discount" th:if="${product.discount>0}" th:text="${product.discount.intValue()} + '%'" style="font-size: 16px; margin-right: 5px; display: inline-block; color: #c00000;">10%&#8595;</span>
+                                <span class="realPrice current-price">27,000원</span>
+                                <span class="shipping delivery" th:if="${product.deli!=0}">
+                                            <i class="bi bi-truck"></i> [[${#numbers.formatInteger(product.getDeli(), 1,'COMMA')}]]원
+                                </span>
+                                <span class="shipping free" th:if="${product.deli == 0}">
+                                    무료배송
+                                </span>
+                            </p>
+                        </div>
+                        <div style="display: flex; align-items: center" class="mt-auto">
+                            <span class="ratingBg">
+                                <span class="rating" th:style="'width:'+ ${product.rating * 2}+'%;'"></span>
+                            </span>
+                            <span class="product-summary">&nbsp;([[${product.reviewCnt}]]) · 판매 [[${product.orderCnt}]]</span>
+                        </div>
+                    </div>
+                    <div class="badge-container">
+                        <div class="badge company">
+                            <span th:text="${product.sell_uid}">판매 회사</span>
+                        </div>
+                        <div class="badge grade">
+                            <i th:if="${product.grade} < 2" style="background: none; zoom:1; width: 14px; height: 14px; font-size: 14px" class="bi bi-bag"></i>
+                            <i th:if="${product.grade} == 2" style="background-position: -2066px -2420px;"></i>
+                            <i th:if="${product.grade} == 3" style="background-position: -2258px -2420px;"></i>
+                            <i th:if="${product.grade} == 4" style="background-position: -2162px -2420px;"></i>
+                            <i th:if="${product.grade} == 5" style="background-position: -2354px -2420px;"></i>
+                            <span th:if="${product.grade} < 2" th:text="${product.grade==0?'씨앗':'새싹'}" style="padding-top: 2px;"></span>
+                            <span th:if="${product.grade} == 2">파워</span>
+                            <span th:if="${product.grade} == 3">빅파워</span>
+                            <span th:if="${product.grade} == 4">프리미엄</span>
+                            <span th:if="${product.grade} == 5">플래티넘</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page">
+                <a class="none" th:href="@{/prod/products/search(page=0,related=${related},min=${min},max=${max},search=${search},sortby=${sortBy},searchType=${searchType}, keyword=${keyword})}"><<</a>
+                <a class="none" th:href="@{/prod/products/search(page=${page - 2},related=${related},min=${min},max=${max},search=${search},sortby=${sortBy}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/prod/products/search(page=${page - 1},related=${related},min=${min},max=${max},search=${search},sortby=${sortBy}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/prod/products/search(page=${page + 1},related=${related},min=${min},max=${max},search=${search},sortby=${sortBy}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/prod/products/search(page=${page + 2},related=${related},min=${min},max=${max},search=${search},sortby=${sortBy}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/prod/products/search(page=${totalPages - 1},related=${related},min=${min},max=${max},search=${search},sortby=${sortBy}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+            </div>
+        </div> <!-- #main-->
+    </div><!-- #wrap -->
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 각 tr 요소를 반복하면서 가격 업데이트
+        const trs = document.querySelectorAll('.product-item');
+
+        trs.forEach(tr => {
+            const originalPriceEl = tr.querySelector(".originalPrice"); // 기존 가격 요소 선택자 수정
+            const discountEl = tr.querySelector(".discountRate"); // 할인율 요소 선택자 수정
+            const realPriceEl = tr.querySelector(".realPrice"); // 최종 가격 요소
+
+            // originalPrice와 discountRate가 존재하는 경우에만 실행
+            if (originalPriceEl && discountEl && realPriceEl) {
+                // 가격과 할인율을 숫자로 변환
+                const originalPrice = parseInt(originalPriceEl.innerText.replace(/[^0-9]/g, ""), 10);
+                const discountRate = parseInt(discountEl.innerText.replace(/[^0-9]/g, ""), 10);
+
+                // 할인 적용된 가격 계산
+                const discountedPrice = originalPrice * (1 - discountRate / 100);
+
+                // 계산된 가격을 realPrice 요소에 표시
+                realPriceEl.innerText = (Math.round(discountedPrice / 10) * 10).toLocaleString() + "원";
+            }
+        });
+    });
+    // searchType을 업데이트하는 함수
+    function updateSearchType(event, type) {
+        const searchTypeInput = document.querySelector('.searchType');
+        let searchTypeValue = searchTypeInput.value.split('/');
+
+        if (event.target.type === 'radio') {
+            // 라디오 버튼 선택 시
+            // 선택된 라디오 버튼의 값을 추가하고 나머지는 제거
+            searchTypeValue = searchTypeValue.filter(item => !item.includes("판매자") && !item.includes("설명")); // 라디오 버튼의 특정 값만 제거
+            searchTypeValue.push(type); // 현재 선택된 라디오 버튼 추가
+        } else if (event.target.type === 'checkbox') {
+            // 체크박스 선택 시
+            if (event.target.checked) {
+                // 체크된 경우 타입 추가
+                if (!searchTypeValue.includes(type)) {
+                    searchTypeValue.push(type);
+                }
+            } else {
+                // 체크 해제 시 타입 제거
+                searchTypeValue = searchTypeValue.filter(item => item !== type);
+            }
+        }
+
+        // searchTypeValue 배열에서 빈 요소 제거 및 값 업데이트
+        searchTypeInput.value = searchTypeValue.filter(Boolean).join('/');
+    }
+
+    // 최소 및 최대 가격 업데이트 함수
+    function updatePriceRange() {
+        const minPrice = document.getElementById("minPrice").value;
+        const maxPrice = document.getElementById("maxPrice").value;
+        const searchTypeInput = document.querySelector('.searchType');
+        let searchTypeValue = searchTypeInput.value.split('/');
+
+        // 최소값 추가/제거
+        if (minPrice) {
+            document.getElementById("min").value = minPrice; // 숨겨진 input에 최소값 업데이트
+            if (!searchTypeValue.includes("최소값")) {
+                searchTypeValue.push("최소값");
+            }
+        } else {
+            document.getElementById("min").value = ""; // 숨겨진 input 최소값 비우기
+            searchTypeValue = searchTypeValue.filter(item => item !== "최소값");
+        }
+
+        // 최대값 추가/제거
+        if (maxPrice) {
+            document.getElementById("max").value = maxPrice; // 숨겨진 input에 최대값 업데이트
+            if (!searchTypeValue.includes("최대값")) {
+                searchTypeValue.push("최대값");
+            }
+        } else {
+            document.getElementById("max").value = ""; // 숨겨진 input 최대값 비우기
+            searchTypeValue = searchTypeValue.filter(item => item !== "최대값");
+        }
+
+        // searchTypeValue 배열에서 빈 요소 제거 및 값 업데이트
+        searchTypeInput.value = searchTypeValue.filter(Boolean).join('/');
+    }
+
+    function getProduct(event) {
+        console.log(event.target.dataset.id)
+        window.location.href = "/prod/product?prodId="+event.target.dataset.id
+    }
+</script>
+

@@ -1,0 +1,30 @@
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/auth/join.css}">
+    <link rel="stylesheet" th:href="@{/css/basic.css}">
+    <header th:replace="layout/main/header.html"></header>
+    <main id="join-container" style="margin-top: 100px;">
+        <div>
+            <h2 class="header-title1">대한민국 1등 온라인 인터넷 쇼핑</h2>
+            <h1 class="header-title2">롯데 ON에 오신것을 환영합니다.</h1>
+            <div class="main">
+                <div class="customer box">
+                    <div class="customer-header box-header">일반회원가입</div>
+                    <div class="customer-main box-main">
+                        <div class="customer-content content">개인구매회원(외국인포함)</div>
+                        <div class="customer-advice advice">만 14세이상가능</div>
+                    </div>
+                    <a href="/auth/signup?termsType=customer" class="customer-btn box-btn">회원가입</a>
+                </div>
+                <div class="seller box">
+                    <div class="seller-header box-header">판매회원가입</div>
+                    <div class="seller-main box-main">
+                        <div class="seller-content content">사업자판매회원</div>
+                        <div class="seller-advice advice">사업자등록증을 보유한 회원</div>
+                    </div>
+                    <a href="/auth/signup?termsType=seller" class="seller-btn box-btn">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="layout/main/footer.html"></footer>
+

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>페이지를 찾을 수 없습니다</title>
+    <link rel="stylesheet" th:href="@{/css/basic.css}">
+</head>
+<body>
+<header th:replace="layout/main/header.html"></header>
+<main>
+    <h1>404 - 페이지를 찾을 수 없습니다</h1>
+    <p>요청하신 페이지를 찾을 수 없습니다.</p>
+    <a href="/" class="btn">홈으로 돌아가기</a>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+</body>
+</html>

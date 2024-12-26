@@ -1,0 +1,211 @@
+.container {
+    width: 800px;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 50px auto 20px;
+}
+
+.header-title{
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.header-right {
+    font-size: 14px;
+}
+
+.header-right .bold {
+    font-weight: 600;
+}
+
+.header-gubun {
+    height: 3px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.search{
+    height: 32.5px;
+    display: flex;
+    gap: 5px;
+}
+
+.search-option {
+    width: 70px;
+    text-align: center;
+    border: 1px solid #c7c7c7;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+}
+
+.search-keyword {
+    border: 1px solid #c7c7c7;
+    outline: none;
+    width: 150px;
+    border-radius: 5px;
+}
+
+.search-keyword::placeholder {
+    padding-left: 8px;
+}
+
+.search-btn {
+    background-color: #303644;
+    color: white;
+    width: 62px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.header-gubun-bottom {
+    width: 800px;
+    height: 1px;
+    background-image: url(/images/login-gubun-bottom.png);
+    margin-top: 30px;
+}
+
+.tb1 {
+    box-sizing: border-box;
+    border-collapse: collapse;
+}
+
+.tb1 th {
+    height: 50px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 2px solid #e8e8e8;
+}
+.checkbox {
+    width: 30px;
+}
+.picture, .discount, .point , .stock, .seller, .views, .admin{
+    width: 60px;
+}
+.prodId{
+    width: 90px;
+}
+.name {
+    width: 190px;
+}
+.price{
+    width: 70px;
+}
+
+.tb1 td {
+    padding: 5px 0;
+    text-align: center;
+    font-weight: 400;
+    font-size: 12px;
+    border-bottom: 2px solid #e8e8e8;
+}
+
+.td-picture {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.td-picture img {
+    width: 40px;
+    height: 40px;
+}
+
+.td-admin input{
+    border: none;
+    background-color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.btns {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: box-shadow 0.3s ease;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.insert-btn {
+    background-color: #647264;
+    color: white !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: box-shadow 0.3s ease;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.page {
+    margin: 30px 0;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.page a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.3;
+    }
+}
+
+.page .on {
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+button {
+    background-color: #FFFFFF;
+    border: none;
+}
+
+
+

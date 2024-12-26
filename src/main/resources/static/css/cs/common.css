@@ -1,0 +1,40 @@
+
+/* 초기화 */
+*{margin: 0; padding:0; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 400;}
+a{text-decoration: none; color: #000;}
+ul, li{list-style: none;}
+#main{width: 1200px; height:auto; margin: 0 auto; border: 1px solid #ffffff;}
+
+/* aside */
+.cs_nav{ height: 40px; line-height: 40px; padding-left: 30px; border-bottom: 1px solid #D9D9D9;}
+.cs_nav .cs_nav_tit p ,.cs_nav .cs_nav_tit span{font-weight: 900;} 
+.cs_aside{width: 300px; height: 700px; display: flex; flex-direction: column;align-items: center;border-right: 1px solid #D9D9D9;}
+.aside_title{width: 120px;height: 60px;line-height: 60px;font-size: 18px;font-weight: 700;}
+.aside_cate{height: 300px;width: 140px;display: flex;flex-direction: column;text-align: left;}
+.cate_list{margin: 10px;}
+
+/* category bar */
+.cate_bar{height: auto; width: 780px; padding: 20px 20px; margin-left: 30px;}
+.cate_title{font-size: 18px; font-weight: 900;}
+.cate_des{color: #808080; font-size: 13px; margin-top: 5px;}
+
+/* list_common */
+.cate::after{ content: " ]";}
+.cate::before{ content: "[ ";}
+.cate{ text-align: left; font-weight: 400;}
+section>ul>li>a .content{white-space : nowrap; overflow : hidden; text-overflow: ellipsis; font-weight: 400;}
+.date{width: 100px; text-align: center; color: #808080; font-weight: 400;}
+
+/* paging */
+.paging{display: flex; justify-content: center; margin-top: 30px;}
+.paging>ol{ display: flex;}
+.paging>ol>li{width: 20px; text-align: center;}
+.ico{width: 50px; text-align: center;}
+
+/* Q */
+.Q{font-size: 18px; font-weight: 900; color: #0070C0; width: 40px; text-align: center;}
+
+/* button */
+.btn_list{display: block; margin: 0 auto;} /* 위쪽 여백 간격은 해당 html에만 적용되는 css파일에 .btn_list{margin-top: 원하는 값;} */
+.btn_gray{width: 100px; height: 40px; background-color: #BFBFBF; border: none; color: #fff;}
+.btn_blue{width: 100px; height: 40px; background-color: #8EB4E3; border: none; color: #fff;}

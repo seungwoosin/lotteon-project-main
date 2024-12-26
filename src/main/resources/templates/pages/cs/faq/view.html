@@ -1,0 +1,62 @@
+<link rel="stylesheet" th:href="@{/css/cs/cs_common.css}">
+<link rel="stylesheet" th:href="@{/css/cs/cs_faq.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<header th:replace="layout/main/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 230px;">
+    <aside class="cs_aside">
+        <h3 class="aside_title">자주묻는질문</h3>
+        <ul class="aside_cate">
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='user')}" th:classappend="${selectedCate1 == 'user'} ? 'active' : ''">회원</a></li>
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='coupon')}" th:classappend="${selectedCate1 == 'coupon'} ? 'active' : ''">쿠폰/이벤트</a></li>
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='order')}" th:classappend="${selectedCate1 == 'order'} ? 'active' : ''">주문/결제</a></li>
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='delivery')}" th:classappend="${selectedCate1 == 'delivery'} ? 'active' : ''">배송</a></li>
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='cancel')}" th:classappend="${selectedCate1 == 'cancel'} ? 'active' : ''">취소/반품/교환</a></li>
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='travel')}" th:classappend="${selectedCate1 == 'travel'} ? 'active' : ''">여행/숙박/항공</a></li>
+            <li class="cate_list"><a th:href="@{/cs/faqs(category='safe')}" th:classappend="${selectedCate1 == 'safe'} ? 'active' : ''">안전거래</a></li>
+        </ul>
+    </aside>
+    <div id="main" style="height: auto;">
+       <div class="top-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
+           <div class="left">
+                    <h3 class="cate_title" th:text="${selectedCate1 == 'user' ? '회원' :
+                                      selectedCate1 == 'coupon' ? '쿠폰/이벤트' :
+                                      selectedCate1 == 'order' ? '주문/결제' :
+                                      selectedCate1 == 'delivery' ? '배송' :
+                                      selectedCate1 == 'cancel' ? '취소/반품/교환' :
+                                      selectedCate1 == 'travel' ? '여행/숙박/항공' :
+                                      selectedCate1 == 'safe' ? '안전거래' : '안전거래'}"></h3>
+                    <p class="cate_des" th:text="${selectedCate1 == 'user' ? '회원 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'coupon' ? '쿠폰/이벤트 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'order' ? '주문/결제 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'delivery' ? '배송 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'cancel' ? '취소/반품/교환 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'travel' ? '여행/숙박/항공 관련 자주 묻는 질문입니다.' :
+                                  selectedCate1 == 'safe' ? '안전거래 관련 자주 묻는 질문입니다.' : '안전거래 관련 자주 묻는 질문입니다.'}">
+                    </p>
+                </div>
+                    <div class="right" style="text-align: right;">
+                        <p class="cs_nav_tit" style="margin: 0; font-size: 0.9em; color: #555;"><span>홈</span> > <span>자주묻는질문</span></p>
+                    </div>
+                </div>
+       <div class="box">
+           <section class="cs_notice">
+              <div class="view_title">
+                  <p class="v_title Q">Q.</p>
+                  <p class="v_title title" th:text="${faq.title}">개인회원과 법인회원에 차이가 있나요?</p>
+              </div>
+
+                <div class="view_content">
+                    <div>
+                        <p th:utext="${faq.content}">내용</p>
+                    </div>
+                </div>
+                <div class="autolink" th:if="${categoryWarning != null}">
+                    <p class="warning-message" th:text="${categoryWarning}" style="white-space: pre-line;"></p>
+                </div>
+                <div style="text-align: center; padding-top: 40px;">
+                     <a th:href="@{/cs/faqs}" class="btn_gray btn_list">목록</a>
+                </div>
+            </section>
+        </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>

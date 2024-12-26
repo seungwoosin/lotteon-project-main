@@ -1,0 +1,166 @@
+/* General Styles */
+body {
+    background-color: #f9f9f9;
+    font-family: 'Noto Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.contentHead {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 40px 0;
+}
+
+.contentHead h1 {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #333;
+}
+
+.contentHead p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Story Navigation (카테고리 네비게이션) */
+.storyNav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    gap: 15px;
+}
+
+.storyNav a {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.storyNav a:hover {
+    background-color: #e74c3c;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.storyNav a.active {
+    background-color: #333;
+    color: #fff;
+}
+
+/* 카드 그리드 */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열로 분할 */
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 100%;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 배지 스타일 */
+.card-badge {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 0.9em;
+    font-weight: 700;
+    border-radius: 5px;
+}
+
+.card:hover .card-badge {
+    display: block;
+}
+
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.card-content h3 {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.card-content p {
+    font-size: 1em;
+    color: #666;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr); /* 화면이 작아지면 2열 */
+    }
+}
+
+@media (max-width: 480px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* 작은 화면에서는 1열 */
+    }
+}
+
+/* 콘텐츠 더보기 버튼 스타일 */
+.elementor-button-wrapper {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* 버튼 스타일 */
+.elementor-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 1.2em;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.elementor-button:hover {
+    background-color: #c0392b;
+}
+
+/* 스피너 스타일 */
+.e-load-more-spinner {
+    display: none;
+    margin-left: 10px;
+}
+
+.elementor-button:active .e-load-more-spinner {
+    display: inline-block;
+}
+.parent-element {
+    display: flex;
+    justify-content: center;
+}

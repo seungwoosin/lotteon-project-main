@@ -1,0 +1,72 @@
+<!-- AOS CSS 추가 -->
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css}">
+<link rel="stylesheet" th:href="@{/css/company/recruit.css}">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}">
+<link th:href="@{https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap}" rel="stylesheet">
+
+<header th:replace="layout/company/header.html"></header>
+
+<!-- 배너 섹션 -->
+<section class="hero-banner" style="margin-bottom: 30px">
+    <img th:src="@{/images/optimize.webp}" alt="LotteON Banner" class="banner-img" data-aos="fade-up">
+    <div class="banner-text" data-aos="fade-right">
+        <h1>Join LOTTE ON</h1>
+        <button class="apply-btn" data-aos="zoom-in">상시채용</button>
+    </div>
+</section>
+
+<main class="container">
+    <!-- 컨텐츠 헤드 -->
+    <div class="content-head" data-aos="fade-down">
+        <h2>쇼핑을 새롭게,<br>
+            세상을 이롭게</h2>
+        <p>쇼핑 경험을 재정의할 인재를 찾습니다!</p>
+    </div>
+
+    <!-- 회사 소개 -->
+    <div class="company-intro" data-aos="fade-up">
+        <p>롯데ON은 혁신과 안정성을 기반으로 독창적인 문화를 만들어가고 있습니다.<br>
+            여러분을 기다립니다. 롯데ON과 함께 성장하세요.</p>
+    </div>
+
+    <!-- 채용 정보 섹션 -->
+    <section class="recruitment-section">
+        <div class="filters" data-aos="fade-right">
+            <select>
+                <option>전체 직군</option>
+            </select>
+            <select>
+                <option>전체 소속</option>
+            </select>
+            <select>
+                <option>전체 고용 형태</option>
+            </select>
+            <input type="text" placeholder="키워드 검색">
+        </div>
+        <div class="recruit-table" data-aos="fade-up">
+            <a th:each="recruit : ${recruits}" class="recruit-card" data-aos="flip-left">
+                <div class="recruit-info">
+                    <h3 th:text="${recruit.title}">뷰티 (백화점, 명품) MD</h3>
+                    <span th:text="${recruit.department} + ' | ' + ${recruit.career} + ' | ' + ${recruit.type} + ' | 기간 : ' + ${recruit.sdate} + ' ~ ' + ${recruit.edate}">영업 | MD | 경력 6~12년 | 정규직 | 롯데커머스 삼성오피스</span>
+                </div>
+                <div th:if="${recruit.state == 1}" class="status">모집중</div>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="layout/company/footer.html"></footer>
+
+<!-- AOS 및 이벤트 스크립트 추가 -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js}"></script>
+<script>
+    // AOS 초기화
+    AOS.init();
+
+    // "상시채용" 버튼 클릭 이벤트
+    document.querySelector('.apply-btn').addEventListener('click', function() {
+        alert('상시 채용 페이지로 이동합니다!');
+        // URL로 리디렉션
+        window.location.href = /*[[@{/apply}]]*/ '/apply';
+    });
+</script>

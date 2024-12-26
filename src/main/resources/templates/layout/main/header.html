@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[[${site.configTitle}]] [[${site.configSub}]]</title>
+    <link rel="stylesheet" as="style" crossorigin th:href="@{https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css}" /> <!-- 가변 다이나믹 서브셋 (fontfamily : pretendard) -->
+    <link rel="shortcut icon" th:href="@{'/file/'+${site.configFabicon}}">
+    <link th:href="@{/css/reset.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css}" rel="stylesheet"/>
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css}" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js}"></script>
+    <script defer th:src="@{/js/postVisitor.js}"></script>
+    <script defer th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js}"></script>
+    <link th:href="@{/js/jquery.bxslider.min.css}" rel="stylesheet" />
+    <script defer th:src="@{/js/jquery.bxslider.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js}"></script>
+</head>
+<!--
+
+     날짜 : 2024/10/13 (일)
+     이름 : 김민희
+     내용 : 메인 header.html 생성
+
+     수정이력
+      - 2024/10/30 (수) 김민희 - 실시간 검색어 및 GNB 영역 마크업 구조 수정
+      - 2024/11/02 (토) 김민희 - 로그인 시 관리자,판매자,일반사용자 구분 되는 인가설정
+      - 2024/11/03 (일) 이상훈 - 메인 카테고리 출력, 섹션별 상품출력, 캐싱처리, 권한 오류 수정 연관검색기능구현, 실시간 검색어 구현
+      - 2024/11/05 (화) 김주경 - 탑배너 출력 및 스크롤 가변
+      - 2024/11/12 (화) 김주경 - 탑배너 닫기
+-->
+
+<body>
+    <a id="topBanner"
+       th:unless="${topBanner eq null}"
+       th:href="@{'/'+${topBanner.bannerLink}}"
+       th:style="'background-color:'+${topBanner.bannerBg}">
+        <img th:src="@{'/file/'+${topBanner.bannerImg}}" th:alt="${topBanner.bannerName}" style="height: 100%">
+    </a>
+    <button th:unless="${topBanner eq null}" class="bnClose bi bi-x"></button>
+    <header id="header">
+        <div id="headerTop"></div><!--.h_utill-->
+        <div id="headerIn">
+            <div class="utill">
+            <ul>
+                <!-- 로그인 시 || 안녕하세요, 000님 (관리자) -->
+                <!-- 관리자: admin / 판매자: seller / 사용자: customer (사용자면 사용자 등급 표시)  -->
+                <li sec:authorize="hasRole('admin')"><a>안녕하세요, 관리자님 환영합니다.</a></li>
+                <li sec:authorize="hasRole('seller')"><a>안녕하세요, 판매자님 환영합니다.</a></li>
+
+                <!-- (customer)일반사용자로 로그인 시 사용자등급별 출력 -->
+                <li sec:authorize="hasRole('customer')" class="loginCust">
+                    안녕하세요&nbsp;
+                    <span th:text="${#authentication.principal.user.customer.custName}"></span>&nbsp;님&nbsp;
+                    &#40;<span th:switch="${#authentication.principal.user.customer.custGrade}">
+                            <span th:case="'VVIP'">VVIP</span>
+                            <span th:case="'VIP'">VIP</span>
+                            <span th:case="'GOLD'">GOLD</span>
+                            <span th:case="'SILVER'">SILVER</span>
+                            <span th:case="'FAMILY'">FAMILY</span>
+                        </span>&#41;
+                </li><!-- .loginCust -->
+
+                <li class="login" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/auth/login/view}">로그인</a>
+                </li><!-- .login -->
+
+                <li class="logout" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/auth/logout}">로그아웃</a>
+                </li><!-- .logout  -->
+
+                <li class="join" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/auth/join}">회원가입</a>
+                </li><!-- .join -->
+
+                <li class="cs"><a th:href="@{/cs/index}">고객센터</a></li><!-- .cs -->
+                <li sec:authorize="hasRole('admin')"><a th:href="@{/admin/config/index}">관리자</a></li>
+                <li sec:authorize="hasRole('seller')"><a th:href="@{/admin/prod/products}">판매자</a></li>
+
+
+            </ul>
+        </div><!--.utill-->
+        <section id="top-box">
+            <h1 class="logo">
+                <a th:href="@{/}">
+                    <img class="hlogo" th:src="@{'/file/'+${site.configHeaderLogo}}" alt="LotteON logo">
+                </a>
+            </h1><!--.logo-->
+
+                <!-- 내 도구:마이롯데, 장바구니, 나의 찜 -->
+                <!--
+                <div class="myTool">
+                    <a th:href="@{/my/index}"><img class="img-header-link" th:src="@{/images/header-my.png}"></a>
+                    <a th:href="@{/prod/cart}">
+                        <img class="img-header-link" th:src="@{/images/header-cart.png}">
+                        <span class="cartCount" th:if="${cartCount!=null&&cartCount!=0}">[[${cartCount}]]</span>
+                    </a>
+                    <a th:href="@{/prod/hearts}"><img class="img-header-link" th:src="@{/images/header-zzim.png}"></a>
+                    <button onclick="openChatBot()">챗봇</button>
+                </div>
+                -->
+            <div class="myTool2">
+                <ul >
+                    <li>
+                        <a th:href="@{/my/index}">
+                            <img class="img-header-link" th:src="@{/images/index_icon(my).png}">
+                            <p class="img-header-tit">마이롯데</p>
+                        </a>
+                    </li>
+                    <li class="prodCart">
+                        <a th:href="@{/prod/cart}">
+                            <img class="img-header-link prodCart" th:src="@{/images/index_icon(cart).png}">
+                            <span class="cartCount" th:if="${cartCount>0}">[[${cartCount}]]</span>
+                            <p class="img-header-tit">장바구니</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/prod/hearts}">
+                            <img class="img-header-link" th:src="@{/images/index_icon(heart).png}">
+                            <p class="img-header-tit">나의 찜</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="openChatBot()">
+                            <img class="img-header-link" th:src="@{/images/index_icon(chatbot).png}">
+                            <p class="img-header-tit">챗봇</p>
+                        </a>
+                    </li>
+                    <!-- <button onclick="openChatBot()">챗봇</button> -->
+
+                </ul><!-- .myTool2 -->
+            </div>
+
+        </section><!-- #top-box -->
+
+            <!-- 연관 검색어 start -->
+            <section class="search-container">
+                <form th:action="@{/prod/products/search}" method="get" style="z-index: 2;" class="t-search">
+                    <input autocomplete="off" onclick="openRelated()" type="text" id="search" name="search" placeholder="어떤 상품을 찾으세요?">
+                    <input type="hidden" name="related" th:value="${related}"/>
+                    <label for="search"></label><!--.search2-->
+                    <button style="border: none;" type="submit" class="ico_sch">
+                        <img th:src="@{/images/ico_search.png}" alt="검색하기">
+                    </button><!--.ico_sch-->
+                </form><!--.search2 -->
+                <div id="related-box" class="related-search-box">
+                    <div onclick="closeRelated()" class="close-related">X</div>
+                    <h4>연관검색어</h4><br>
+                    <div class="related-keyword"></div><!--.related-keyword -->
+                </div><!--#related-box .related-search-box -->
+            </section>
+            <!-- 연관 검색어 end -->
+
+            <!-- 메뉴 박스 -->
+            <div class="menu-box">
+                <div class="menu-box-in">
+
+                    <ul class="gnb cf">
+                        <li sec:authorize="hasRole('customer')"><a th:href="@{/event/attendance(id=${#authentication.principal.user.customer.id})}">출석이벤트</a></li>
+                        <li><a th:href="${isMainPage != null && isMainPage}? '#aside' : '/#aside'">히트상품</a></li>
+                        <li><a th:href="${isMainPage != null && isMainPage}? '#hit' : '/#hit'">추천상품</a></li>
+                        <li><a th:href="${isMainPage != null && isMainPage}? '#recommend' : '/#recommend'">최신상품</a></li>
+                        <li><a th:href="${isMainPage != null && isMainPage}? '#recent' : '/#recent'">할인상품</a></li>
+                        <li><a th:href="${isMainPage != null && isMainPage}? '#discount' : '/#discount'">적립이벤트상품</a></li>
+<!--                        <li><a href="#">할인상품</a></li>-->
+                    </ul><!-- .gnb -->
+
+                    <!-- 실시간 검색어 start -->
+                    <div class="search-slider">
+                        <ul class="searchSlider">
+<!--                            <li><a href="#">실시간 검색어 1</a></li>-->
+<!--                            <li><a href="#">실시간 검색어 2</a></li>-->
+<!--                            <li><a href="#">실시간 검색어 3</a></li>-->
+<!--                            <li><a href="#">실시간 검색어 4</a></li>-->
+<!--                            <li><a href="#">실시간 검색어 5</a></li>-->
+                        </ul><!-- .searchSlider -->
+                        <div class="sch_ico_down">
+                            <img th:src="@{/images/icon_search_down.svg}" alt="실시간검색어ico(∨)">
+                        </div>
+                    </div><!-- .search-slider -->
+
+                </div><!-- .menu-box-in-->
+            </div><!-- .menu-box -->
+        </div><!--.headerIn-->
+    </header><!--#header-->
+    <div class="chat-bot"></div>
+</body>
+
+<script>
+
+    function openChatBot(){
+        document.querySelector('.chat-bot').innerHTML =`
+            <span class="h3 title-chat">
+                안녕하세요! 무엇을 도와드릴까요?
+            </span>
+
+            <span onclick="closeChat()" class="x-btn-chat h3">
+                <img src="/images/chat-bot-close.png" class="chat-bot-close" alt="챗봇 창 닫기 버튼">
+            </span><br>
+
+
+            <div class="chat-bot-text-box">
+                <div id="chatResponse">
+                    <div class="resp-chat">
+                        안녕하세요! 승우 입니다. 😉 <br />
+                    </div>
+                    <div class="resp-chat">궁금한 점과 관련된 키워드를 <br /> 입력해 주세요.</div>
+                </div>
+            </div>
+            <div class="chat-bot-message-box">
+                <input type="text" id="userMessage" placeholder="메시지를 입력하세요">
+                <button onclick="sendMessage()" class="chat-bot-message-send">
+                    챗
+                </button>
+            </div>
+        `
+        document.querySelector('.chat-bot').style.display = 'block'
+    }
+
+    function closeChat(){
+        document.querySelector('.chat-bot').style.display = 'none';
+    }
+
+    async function sendMessage() {
+        const userMessage = document.getElementById('userMessage').value;
+        try {
+            const response = await axios.get(`/api/chatbot/chat?prompt=${userMessage}`, null,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            });
+            const createReq = document.createElement('div')
+            createReq.classList.add('req-chat')
+            createReq.innerText = userMessage;
+            const createResp = document.createElement('div')
+            createResp.classList.add('resp-chat')
+            createResp.innerText = response.data
+            document.getElementById('chatResponse').appendChild(createReq)
+            document.getElementById('chatResponse').appendChild(createResp)
+
+            document.getElementById('userMessage').value = '';
+
+            document.querySelector('.chat-bot-text-box').scrollTop = document.querySelector('.chat-bot-text-box').scrollHeight;
+        } catch (error) {
+            console.error('Error communicating with chatbot:', error);
+        }
+    }
+
+    let timer;
+
+    window.onload = async function (){
+        try {
+            const resp = await axios.get("/search/live-search-top10",{
+                headers:{
+                    "Content-Type" : "application/json"
+                }
+            })
+            const searches = resp.data.searches
+            document.querySelector('.searchSlider').innerHTML = searches.map((v, index) => `
+                <li><a href="/prod/products/search?keyword=${v.keyword.replace(/"/g, '')}">${v.keyword.replace(/"/g, '')}&nbsp;&nbsp;&nbsp;${index + 1}</a></li>
+            `).join('');
+
+            $(document).ready(function(){
+                $('.searchSlider').bxSlider({
+                    mode: 'vertical',    // 세로로 슬라이드 이동
+                    auto: true,          // 자동 슬라이드 설정
+                    speed: 500,          // 슬라이드 전환 속도
+                    pause: 3000,         // 슬라이드 대기 시간
+                    controls: false,     // 이전/다음 버튼 제거
+                    pager: false,        // 하단 페이저 제거
+                    autoHover: true      // 마우스 호버 시 일시 정지
+                });
+
+            });
+        } catch (e) {
+
+        }
+    }
+
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 120) { // 스크롤이 120px 이상일 때 적용
+            header.classList.add('fix');
+        } else {
+            header.classList.remove('fix');
+        }
+    });
+
+    function openRelated(){
+        const relatedSearch = document.querySelector('.related-search-inp')
+        const search = document.querySelector('.search-container')
+        const topBox = document.getElementById('top-box')
+        search.classList.add("open");
+        topBox.classList.add("open");
+        relatedSearch.focus()
+    }
+
+    function closeRelated(){
+        const search = document.querySelector('.search-container')
+        const topBox = document.getElementById('top-box')
+        search.classList.remove("open");
+        topBox.classList.remove("open");
+    }
+    document.addEventListener('click', function(event) {
+        const related = document.getElementById('related-box');
+        const search = document.querySelector('.search-container')
+        const topBox = document.getElementById('top-box');
+
+        if (!related.contains(event.target) && !search.contains(event.target)) {
+            search.classList.remove('open');
+            topBox.classList.remove("open");
+        }
+    });
+
+    document.getElementById("search").addEventListener("input", function() {
+        clearTimeout(timer);  // 이전 타이머를 초기화하여 중복 요청 방지
+
+        // 새로운 타이머 설정 (2초 후에 연관 검색어 표시)
+        timer = setTimeout(() => {
+            const searchTerm = this.value;
+
+            if (searchTerm) {
+                // 연관 검색어 로드 함수 호출
+                loadRelatedSearches(searchTerm);
+            } else {
+                // 입력 내용이 비어 있을 경우 연관 검색어 숨김
+                document.getElementById("relatedSearches").innerHTML = "";
+            }
+        }, 2000); // 2초 지연 설정
+    });
+
+    async function loadRelatedSearches(searchTerm) {
+        try {
+            const resp = await axios.get("/search/related-search",{
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                params : {
+                    'keyword' : searchTerm
+                }
+            })
+            document.querySelector('.related-keyword').innerHTML = resp.data.map(v => {
+                return `<span onclick="searchRelated(event)" data-keyword="${v}">#${v}</span>`;
+            }).join('');
+        } catch (e) {
+            alert(e)
+        }
+    }
+
+    function searchRelated(event){
+        window.location.href = "/prod/products/search?search="+event.target.dataset.keyword
+    }
+</script>

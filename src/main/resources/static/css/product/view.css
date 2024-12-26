@@ -1,0 +1,669 @@
+/* 레이아웃 설정 */
+#wrap {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.aside {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+}
+
+.aside1, .aside2 {
+    background-color: #111;
+    padding: 20px;
+    margin-bottom: 10px;
+    width: 236px;
+    color: #ffffff;
+    border-radius: 8px;
+}
+
+/* 메인 컨텐츠 영역 */
+#main {
+    width: 816px;
+    height: auto;
+    border: 2px solid #D9D9D9;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 네비게이션 스타일 */
+
+.title-and-location {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.sub_tit {
+    font-size: 18px;
+    font-weight: 700;
+    color: #d9534f;
+    border-bottom: 2px solid #d9534f; /* 구분선 추가 */
+    padding-bottom: 5px;
+}
+
+/* 상품 정보 섹션 */
+.product_info {
+    margin: 0 auto;
+    display: flex;
+    width: 100%;
+    height: auto;
+    margin-top: 24px;
+    /* gap: 13px; */
+    justify-content: space-evenly;
+}
+
+.product_info > img {
+    width: 380px;
+    height: 380px;
+    border-radius: 10px;
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
+}
+
+.tb1 {
+    width: 400px;
+    border-collapse: collapse;
+}
+
+.tb1 td {
+    padding: 10px 0 10px 10px;
+}
+
+/* 회사 정보 */
+.td_company > span:first-child {
+    font-size: 16px;
+    font-weight: 700;
+}
+.td_company span:nth-child(2) {font-size: 12px;}
+
+/* 상품명 및 별점 */
+.prod_name > .prod_name_span{font-size: 20px;font-weight: bold;}
+.prod_name > .box {display: flex ; height: 16px ; overflow: hidden; align-items: center; margin-top: 5px}
+.prod_name > .box > * {margin: 0 5px;padding-top:2px;font-size: 12px}
+.prod_name > .box > a{display: inline-block ;height: 16px; line-height: 16px;font-size: 12px}
+.prod_name > .box > a > span {display: inline-block ;margin-top: -2px;height: 16px;font-size: 12px}
+
+
+
+/* 가격 정보 */
+.price del {
+    color: #7f7f7f;
+    font-size: 16px;
+}
+.price span{font-size: 12px}
+.price span:nth-child(2) {
+    font-size: 16px;
+    color: #c00000;
+    font-weight: bold;
+}
+
+.price #finalPrice{
+    font-size: 20px;
+    font-weight: bold;
+    color: #d9534f;
+}
+.price > .cardEvent{display:inline-block;background: url('/images/ico_sprites.png') no-repeat -54px -22px;width: 25px;height: 17px;zoom:0.8;}
+.price > .install{display:inline-block;background: url('/images/ico_sprites.png') no-repeat -133px 0;width: 21px;height: 15px;zoom:0.8; margin-left: 2px}
+
+/* 배송 정보 */
+.delivery {
+    font-size: 16px;
+    color: #333;
+}
+
+.delivery #delivery-date {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 총 금액 */
+.total{text-align: right;}
+.total > span:nth-of-type(2) {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* 버튼 스타일 */
+.buttons {
+    display: flex;
+    /* gap: 12px; */
+    padding-left: 10px;
+    justify-content: space-between;
+    width: 400px;
+}
+
+.cart, .btnorder {
+    width: 184px;
+    height: 45px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cart {
+    color: #E60012;
+    border: 1px solid #E60012;
+    background: transparent;
+    &:hover {
+        background-color: rgba(230, 0, 18, 0.1);
+    }
+}
+
+
+.btnorder {
+    background-color: #E60012;
+}
+
+.btnorder:hover {
+    background-color: #cc000f;
+}
+
+.view_banner {
+    width: 100%;
+    height: 64px;
+    margin: 10px;
+    /* padding-right: 10px; */
+    /* display: flex; */
+    /* justify-content: flex-end; */
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.view_banner a[href]{
+    display: inline-block;
+    text-align: center;
+    width: 390px;border-radius: 8px; overflow: hidden}
+
+.view_banner img {
+    height: 100%;
+    margin: 0 auto;
+}
+
+/* 상품 정보 제공 고시 */
+.sub_tit2, .sub_tit3, .sub_tit4 {
+    font-size: 18px; /* 제목 폰트 크기 약간 키움 */
+    font-weight: 700; /* 굵게 표시 */
+    color: #d9534f;
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #d9534f; /* 구분선 추가 */
+    padding-bottom: 5px;
+}
+
+#refund{
+    width: 95%;
+    margin: 0 auto;
+    background-color: #f7f7f7; /*배경 색상 */
+    border-radius:10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#refund > div {
+    max-height: 186px;
+    overflow: hidden;
+    transition: all 0.5s;
+    width: 100%;
+}
+#refund > .toggle{
+    border: none;
+    outline: none;
+    width: 95%;
+    text-align: center;
+    background-color: transparent;
+    padding: 17px;
+    border-top: #d7d7d7 1px solid;
+}
+.tb2{
+    border: none;
+    margin: 10px auto;
+    font-size: 14px; /* 폰트 크기 조정 */
+    color: #444;
+    overflow: hidden; /* 둥근 테두리 밖 요소 잘리도록 설정 */
+    box-sizing: border-box;
+}
+
+.tb2 th, .tb2 td{
+    padding: 10px 15px; /* 패딩 조정 */
+}
+.tb2 th{
+    font-weight: 600;
+    color: #666; /* 헤더 텍스트 색상 */
+}
+
+.refund {
+    width: 95%;
+    padding: 15px;
+    font-size: 13px; /* 글자 크기 조정 */
+    line-height: 1.5;
+    margin: 10px auto 20px;
+    color: #666666;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+/* 관련 상품 스타일 */
+#related-products {
+    display: flex;
+    margin-top: 30px;
+}
+
+.relaties {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 154px;
+    height: auto;
+    gap: 10px;
+    margin-left: 10px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.relaties img {
+    width: 134px;
+    height: 134px;
+    border-radius: 8px;
+}
+
+.related-descriptions {
+    width: 134px;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #333;
+}
+.related-descriptions dt {
+    font-weight: 400;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 최대 2줄 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.related-price{color: #a8a8a8; text-decoration: line-through}
+.related-total{font-weight: bold; margin-right: 5px}
+.related-dc{font-weight: bold;color: #E60012;}
+
+/* 상품 리뷰 스타일 */
+.cmt {
+    width: 750px;
+    border: 1px solid #e0e0e0; /* 테두리 추가 */
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 8px; /* 둥근 모서리 */
+}
+
+.cmt span {
+    display: block;
+}
+.cmt span.cmt-prodName {
+    font-weight: bold;
+    color: #333; /* 상품명 색상 */
+}
+.cmt span.cmt-prodRdate {
+    font-size: 12px;
+    color: #999; /* 날짜 색상 */
+}
+.cmt span.cmt-memUid {
+    font-size: 14px;
+    color: #666; /* 작성자 이름 색상 */
+}
+.cmt span.cmt-score {
+    padding: 0 10px 0 5px;
+}
+
+/* 페이지 버튼 */
+.page {
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.page a, .page button {
+    color: #595959;
+    padding: 8px 14px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.page a:hover, .page button:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.page button.active {
+    font-weight: bold;
+    background-color: #d9534f;
+    color: #fff;
+    border-color: #d9534f;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.page a:disabled, .page button:disabled {
+    color: #ccc;
+    border-color: #e0e0e0;
+    background-color: #fafafa;
+    cursor: default;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    background-color: #ffd700;
+    color: #fff;
+    font-weight: bold;
+}
+
+/*수정한부분@@@@@@@@@@@@@@@@*/
+
+.count_qty{padding: 10px;}
+.qty{display: inline-block; width: 40px;}
+#qty{width: 160px}
+#qty>span{display: inline-block;}
+.count{width: 40px; height: 30px; font-size: 14px; text-align: center;font-weight: 400; padding: 5px; border-radius: 0;border: solid #bfbfbf; border-width: 1px 0; color: #666}
+#qty > .decrement, #qty > .increment {width: 30px;height: 30px; margin: 0;font-size: 15px; gap: 0;color: #666; box-sizing: border-box;border: solid 1px #bfbfbf; background: #fff}
+#qty > .decrement{border-radius: 5px 0 0 5px}
+#qty > .increment{border-radius: 0 5px 5px 0}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.btnorder > a {
+    font-size: 16px;
+    font-weight: bold;
+}
+span.optName{
+    position: relative;
+    margin-right: 10px;
+    left: 13px ;
+    font-size: 11px;
+    color: #666;
+}
+.prodOptions {
+    width: 100%;
+    height: 50px;
+    margin: -23px 0 0;
+    padding: 14px 0 0 10px;
+    border: #a8a8a8 1px solid;
+    border-radius: 10px;
+}
+
+div.greyBox{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    background: #f8f8f8;
+    padding:12px 20px;
+}
+
+.detail_image_container {
+    position: relative;
+    max-height: 99999px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.detail_image {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 2s ease;
+    position: relative;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.detailImg{
+    width: 800px;
+}
+
+.detailBtnDiv {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: #fff; /* 버튼 배경색 추가하여 가독성 향상 */
+    border-radius: 4px;
+}
+
+.detail_image.expanded {
+    max-height: 99999px; /* 충분히 큰 값으로 설정하여 전체 이미지가 보이도록 */
+}
+
+.detail_image::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+#toggleButton
+{
+    display: block;
+    width: 100%;
+    height: 56px;
+    font-size: 14px;
+    border-radius: 7px;
+    margin: 10px auto;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    background-color: #FFFFFF;
+    cursor: pointer;
+}
+
+#coupondl{
+    cursor: pointer;
+    color: #E60012;
+    border: 1px solid #E60012;
+    padding: 10px 10px;
+    border-radius: 15px;
+    width: 80px;
+    height: 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    float: right;
+    margin-top: -9px;
+    margin-right: 9px;
+}
+#coupondl>.img{
+    display: inline-block; background: url('/images/ico_sprites.png') no-repeat -328px -140px #FFFFFF;
+    width: 26px;height: 24px; border: none; outline: none; zoom:0.5; padding-top: 2px
+}
+.popup, .bg {
+    display: none;
+}
+
+.bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    background-color: white;
+    z-index: 1001;
+    overflow: auto;
+    height: 550px;
+    flex-direction: column;
+    gap: 20px;
+    display: none;
+    border-radius: 20px;
+}
+.popup > h1{
+    width: 100%;
+    position: fixed;
+    height: 70px;
+    padding: 20px;
+    background: #FFF;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.popup > h1 > * {font-size: 15px;}
+.popup > h1 > button {border: none; background: transparent}
+.popup > section{
+    margin-top: 70px;
+    overflow-y: auto;
+    padding: 40px;
+    height: 410px;
+    box-sizing: border-box;
+}
+.popup .cpnDC { font-size: 16px}
+.popup .cpnCaution { font-size: 11px;color: #5d5d5d}
+.popup .coupon-box {display: flex;margin-bottom: 10px;box-shadow: 1px 1px 1px rgba(168, 168, 168, 0.65);}
+.popup .coupon-box > div {padding: 20px;}
+.popup .coupon-box > div:nth-of-type(1) {width: 75%; border: 1px solid #a8a8a8; border-right: 1px dashed #a8a8a8}
+.popup .coupon-box > div:nth-of-type(2) {width: 25%; border: 1px solid #E60012; border-left: none;  color: #E60012; font-size: 17px; display: flex; justify-content: center; align-items: center;cursor: pointer;}
+.popup .coupon-box i {font-size: 17px}
+.popup > section+button{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: none;
+    height: 70px;
+}
+.popup .notification {
+    position: relative;
+    bottom: 80px; /* 팝업 내부에서의 위치 */
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 10px auto 0;
+    width: 90%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+.popup > section::-webkit-scrollbar{width: 9px;}
+.popup > section::-webkit-scrollbar-thumb{
+    background-color: #5f5f5f75;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: 50px;
+}
+
+/* 알림 메시지가 표시될 때 */
+.popup .notification.show {
+    opacity: 1;
+}
+
+.close-btn {
+    background: url('/images/ico_sprites.png') no-repeat -777px -120px;
+    width: 22px;
+    height: 20px;
+    &:hover{
+        background-position: -777px -81px;
+    }
+}
+#sticky-element{
+    position: sticky;
+    top: 80px; /* 헤더 높이 */
+    width: 811px;
+    height: 50px;
+    transition: position 0.3s ease, top 0.3s ease;
+    display: flex;
+    align-items: center;
+    background: #FFF;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 1000;
+}
+#sticky-element a{
+    display: inline-block;
+    padding: 15px 40px;
+    border-bottom: 2px solid transparent;
+
+}
+#sticky-element a.active{
+    font-weight: bold;
+    border-color: black;
+}
+
+.disabled {
+    color: gray; /* 매진 표시를 위해 색상 조정 */
+    pointer-events: none; /* 클릭 불가 처리 */
+    cursor: not-allowed;
+}
+
+.jjim-box{
+    cursor: pointer;
+    color: #E60012;
+    border: 1px solid #E60012;
+    padding: 10px 10px;
+    border-radius: 15px;
+    width: 80px;
+    height: 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    float: right;
+    margin-top: -9px;
+    margin-right: 9px;
+}
+
+.heart {
+    width: 30px;
+    height: 30px;
+    background: url(https://umings.github.io/images/i_like_off.png) no-repeat center / 30px;
+    cursor: pointer;
+    border:0;
+    font-size:0;
+    display: inline-block;
+    zoom: 0.8;
+    position: relative;
+}
+.heart.on {
+    background: url(https://umings.github.io/images/i_like_on.png) no-repeat center / 30px;
+    animation: beating .5s 1 alternate;
+}
+@keyframes beating {
+    0% {transform: scale(1);}
+    40% {transform: scale(1.25);}
+    70% {transform: scale(0.9);}
+    100% {transform: scale(1);}
+}

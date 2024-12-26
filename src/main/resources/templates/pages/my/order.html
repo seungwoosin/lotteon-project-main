@@ -1,0 +1,556 @@
+<link rel="stylesheet" th:href="@{/css/my/my.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" th:href="@{/css/my/popup.css}">
+<header th:replace="layout/main/header.html"></header>
+<th:block th:replace="layout/my/modal.html"></th:block>
+<main style="margin-top: 230px">
+  <div id="my">
+    <th:block th:replace="layout/my/aside.html"></th:block>
+    <main>
+      <th:block th:replace="layout/my/banner.html"></th:block>
+    <section>
+      <h3>전체주문내역</h3>
+      <article class="byDate">
+        <span class="tit">기간별조회</span>
+        <ul class="date_3ea">
+          <li><a th:classappend="${type == 'date' && keyword == '7'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='date',keyword=7)}">1주일</a></li>
+          <li><a th:classappend="${type == 'date' && keyword == '15'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='date',keyword=15)}">15일</a></li>
+          <li><a th:classappend="${type == 'date' && keyword == '30'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='date',keyword=30)}">1개월</a></li>
+        </ul>
+        <ul class="date_5ea">
+          <li><a th:classappend="${type == 'month' && keyword == '5'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='month',keyword=5)}" class="5month_before">5월</a></li>
+          <li><a th:classappend="${type == 'month' && keyword == '6'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='month',keyword=6)}">6월</a></li>
+          <li><a th:classappend="${type == 'month' && keyword == '7'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='month',keyword=7)}">7월</a></li>
+          <li><a th:classappend="${type == 'month' && keyword == '8'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='month',keyword=8)}">8월</a></li>
+          <li><a th:classappend="${type == 'month' && keyword == '9'} ? 'on' : ''" th:href="@{/my/orders(page=0,type='month',keyword=9)}">9월</a></li>
+        </ul>
+        <form th:action="@{/my/orders}">
+          <input type="hidden" name="type" value="custom">
+          <input type="hidden" id="keyword" name="keyword" />
+          <input type="date" id="startDate" max="9999-12-31" /><span>~</span><input id="endDate" type="date" max="9999-12-31" />
+          <button onclick="combineDates()" type="submit" class="btnConfirm">조회하기</button>
+        </form>
+      </article>
+      <article>
+        <table border="0" class="order">
+          <tr>
+            <th>날짜</th>
+            <th>이미지</th>
+            <th>상품정보</th>
+            <th>상태</th>
+            <th>확인/신청</th>
+          </tr>
+          <tr th:if="${!orders.isEmpty()}" class="myOrdersTR" th:each="order : ${orders}">
+            <td class="date" th:text="${order.orderRdate}">2022-12-13</td>
+            <td>
+              <div class="thumb">
+                <a href="#">
+                  <img style="width: 80px; height: 80px;" th:src="@{'/file/'+${order.getProdListImg()}}" alt="상품 이미지" />
+                </a>
+              </div>
+            </td>
+            <td>
+              <ul>
+                <li class="company" th:text="${order.seller}">(주) 회사명</li>
+                <li class="prodName"><a th:data-order="${order.orderId}" onclick="orderPop(this)" th:text="${order.orderItemCount}>1 ? ${order.prodName}+'외'+(${order.orderItemCount}-1)+'개' : ${order.prodName}">상품명</a></li>
+                <li>
+                  수량 : <span class="prodCount" th:text="${order.orderQuantity}==null?0:${order.orderQuantity}">5</span>개 / 주문번호 :
+                  <span class="ordNo" th:text="${order.orderId}">1234567</span>
+                </li>
+                <li class="prodPrice" th:text="${order.orderTotal}==null?0:${order.orderTotal}">34,000</li>
+              </ul>
+            </td>
+            <td class="status" th:switch="${order.orderState}">
+              <span th:case="0">결제완료</span>
+              <span th:case="1">배송중</span>
+              <span th:case="2">배송완료</span>
+              <span th:case="3">배송완료</span>
+              <span th:case="4">주문완료</span>
+              <span th:case="5">취소완료</span>
+            </td>
+            <td class="confirm">
+              <button th:if="${order.orderState==0}" th:data-id="${order.orderId}" onclick="orderCancel(event)" class="exchange grey" >주문취소</button>
+              <button th:if="${order.orderState==1}" th:data-id="${order.orderId}" onclick="opendeliDate(event)" class="exchange grey">배송예정일</button>
+              <button th:if="${order.orderState==2 || order.orderState==3}" th:data-id="${order.orderId}" onclick="openReceive(event)" class="receive color">수취확인</button>
+              <button th:if="${order.orderState==3 || order.orderState==4}" onclick="openReviewWrite(event)" th:data-name="${order.prodName}" th:data-id="${order.orderId}" th:data-prod="${order.prodId}" class="review color">상품평쓰기</button>
+              <button th:if="${order.orderState==2 || order.orderState==3}" th:data-id="${order.orderId}" onclick="openReturn(event)" class="refund grey">반품신청</button>
+              <button th:if="${order.orderState==2 || order.orderState==3}" th:data-id="${order.orderId}" onclick="openChange(event)" class="exchange grey">교환신청</button>
+            </td>
+          </tr>
+        </table>
+        <div th:unless="${!orders.isEmpty()}"
+                style="
+              width: 100%;
+              height: 150px;
+              font-size: 14px;
+              line-height: 150px;
+              text-align: center;
+            "
+        >
+          주문 내역이 없습니다.
+        </div>
+        <div th:if="${noItem==false}" class="page">
+          <a class="none prev" th:href="@{/my/orders(page=0,type=${type},keyword=${keyword})}">이전</a>
+          <a class="none" th:href="@{/my/orders(page=${page - 2},type=${type},keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+          <a class="none" th:href="@{/my/orders(page=${page - 1},type=${type},keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+          <a class="active" style="font-weight: 600; background-color: #f2f3f7; color: #000;" th:text="${page}+1"></a>
+          <a class="none" th:href="@{/my/orders(page=${page + 1},type=${type},keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+          <a class="none" th:href="@{/my/orders(page=${page + 2},type=${type},keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+          <a class="none next" th:href="@{/my/orders(page=${totalPages - 1},type=${type},keyword=${keyword})}">다음</a>
+        </div>
+      </article>
+
+    </section>
+    </main>
+  </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+
+<script>
+
+  async function openReturn(event){
+    const orderId = event.target.dataset.id;
+    const popReturn = document.getElementById('popReturn')
+    try {
+      const resp = await axios.get(`/my/order/receive?id=${orderId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const selectItem = popReturn.querySelector('select')
+      if(resp.data.length>0){
+        selectItem.innerHTML = resp.data.map(v=>`
+        <option value="${v.orderItemId}">${v.prodName}</option>
+      `)
+      } else {
+        selectItem.innerHTML = `
+          <option>배송완료된 상품이 없습니다.</option>
+        `
+      }
+      popReturn.showModal();
+    } catch (e) {
+
+    }
+  }
+
+  async function openChange(event){
+    const orderId = event.target.dataset.id;
+    const popChange = document.getElementById('popChange')
+    try {
+      const resp = await axios.get(`/my/order/receive?id=${orderId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const selectItem = popChange.querySelector('select')
+      if(resp.data.length>0){
+        selectItem.innerHTML = resp.data.map(v=>`
+        <option value="${v.orderItemId}">${v.prodName}</option>
+      `)
+      } else {
+        selectItem.innerHTML = `
+          <option>배송완료된 상품이 없습니다.</option>
+        `
+      }
+      popChange.showModal();
+    } catch (e) {
+
+    }
+  }
+
+  async function openReceive(event){
+    const orderId = event.target.dataset.id
+    try {
+      const popReceive = document.getElementById('popReceive')
+      const resp = await axios.get(`/my/order/receive?id=${orderId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const selectItem = popReceive.querySelector('select')
+      if(resp.data.length>0){
+        selectItem.innerHTML = resp.data.map(v=>`
+        <option value="${v.orderItemId}">${v.prodName}</option>
+      `)
+      } else {
+        selectItem.innerHTML = `
+          <option>배송완료된 상품이 없습니다.</option>
+        `
+      }
+
+      popReceive.showModal();
+    } catch (e) {
+      
+    }
+  }
+
+  async function receiveConfirmBtn(){
+    const popReceive = document.getElementById('popReceive')
+    const selectItem = popReceive.querySelector('select')
+    const selectedItemId = selectItem.options[selectItem.selectedIndex]
+    const orderItemId = selectedItemId.value;
+    
+    try {
+      const resp = await axios.patch(`/my/order/receive?id=${orderItemId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status ===200){
+        document.getElementById('popReceive').close();
+        window.location.href = '/my/orders'
+      }
+    } catch (e) {
+      
+    }
+  }
+
+  async function postReturn(){
+    const popReceive = document.getElementById('popReturn')
+    const selectItem = popReceive.querySelector('select')
+    const selectedItemId = selectItem.options[selectItem.selectedIndex]
+    const orderItemId = selectedItemId.value;
+    try {
+      const resp = await axios.patch(`/my/order/return?id=${orderItemId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status ===200){
+        document.getElementById('popReturn').close();
+        window.location.href = '/my/orders'
+      }
+    } catch (e) {
+
+    }
+  }
+
+  async function postChange(){
+    const popReceive = document.getElementById('popChange')
+    const selectItem = popReceive.querySelector('select')
+    const selectedItemId = selectItem.options[selectItem.selectedIndex]
+    const orderItemId = selectedItemId.value;
+    try {
+      const resp = await axios.patch(`/my/order/change?id=${orderItemId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status ===200){
+        document.getElementById('popChange').close();
+        window.location.href = '/my/orders'
+      }
+    } catch (e) {
+
+    }
+  }
+
+  function closeReceive(){
+    document.getElementById('popReceive').close();
+  }
+  function closeReturn(){
+    document.getElementById('popReturn').close();
+  }
+  function closeChange(){
+    document.getElementById('popChange').close();
+  }
+
+  async function opendeliDate(event){
+    console.log(event.target.dataset.id)
+    try {
+      const resp = await axios.get(`/my/order/delivery-date?id=${event.target.dataset.id}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const deliModal = document.getElementById('popDeliveryDate')
+      deliModal.querySelector('section').innerHTML =
+        resp.data.map(v=>`
+        <div style="display: flex;justify-content: space-between; border-bottom: 1px solid black;">
+          <span style="font-weight: 600;">${v.prodName.length > 30 ? v.prodName.substring(0, 30) + '...' : v.prodName}</span>
+          <span>${v.date}</span>
+        </div>
+      `)
+      deliModal.showModal();
+    } catch (e) {
+      console.log(e)
+    }
+
+
+  }
+
+  function closeDelivery(){
+    document.getElementById('popDeliveryDate').close();
+  }
+
+  const popOrderDialog = document.getElementById("popOrder");
+  async function orderPop(element) {
+    event.preventDefault();
+    const orderId = event.target.dataset.order
+    console.log('orderId : '+orderId)
+
+
+
+    try {
+      const resp = await axios.get("/my/order/orderInfo", {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        params: {
+          "orderId": orderId
+        }
+      })
+      const orders = resp.data;
+      let payment = null;
+      switch (orders.payment) {
+        case 1:
+          payment = '신용카드';
+          break;
+        case 2:
+          payment = '체크카드';
+          break;
+        case 3:
+          payment = '계좌이체';
+          break;
+        case 4:
+          payment = '무통장입금';
+          break;
+        case 5:
+          payment = '휴대폰결제';
+          break;
+        case 6:
+          payment = '카카오페이';
+          break;
+      }
+      console.log("resp data : " + orders.orderId)
+      document.querySelector('#popOrder .orderId').innerText = orders.orderId;
+      document.querySelector('#popOrder .orderDate').innerText = orders.orderDate;
+      document.querySelector('#popOrder .custName').innerText = orders.custName;
+      document.querySelector('#popOrder .receiverName').innerText = orders.receiverName;
+      document.querySelector('#popOrder .receiverHp').innerText = orders.receiverHp;
+      document.querySelector('#popOrder .receiverAddr1').innerText = orders.receiverAddr1;
+      document.querySelector('#popOrder .receiverAddr2').innerText = orders.receiverAddr2;
+      document.querySelector('#popOrder .receiverAddr3').innerText = orders.receiverAddr3;
+      document.querySelector('#popOrder .paymentvalue').innerText = payment;
+      document.querySelector('#popOrder .orderTotalPrice').innerText = orders.orderTotal;
+      if (orders.orderReq != null) {
+        document.querySelector('#popOrder .orderReq').innerText = orders.orderReq;
+      }
+      const orderTable = document.querySelector('#popOrder .order table');
+
+      // 기존의 내용을 지우고 새로 채우기
+      orderTable.innerHTML = `
+        <tr>
+          <th>상품이미지</th>
+          <th>상품정보</th>
+          <th>결제금액</th>
+          <th>상태</th>
+        </tr>
+        `;
+      // orderItemDtos 배열을 순회하며 행을 추가
+      orders.orderItemDtos.forEach(item => {
+
+        let orderStatus;
+        switch (item.orderItemState2) {
+          case 0: orderStatus = '주문확인'; break;
+          case 1: orderStatus = '배송중'; break;
+          case 2: orderStatus = '반품완료'; break;
+          case 3: orderStatus = '교환완료'; break;
+          case 4: orderStatus = '배송완료'; break;
+          case 5: orderStatus = '구매확정'; break;
+        }
+
+        let orderDeliCompany;
+        switch (item.orderDeliCompany){
+          case 1: orderDeliCompany = '로젠택배'; break;
+          case 2: orderDeliCompany =  '한신택배'; break;
+          case 3: orderDeliCompany = '우체국택배'; break;
+          case 4: orderDeliCompany = '대한통운'; break;
+        }
+
+        const itemRow = `
+        <tr>
+          <td>
+            <div class="imgbox80">
+              <img src="/file/${item.prodListImg}" alt="상품 이미지">
+            </div>
+          </td>
+          <td>
+            <ul>
+              <li class="company">${item.sellerName}</li>
+              <li class="prodName">${item.prodName}</li>
+              <li>수량 : <span class="prodCount">${item.quantity}</span>개</li>
+              <li>옵션 : <span class="prodCount options">${item.options.join(", ")}</span><span class="prodCount">${item.additionalPrice==0?'':'(+'+item.additionalPrice+')'}</span></li>
+              <li>운송장번호 : <span class="prodCount orderDeliCompany">${item.orderDeliCompany==0?'':`(${orderDeliCompany})`}</span><span class="prodCount">${item.orderDeliId}</span></li>
+            </ul>
+          </td>
+          <td class="payment">
+            <ul>
+              <li class="price"><span>판매가</span><span>${item.prodPrice}원</span></li>
+              <li class="discount"><span>할인</span><span>- ${item.discount}원</span></li>
+              <li class="delivery"><span>배송비</span><span>${item.delivery}원</span></li>
+              <li class="total"><span>결제금액</span><strong>${item.totalPrice}원</strong></li>
+            </ul> 
+          </td>
+          <td class="status">${orderStatus}</td>
+        </tr>
+      `;
+        orderTable.insertAdjacentHTML('beforeend', itemRow);
+      });
+
+      popOrderDialog.showModal();
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  function closeModal(){
+    popOrderDialog.close();
+  }
+
+  async function openSellerInfo(event){
+    event.preventDefault();
+    const sellerDialog = document.getElementById('popSeller')
+    const company = event.target.dataset.sell
+    try {
+      const resp = await axios.get("/my/order/seller-info", {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        params: {
+          "company": company
+        }
+      })
+      const seller = resp.data;
+      document.querySelector('#popSeller .level').innerText = seller.sellGrade
+      document.querySelector('#popSeller .company').innerText = seller.company
+      document.querySelector('#popSeller .ceo').innerText = seller.name
+      document.querySelector('#popSeller .tel').innerText = seller.hp
+      document.querySelector('#popSeller .fax').innerText = seller.fax
+      document.querySelector('#popSeller .email').innerText = seller.email
+      document.querySelector('#popSeller .bizNum').innerText = seller.busiCode
+      document.querySelector('#popSeller .address').innerText = seller.address
+      sellerDialog.showModal();
+    } catch (e) {
+      console.log(e)
+    }
+
+    const closeBtn = document.querySelector('#popSeller .close-btn')
+    closeBtn.addEventListener('click', () => {
+      sellerDialog.close(); // 다이얼로그 닫기
+    });
+  }
+
+  async function openReviewWrite(event) {
+    orderId = event.target.dataset.id;
+    prodId = event.target.dataset.prod;
+
+    try {
+      const resp = await axios.get("/prod/review/names",{
+        headers:{
+          "Content-Type" : "application/json"
+        },
+        params : {
+          "orderId" : orderId
+        }
+      })
+      const prods = resp.data.names
+      const selectNames = document.getElementById('select-prod-name')
+      selectNames.innerHTML = prods.map(v=>`
+        <option value="${v.prodId}">${v.productName}</option>
+      `).join('');
+
+      selectNames.addEventListener('change', (event) => {
+        prodId = event.target.value;  // 선택된 값으로 prodId 업데이트
+        console.log('선택된 prodId:', prodId);  // 콘솔에 선택된 prodId 출력
+      });
+
+    } catch (e) {
+
+    }
+
+    const popReviewDialog = document.getElementById("popReview");
+    popReviewDialog.showModal();
+  }
+
+  const stars = document.querySelectorAll('.star');
+  // const selectedRatingDisplay = document.getElementById('selected-rating');
+
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const ratingValue = this.dataset.value;
+      const val = this.value;
+      const ta = document.querySelector("#review-content");
+
+      document.querySelector('#rating_span').innerText = val;
+      if(+ratingValue>40){
+        ta.placeholder =`상품의 어떤 점이 좋으셨나요?`
+      }else if(+ratingValue>=30){
+        ta.placeholder =`받아보신 상품은 어떠셨나요?`
+      }else{
+        ta.placeholder =`상품의 어떤 부분이 마음에 들지 않으셨나요?`
+      }
+
+      score = ratingValue;
+    });
+  });
+
+  document.getElementById('review-content').addEventListener('input',(e)=>{
+    content = e.target.value;
+  })
+
+  document.getElementById('reviewButton').addEventListener('click',async ()=>{
+    const reviewImgInput = document.querySelector('.review-img');
+    const reviewImg = reviewImgInput.files[0];
+    const submitData = new FormData();
+    const jsonData = {
+      'prodId' : prodId,
+      'orderId' : orderId,
+      'review' : content,
+      'score' : score
+    }
+    submitData.append('jsonData',JSON.stringify(jsonData))
+    if (reviewImg) {
+      submitData.append('reviewImg',reviewImg);
+    } else {
+      console.log('파일이 선택되지 않았습니다.');
+    }
+    console.log(submitData)
+    try {
+      const resp = await axios.post("/prod/review",submitData,{
+        headers: {
+          "Content-Type" : "multipart/form-data"
+        }
+      })
+      alert(resp.data)
+      const popReviewDialog = document.getElementById("popReview");
+      popReviewDialog.close();
+    } catch (e) {
+
+    }
+  })
+
+  async function orderCancel(event){
+    event.preventDefault();
+    const orderId = event.target.dataset.id;
+    console.log(orderId)
+    if(confirm('주문을 취소하시겠습니까?')){
+      try {
+        const resp = await axios.patch(`/my/order/cancel?id=${orderId}`,null,{
+          headers: {
+            "Content-Type" : "application/json"
+          }
+        })
+        window.location.href="/my/orders"
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
+  function combineDates() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    document.getElementById('keyword').value = startDate + '~' + endDate;
+  }
+</script>

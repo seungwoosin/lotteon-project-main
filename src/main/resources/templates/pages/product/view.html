@@ -1,0 +1,842 @@
+<link rel="stylesheet" th:href="@{/css/product/view.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"> <!-- 최신 Font Awesome -->
+<header th:replace="layout/main/header.html"></header>
+<script th:src="@{/js/main.js}"></script>
+<main style="margin-top: 230px; gap: 0">
+    <aside th:replace="layout/main/aside.html" style="margin: 0; margin-right: 30px"></aside>
+    <div id="wrap">
+        <!-- .aside -->
+        <main id="main" style="height: auto;" data-bs-spy="scroll" data-bs-target="#sticky-element" data-bs-offset="130" tabindex="0">
+            <nav id="navi" style="width: 810px;--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <div class="title-and-location">
+                    <h2 class="sub_tit">상품보기</h2>
+                    <ol  class="breadcrumb">
+                        <li class="breadcrumb-item">[[${location.level1Name}]]</li>
+                        <li class="breadcrumb-item">[[${location.level2Name}]]</li>
+                        <li class="breadcrumb-item">[[${location.level3Name}]]</li>
+                    </ol>
+                </div>
+            </nav> <!-- #navi-->
+            <div class="product_info">
+                <img th:src="@{'/file/'+${product.getProdBasicImg()}}" alt="">
+                <div class="product_details">
+                    <form th:action="@{/prod/cart}" method="POST" id="productForm">
+                        <table class="tb1">
+                            <tr>
+                                <td class="td_company" colspan="2">
+                                    <span>[[${product.getSellCompany}]]</span>
+                                    <span>상품번호 : [[${product.getId}]]</span>
+                                    <input type="hidden" th:value="${product.getId}" name="prodId">
+                                    <span id="coupondl" th:if="${couponId != 0}" th:data-id="${couponId}" th:data-seller="${product.seller.id}" onclick="getCustomerCoupon(event)">
+                                        쿠폰받기
+                                        <span class="img"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="prod_name">
+                                    <span class="prod_name_span">[[${product.getProdName}]]</span>
+                                    <br>
+                                    <span class="box">
+                                        <span class="ratingBg">
+                                            <span class="rating" th:style="'width:'+ ${product.prodRating * 2}+'%;'"></span>
+                                        </span>
+                                        <a href="#ai-box">
+                                            <span th:text="${#numbers.formatDecimal(product.prodRating / 10.0, 1, 1)}"></span>
+                                            <span th:text="${product.prodReviewCnt eq null?'':'리뷰 '+product.prodReviewCnt+'건 보기'}"></span>
+                                        </a>
+                                        <div class="vr"></div>
+                                        <a href="#toggleButton">Ai추천 상품 보기</a>
+                                    </span>
+
+                                </td>
+                                <td style="display: flex;align-items: flex-start;">
+                                    <span th:if="${heart=='none'}" onclick="postHeart(event)" th:data-id="${product.getId()}" class="heart"></span>
+                                    <span th:if="${heart=='active'}" onclick="postHeart(event)" th:data-id="${product.getId()}" class="heart on"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="price" colspan="2">
+                                    <del th:style="${product.getProdDiscount()>0.0?'font-size:14px':'text-decoration:none;color:#000;font-weight:bold'}">[[${#numbers.formatInteger(product.getProdPrice(), 1,'COMMA')}]]원&nbsp;</del>
+                                    <span th:if="${product.getProdDiscount()>0.0}">[[${#numbers.formatInteger(product.getProdDiscount(), 1)}]]%&#8595;</span>
+                                    <i class="install"></i>
+                                    <span th:if="${prodDetail.installmentable}">무이자할부</span>
+                                    <span th:unless="${prodDetail.installmentable}">할부(무이자X)</span>
+                                    <i class="cardEvent"></i>
+                                    <span>카드 추가 혜택</span> <br>
+                                    <span id="finalPrice" th:style="${product.getProdDiscount()>0.0?'font-size:16px;text-decoration:none;color:#000;font-weight:bold':'font-size:0;'}">[[${#numbers.formatInteger(product.getTotalPrice(), 1,'COMMA')}]]원</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="delivery" colspan="2">
+                                    <span th:text="'배송비 : ' + ${product.prodDeliver > 0 ?
+                                    #numbers.formatInteger(product.getProdDeliver(), 1,'COMMA') + '원' : '무료배송'}"></span>
+                                    <span id="delivery-date"></span> <br>
+                                    <span th:if="${prodDetail.deliable}">본상품은 해외배송이 가능합니다.</span>
+                                    <span th:unless="${prodDetail.deliable}">본상품은 국내배송만 가능합니다</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="des">원산지 - [[${prodDetail.origin}]]</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="optName" th:text="${option1s[0].optionName}" th:style="${option1s[0].optionName!='옵션없음'?'':'color:transparent'}"></span>
+                                    <select onchange="optionIdChanger(event)" name="options" class="prodOptions" id="select1"
+                                            th:attr="disabled=${option1s[0].optionName == '옵션없음' ? 'disabled' : null}"
+                                            th:style="${option1s[0].optionName !='옵션없음'?'':'padding-top:0;'}">
+                                        <option th:data-stock="${option1.optionStock}" id="noOption" th:data-id="${option1.optionId}" th:if="${option1.type == 'noOption'}" th:each="option1 : ${option1s}">옵션 없음</option>
+                                        <option class="endOption"
+                                                th:data-price="${option1.optionPrice}"
+                                                th:data-id="${option1.optionId}"
+                                                th:if="${option1.type == 'endOption'}"
+                                                th:each="option1 : ${option1s}"
+                                                th:data-stock="${option1.optionStock}"
+                                                th:text="${option1.optionValue} + (${#numbers.formatInteger(option1.optionPrice, 1)} != null ? '  (+' + ${#numbers.formatInteger(option1.optionPrice, 1)} + '원)' : '')"></option>
+                                        <option class="nextOption" th:data-option="${option1.optionValue}" th:if="${option1.type == 'nextOption'}" th:each="option1 : ${option1s}" th:text="${option1.optionValue}"></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="select2" style="display: none;height: 50px" colspan="2">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="display: none;height: 50px; overflow: hidden">
+                                    <select name="options" class="prodOptions" id="select3">
+                                    </select>
+                                    <input type="hidden" id="optionId" name="optionId" value="">
+                                    <input type="hidden" id="optionStock" value="">
+                                </td>
+                            </tr>
+                            <tr class="count_qty">
+                                <td colspan="2">
+                                    <div class="greyBox">
+                                        <div id="qty" class="d-flex align-items-center">
+                                            <button type="button" class="decrement">-</button> <!-- 감소 버튼 -->
+                                            <input name="quantity" type="number" class="count" value="1" min="1"/>
+                                            <button type="button" class="increment">+</button> <!-- 증가 버튼 -->
+                                        </div>
+                                        <div class="total">
+                                            <span>총&nbsp; </span>
+                                            <span name="totalPrice" id="totalPrice">[[${#numbers.formatInteger(product.getTotalPrice(), 1,'COMMA')}]]원</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table> <!-- .tb1-->
+                        <div class="buttons">
+                            <button type="submit" class="cart" onclick="cartBtn()">장바구니</button>
+                            <button type="button" class="btnorder"><a> 구매하기</a></button>
+                        </div> <!-- .buttons -->
+                    </form>
+                    <div class="view_banner">
+                        <a
+                                class="banner"
+                                th:unless="${banner eq null}"
+                                th:href="@{'/'+${banner.bannerLink}}"
+                                th:style="'background-color:'+${banner.bannerBg}">
+                            <img
+                                    th:src="@{'/file/'+${banner.bannerImg}}"
+                                    th:alt="${banner.bannerName}">
+                        </a>
+                    </div>
+                </div> <!-- .product_details -->
+            </div> <!-- .product_info -->
+
+            <nav id="sticky-element" class="list-group-horizontal">
+                    <a href="#productDetail" class="list-group-item-action text-center">상세설명</a>
+                    <a href="#productReview" class="list-group-item-action text-center">상품평<span th:text="${product.prodReviewCnt eq null?'(0)':'('+product.prodReviewCnt+')'}" style="font-weight: inherit"></span></a>
+                    <a href="" class="list-group-item-action"></a>
+                    <a href="" class="list-group-item-action"></a>
+                    <a href="" class="list-group-item-action"></a>
+            </nav>
+            <h2 class="sub_tit2">상품 상세정보</h2>
+            <div id="productDetail" class="detail_image_container">
+                <div class="detail_image" id="detailImageContainer">
+                    <img class="detailImg" th:src="@{'/file/'+${prodDetail.getDescription()}}" alt="상품 상세보기 이미지">
+                </div>
+                <button id="toggleButton" onclick="toggleDetail()">상품 상세 더보기 <i class="bi bi-arrow-down-short"></i></button>
+            </div>
+
+            <h2 id="detail-id" style="display: flex; align-items: center;">
+                <span class="sub_tit3" style="display: inline-block; width: auto;margin-right: 10px;">상품정보 제공고시</span>
+                <span style="font-size: 13px; display: inline-block; width: 480px">[전자상거래에 관한 상품정보 제공에 관한 고시]항목에 의거 등록된 정보입니다.</span>
+            </h2>
+            <section id="refund">
+                <div>
+                    <table class="tb2">
+                        <colgroup>
+                            <col style="width: 15%;">
+                            <col style="width: 85%;">
+                        </colgroup>
+                        <tr>
+                            <th>상품번호</th>
+                            <td>[[${prodDetail.productId}]]</td>
+                        </tr>
+                        <tr>
+                            <th>상품상태</th>
+                            <td>[[${prodDetail.stat}]]</td>
+                        </tr>
+                        <tr>
+                            <th>부가세면세여부</th>
+                            <td th:if="${prodDetail.tax}">과세상품</td>
+                            <td th:unless="${prodDetail.tax}">비과세상품</td>
+                        </tr>
+                        <tr>
+                            <th>영수증 발행</th>
+                            <td>발행가능신용카드전표, 온라인 현금영수증</td>
+                        </tr>
+                        <tr>
+                            <th>사업자 구분</th>
+                            <td>통신판매업자</td>
+                        </tr>
+                        <tr>
+                            <th>브랜드</th>
+                            <td>[[${product.seller.sellCompany}]]</td>
+                        </tr>
+                        <tr>
+                            <th>원산지</th>
+                            <td>[[${prodDetail.origin}]]</td>
+                        </tr>
+                        <tr>
+                            <th>제조사/수입국</th>
+                            <td>[[${prodDetail.manufacture}]]</td>
+                        </tr>
+                        <tr>
+                            <th>제조국</th>
+                            <td>[[${prodDetail.madein}]]</td>
+                        </tr>
+                        <tr>
+                            <th>취급시 주의사항</th>
+                            <td>[[${prodDetail.caution}]]</td>
+                        </tr>
+                        <tr>
+                            <th>제조연월</th>
+                            <td th:text="${#dates.format(prodDetail.mdate, 'yyyy-MM-dd')}"></td>
+                        </tr>
+                        <tr>
+                            <th>품질보증기간</th>
+                            <td>구매 후 [[${prodDetail.warranty}]]개월</td>
+                        </tr>
+                        <tr>
+                            <th>A/S 책임자</th>
+                            <td>[[${product.seller.sellRepresentative}]]</td>
+                        </tr>
+                        <tr>
+                            <th>전화번호</th>
+                            <td>[[${product.seller.sellHp}]]</td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="toggle" onclick="toggleRefund()">상품 필수 정보 더보기</button>
+            </section>
+
+            <div class="refund">
+                        <span>소비자가 전자상거래등에서 소비자 보호에 관한 법률 제 17조 1항 또는 제 3항에 따라 청약철회를 하고
+                        동법 제 18조 제 1항에 따라 청약철회한 물품을 판매자에게 반환하였음에도 불구하고 결제 대금의 환급이
+                        3영업일을 넘게 지연된 경우, 소비자는 전자상거래등에서 소비자보호에 관한 법률 제 18조 제 2항 및 동법 시행령 제 21조 2에
+                        따라 지연일수에 대하여 전상법 시행령으로 정하는 이율을 곱하여 산정한 지연이자("지연배상금")를 신청할 수 있습니다.
+                        아울러, 교환반품보증 및 결제대금의 환급신청은 [나의 쇼핑정보]에서 하실 수 있으며, 자세한 문의는
+                        개별 판매자에게 연락하여 주시기 바랍니다.</span>
+            </div> <!-- .refund-->
+
+            <h2 id="productReview" class="sub_tit4">상품리뷰 <span style="font-size: 16px" th:text="${product.prodReviewCnt eq null?'0':product.prodReviewCnt}"></span></h2>
+            <div class="reviewContainer" style="margin: 0 auto;">
+                <div class="cmt" th:if="${product.prodReviewCnt<1}">
+                    <div>
+                        <p class="text-center">작성된 리뷰가 없습니다.</p>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between;" th:each="review : ${reviews}" class="cmt" id="prodReview">
+                    <div style="display: flex; justify-content: center; align-items: center;" th:if="${review.reviewImg!=null}">
+                        <img style="width: 100px; height: 100px;" th:src="@{'/file/'+${review.reviewImg}}">
+                    </div>
+                    <div style="width: 600px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 20px; justify-content: space-between">
+                                <div style="display: flex;justify-content: left; align-items: center; margin-bottom: 10px;">
+                                    <span class="ratingBg">
+                                        <span class="rating" th:style="'width:'+ ${review.score * 2}+'%;'"></span>
+                                    </span>
+                                    <span th:text="${#numbers.formatDecimal(review.score / 10.0, 1, 1)}" class="cmt-score"></span>
+
+                                    <span class="cmt-memUid">[[${review.memUid}]]</span>
+                                </div>
+                                <span class="cmt-prodRdate" th:text="${review.rdate}">2024-10-13</span>
+                            </div>
+
+                            <span class="cmt-prodName" th:text="${review.prodName}">상품명</span>
+                        </div>
+                        <span th:text="${review.review}"></span>
+                    </div>
+                </div>
+            </div>
+            <h2 id="ai-box" class="sub_tit4" style="margin-bottom: 0"><span style="font-size: 14px;color: #7b7b7b; line-height: 23px;">당신을 위한</span><br/>똑똑한 AI 상품 추천</h2>
+            <div id="related-products">
+                <div th:each="prod : ${related}" class="relaties position-relative">
+                    <a th:href="@{/prod/product(prodId=${prod.id})}" class="stretched-link"><img th:src="@{'/file/'+${prod.getProdBasicImg()}}"></a>
+                    <div class="related-descriptions">
+                        <dt style="font-weight: 400">
+                            [[${prod.prodName}]]
+                        </dt>
+                        <div class="d-flex align-items-center">
+                            <span class="ratingBg" style="zoom: 0.8;margin-left: 0;">
+                                <span class="rating" th:style="'width:'+ ${prod.prodRating * 2}+'%;'"></span>
+                            </span>
+                            <span th:text="${prod.prodReviewCnt eq null?'(0)':'('+prod.prodReviewCnt+')'}" style="margin-left: 5px;color: #7b7b7b"></span>
+                        </div>
+                        <p class="related-price" th:if="${prod.prodDiscount > 0.0}">[[${#numbers.formatInteger(prod.getProdPrice(), 1,'COMMA')}]]원&nbsp;</p>
+                        <dd style="display: flex;gap:3px">
+                            <span class="related-dc" th:if="${prod.prodDiscount > 0.0}">[[${#numbers.formatInteger(prod.getProdDiscount(), 1)}]]%</span>
+                            <p class="related-total">[[${#numbers.formatInteger(prod.getProdPrice() - prod.getProdPrice() * (prod.getProdDiscount()/100), 1,'COMMA')}]]원</p>
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </main> <!-- #main-->
+    </div>
+    <div class="popup"></div>
+    <div class="bg"></div>
+    <input type="hidden" th:value="${options}" id="hiddenOption">
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+<script>
+    const noOption = document.getElementById('noOption');
+    const totalPrice = document.getElementById('totalPrice')
+    const qty = document.getElementById('qty')
+    const endOption = document.querySelector('.endOption')
+    const endOption2 = document.querySelector('.endOption2')
+    const nextOption = document.querySelector('.nextOption')
+    const optionId = document.getElementById('optionId')
+    let selectedAdditionalPrice = 0;
+    let count = 0;
+    let basePrice = parseFloat([[${#numbers.formatInteger(product.getTotalPrice(), 1)}]]);
+    let selectedStock = 0;
+    if (noOption) {
+        const select1 = document.getElementById('select1')
+        const selectedOption = select1.options[select1.selectedIndex];
+        optionId.value = selectedOption.dataset.id;
+        selectedStock = selectedOption.dataset.stock;
+        qty.style.display = 'block'
+    }
+    if (endOption) {
+        qty.style.display = 'block'
+    }
+
+    async function postHeart(event){
+        try {
+            const resp = await axios.post(`/prod/heart?id=${event.target.dataset.id}`,null,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            })
+
+            if(resp.data){
+                document.getElementsByClassName('heart')[0].classList.toggle('on');
+            }
+
+        } catch (e) {
+
+        }
+
+    }
+
+    async function getCustomerCoupon(event) {
+        try {
+            const resp = await axios.get(`/prod/customer/coupon?id=${event.target.dataset.seller}`,null,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            })
+            const coupons = resp.data
+            document.querySelector('.popup').innerHTML
+                = `<h1><span>발급가능한 쿠폰리스트</span><button onclick="closeCouponBtn()" class="bi bi-x"></button></h1><section>`
+                +coupons.map(v=>
+                `<article class="coupon-box">
+                    <div>
+                        <div data-id="${v.id}" class="cpnTit">${v.couponName}</div>
+                        <div data-id="${v.id}" class="cpnDC">${v.couponDiscountOption1}${v.couponDiscount}${v.couponDiscountOption2}</div>
+                        <div data-id="${v.id}" class="cpnLimit">
+                                    ${v.couponMinPrice!==0? v.couponMinPrice.toLocaleString('en-US')+'원 이상 구매시 ':''}
+                                    (~${v.couponExpiration.substring(16).replace('-','/')})
+                        </div>
+                        <div data-id="${v.id}" class="cpnCaution">${v.couponCaution}</div>
+                    </div>
+                    <div onclick="postCoupon(event)" data-id="${v.id}" style="display: flex">
+                        <i class="bi bi-download"></i>
+                    </div>
+                 </article>
+            `).join('')
+                +`</section><button onclick="closeCouponBtn()">닫기</button>
+            <div class="notification" id="popupNotification"></div>`;
+            document.querySelector('.popup').style.display = 'flex';
+            document.querySelector('.bg').style.display = "block";
+            document.querySelector('body').style.overflow = 'hidden';
+        } catch (e) {
+
+        }
+    }
+
+    async function postCoupon(event){
+        const submitData = {
+            'id': event.target.dataset.id
+        }
+        console.log(submitData)
+        const notification = document.getElementById('popupNotification');
+        try {
+            const resp = await axios.post("/prod/customer/coupon", submitData, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            notification.textContent = resp.data;
+        } catch (e) {
+            notification.textContent ="로그인이 필요한 서비스입니다!"
+        }finally {
+            setTimeout(() => {notification.classList.add('show');}, 0);
+            setTimeout(() => {notification.classList.remove('show');}, 2000);
+        }
+    }
+
+    function closeCouponBtn() {
+        document.querySelector('.popup').style.display = 'none';
+        document.querySelector('.bg').style.display = "none";
+        document.querySelector('body').style.overflow = 'auto';
+    }
+
+    // 요일명을 저장한 배열
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+
+    // 오늘을 기준으로 3일 뒤의 날짜를 계산하는 함수
+    function getDeliveryDate() {
+        const today = new Date();
+        const deliveryDate = new Date(today);
+        const deliveryDate2 = new Date(today);
+
+        // 3일 뒤로 설정
+
+        deliveryDate.setDate(today.getDate() + 3);
+
+        // 요일 구하기
+        const dayOfWeek = days[deliveryDate.getDay()];
+
+        // 날짜 형식 만들기 (예: "7/8")
+        const month = deliveryDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
+        const date = deliveryDate.getDate();
+        if ([[${prodDetail.deliable}]]) {
+            return `(${dayOfWeek}) ${month}/${date} 도착예정 (해외배송은 +3~5일)`;
+        } else {
+            return `(${dayOfWeek}) ${month}/${date} 도착예정`;
+        }
+    }
+
+    // HTML에 날짜 값 삽입
+    document.getElementById("delivery-date").innerText = getDeliveryDate();
+
+    // 수량 증감 버튼 구현하기
+    const decrementButton = document.querySelector('.decrement');
+    const incrementButton = document.querySelector('.increment');
+    const countInput = document.querySelector('.count');
+
+    // 감소 버튼 클릭 시 수량 감소
+    decrementButton.addEventListener('click', () => {
+        let currentValue = parseInt(countInput.value);
+        if (currentValue > parseInt(countInput.min)) {
+            countInput.value = currentValue - 1;
+            countInput.dispatchEvent(new Event('change')); // change 이벤트 발생
+        }
+    });
+
+    // 증가 버튼 클릭 시 수량 증가
+    incrementButton.addEventListener('click', () => {
+        let currentValue = parseInt(countInput.value);
+        let maxValue = parseInt(countInput.max); // max 값을 사용하지 않으므로 따로 처리하지 않음
+
+        // max 값이 없거나 현재 값이 max 보다 작다면 증가
+        if (!maxValue || currentValue < maxValue) {
+            countInput.value = currentValue + 1;
+            countInput.dispatchEvent(new Event('change')); // change 이벤트 발생
+        }
+    });
+
+    countInput.addEventListener('change', function (e) {
+        let maxValue = Number(selectedStock)
+        if(e.target.value > maxValue){
+            e.target.value = maxValue;
+            alert(`수량은 ${maxValue} 까지만 가능합니다.`)
+        }
+        calculateTotalPrice();
+    });
+
+    function calculateTotalPrice() {
+        const countInput = document.querySelector('.count');
+        let inNum = countInput.value || 0; // 수량을 가져오고 기본값 0 설정
+        // 수량이 재고보다 많지 않도록 설정
+        if (+inNum > +selectedStock) {
+            inNum = selectedStock;
+        }
+
+        let totalPriceValue = inNum * basePrice; // 기본 총 가격 계산
+
+        if (selectedAdditionalPrice !== 0) {
+            totalPriceValue = Number(inNum) * (Number(basePrice) + Number(selectedAdditionalPrice));
+        }
+        totalPrice.innerText = totalPriceValue.toLocaleString('en-US') + "원"; // 화면에 표시
+        totalPrice.value = totalPriceValue;
+    }
+
+
+    async function optionIdChanger(event) {
+        if (endOption) {
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            const countInput = document.querySelector('.count');
+            if (selectedOption.classList.contains("endOption")) {
+                optionId.value = selectedOption.dataset.id;
+                selectedStock = selectedOption.dataset.stock;
+                if (selectedOption.dataset.price) {
+                    selectedAdditionalPrice = Number(selectedOption.dataset.price);
+                    calculateTotalPrice()
+                }
+                if(Number(countInput.value) > Number(selectedStock)){
+                    countInput.value = selectedStock
+                    calculateTotalPrice()
+                }
+            }
+        } else if (nextOption) {
+            const select2 = document.getElementById('select2')
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            try {
+                const resp = await axios.get("/prod/option2", {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    params: {
+                        "optionValue": selectedOption.dataset.option,
+                        "prodId": [[${product.id}]]
+                    }
+                })
+                const option2 = resp.data.option2s
+                if (option2[0].type === "endOption2") {
+                    select2.innerHTML = `
+                        <span class="optName">${option2[0].optionName}</span>
+                        <select onclick="optionId2Changer(event)" class="prodOptions">
+                    ` + option2.map(v => `
+                        <option class="endOption2" data-price="${v.optionPrice}" data-stock="${v.optionStock}" data-id="${v.optionId}" ${v.optionStock === 0 ? 'disabled' : ''}>
+                            ${v.optionValue}${v.optionPrice != null ? ' (+' + v.optionPrice.toLocaleString() + '원)' : ''}${v.optionStock === 0 ? ' (매진)' : ''}
+                        </option>
+                    `).join('') + `
+                        </select>
+                    `;
+                } else {
+                    select2.innerHTML = `
+                        <span class="optName">${option2[0].optionName}</span>
+                        <select onclick="optionId2Changer(event)" class="prodOptions">
+                    ` + option2.map(v => `
+                        <option class="nextOption2" data-option="${v.optionValue}">${v.optionValue}</option>
+                    `).join('') + `
+                        </select>
+                    `
+                }
+                select2.style.display = 'table-cell'
+                const prodOptions = select2.querySelector('.prodOptions')
+                optionId.value = prodOptions.options[prodOptions.selectedIndex].dataset.id;
+                selectedStock = prodOptions.options[prodOptions.selectedIndex].dataset.stock;
+                selectedAdditionalPrice = prodOptions.options[prodOptions.selectedIndex].dataset.price;
+
+                if(Number(countInput.value) > Number(selectedStock)){
+                    countInput.value = selectedStock
+                    calculateTotalPrice()
+                }
+                calculateTotalPrice();
+
+            } catch (e) {
+
+            }
+        }
+    }
+
+    async function optionId2Changer(event) {
+        const selectedOption = event.target.options[event.target.selectedIndex];
+        if (selectedOption.classList.contains("endOption2")) {
+            optionId.value = selectedOption.dataset.id;
+            selectedStock = selectedOption.dataset.stock;
+            console.log(selectedStock)
+            qty.style.display = 'block'
+            if (selectedOption.dataset.price) {
+                selectedAdditionalPrice = Number(selectedOption.dataset.price);
+                calculateTotalPrice()
+            }
+
+        }
+    }
+
+    window.onload = async function () {
+        const select1 = document.getElementById('select1');
+
+        if (endOption) {
+            const selectedOption = select1.options[select1.selectedIndex];
+            if (selectedOption.classList.contains("endOption")) {
+                optionId.value = selectedOption.dataset.id;
+                selectedStock = selectedOption.dataset.stock;
+                if (selectedOption.dataset.price) {
+                    selectedAdditionalPrice = Number(selectedOption.dataset.price);
+                    calculateTotalPrice();
+                }
+            }
+        }
+
+        if(nextOption) {
+            const select1 = document.getElementById('select1')
+            const select2 = document.getElementById('select2')
+            const selectedOption = select1.options[select1.selectedIndex];
+            try {
+                const resp = await axios.get("/prod/option2", {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    params: {
+                        "optionValue": selectedOption.dataset.option,
+                        "prodId": [[${product.id}]]
+                    }
+                })
+                const option2 = resp.data.option2s
+                if (option2[0].type === "endOption2") {
+                    select2.innerHTML = `
+                        <span class="optName">${option2[0].optionName}</span>
+                        <select onclick="optionId2Changer(event)" class="prodOptions">
+                    ` + option2.map(v => `
+                        <option class="endOption2" data-price="${v.optionPrice}" data-stock="${v.optionStock}" data-id="${v.optionId}" ${v.optionStock === 0 ? 'disabled' : ''}>
+                            ${v.optionValue}${v.optionPrice != null ? ' (+' + v.optionPrice.toLocaleString() + '원)' : ''}${v.optionStock === 0 ? ' (매진)' : ''}
+                        </option>
+                    `).join('') + `
+                        </select>
+                    `;
+                } else {
+                    select2.innerHTML = `
+                        <span class="optName">${option2[0].optionName}</span>
+                        <select onclick="optionId2Changer(event)" class="prodOptions">
+                    ` + option2.map(v => `
+                        <option class="nextOption2" data-option="${v.optionValue}">${v.optionValue}</option>
+                    `).join('') + `
+                        </select>
+                    `
+                }
+                select2.style.display = 'table-cell'
+                const prodOptions = select2.querySelector('.prodOptions')
+                optionId.value = prodOptions.options[prodOptions.selectedIndex].dataset.id;
+                selectedStock = prodOptions.options[prodOptions.selectedIndex].dataset.stock;
+                selectedAdditionalPrice = prodOptions.options[prodOptions.selectedIndex].dataset.price;
+
+                if(Number(countInput.value) > Number(selectedStock)){
+                    countInput.value = selectedStock
+                    calculateTotalPrice()
+                }
+                calculateTotalPrice();
+
+            } catch (e) {
+
+            }
+
+        }
+
+
+        const cart = document.querySelector('.cart');
+        const productForm = document.querySelector('#productForm');
+
+        cart.addEventListener('click', async function (e) {
+            e.preventDefault();
+            let readPrice = totalPrice.value
+            const optionId = document.getElementById('optionId').value
+
+            if (readPrice == null) {
+                readPrice = basePrice;
+            }
+
+            const jsonData = {
+                "prodId": productForm.prodId.value,
+                "quantity": productForm.quantity.value,
+                "totalPrice": readPrice,
+                "optionId": optionId
+            }
+            console.log(jsonData)
+
+            const response = await fetch('/prod/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+            if (!response.ok) throw new Error('주문 상세 정보를 불러오지 못했습니다.');
+
+            data = await response.json();
+
+            console.log(data.status);
+            if (data.status == 'noAuth') {
+                confirm('장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?') ? location.replace('/prod/cart') : null;
+            }else if (data.status == 'noCart') {
+                alert('다시 시도해 주세요.')
+                location.reload();
+            }  else if (data.status == 'seller') {
+                alert('일반 회원으로 이용해 주세요.')
+            } else if (data.status == 'customer') {
+                confirm('장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?') ? location.replace('/prod/cart') : null;
+            }
+
+        })
+
+        const btnorder = document.querySelector('.btnorder');
+
+        btnorder.addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            let readPrice = totalPrice.value
+            const optionId = document.getElementById('optionId').value
+
+            if (readPrice == null) {
+                readPrice = basePrice;
+            }
+
+            const jsonData = {
+                "productId": productForm.prodId.value,
+                "quantity": productForm.quantity.value,
+                "totalPrice": readPrice,
+                "optionId": optionId
+            }
+            console.log(jsonData)
+
+            const response = await fetch('/prod/order/direct', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+            if (!response.ok) throw new Error('주문 상세 정보를 불러오지 못했습니다.');
+
+            data = await response.json();
+
+            console.log(data);
+            if (data.status == 'noAuth') {
+                alert('로그인 후 이용해주세요.');
+                location.replace('/auth/login/view');
+            } else if (data.status == 'seller') {
+                alert('일반 회원으로 이용해 주세요.')
+            } else if (data.status == 'customer') {
+                alert('주문서로 이동합니다.');
+                location.replace('/prod/order');
+            }
+
+        });
+
+    };
+
+    let currentPage = 1; // 시작 페이지
+    const pageSize = 5; // 한 번에 가져올 리뷰 수
+    let loading = false; // 중복 요청 방지
+
+
+    // 스크롤 이벤트 리스너 추가
+    window.addEventListener("scroll", () => {
+        const sectionElement = document.querySelector('#detail-id');
+        const sectionTop = sectionElement.offsetTop;
+        const sectionHeight = sectionElement.offsetHeight;
+        const scrollPosition = window.scrollY + window.innerHeight;
+        if (scrollPosition >= sectionTop && scrollPosition <= sectionTop + sectionHeight) {
+                loadMoreReviews();
+        }
+    });
+
+    function loadMoreReviews() {
+        if(loading){
+            return;
+        }
+        loading = true;
+        fetch(`/prod/reviews?page=${currentPage}&size=${pageSize}&id=${document.querySelector('#productForm').prodId.value}`)
+            .then(response => response.json())
+            .then(reviews => {
+                reviews.forEach(review => {
+                    const reviewElement = document.createElement("div");
+                    reviewElement.classList.add("cmt");
+                    reviewElement.style.display = "flex";
+                    reviewElement.style.justifyContent = "space-between";
+
+                    reviewElement.innerHTML = `
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <img src="/file/${review.img}" style="width: 100px; height: 100px;">
+                        </div>
+                        <div style="width: 600px;">
+                            <div>
+                            <div style="display: flex; align-items: center; gap: 20px; justify-content: space-between">
+                                <div style="display: flex;justify-content: left; align-items: center; margin-bottom: 10px;">
+                                        <span class="ratingBg">
+                                            <span class="rating" style="width: ${review.score * 2}%;"></span>
+                                        </span>
+                                        <span class="cmt-score">${(review.score / 10.0).toFixed(1)}</span>
+
+                                        <span class="cmt-memUid">${review.memUid}</span>
+                                    </div>
+                                    <span class="cmt-prodRdate">${review.rdate}</span>
+                                </div>
+
+                                <span class="cmt-prodName">${review.prodName}</span>
+                            </div>
+                        <span>${review.review}</span>
+                    </div>
+
+                    `;
+                    document.querySelector(".reviewContainer").appendChild(reviewElement);
+                });
+                if (reviews.length > 0) {
+                    currentPage++; // 다음 페이지를 로드할 준비
+                }
+                loading = false;
+            })
+            .catch(error => {
+                console.error("리뷰 데이터를 불러오는 중 오류가 발생했습니다:", error);
+                loading = false;
+            });
+    }
+
+    function toggleDetail() {
+        const detailContainer = document.getElementById("detailImageContainer");
+        const toggleButton = document.getElementById("toggleButton");
+
+        // 현재 높이 확인
+        if (detailContainer.classList.contains("expanded")) {
+            // 접기 상태로 변경
+            detailContainer.style.maxHeight = "1000px";
+            toggleButton.innerHTML = `상품 정보 더보기 <i class="bi bi-arrow-down-short"></i>;`;
+        } else {
+            // 펼치기 상태로 변경 (scrollHeight 사용)
+            detailContainer.style.maxHeight = detailContainer.scrollHeight + "px";
+            toggleButton.innerHTML = `상품 정보 접기 <i class="bi bi-arrow-up-short"></i>`;
+        }
+
+        // 'expanded' 클래스 토글
+        detailContainer.classList.toggle("expanded");
+    }
+    function toggleRefund(){
+        const refundContainer = document.querySelector("#refund>div");
+        const toggleBtn = document.querySelector("#refund>button");
+        // 현재 높이 확인
+        if (refundContainer.classList.contains("expanded")) {
+            // 접기 상태로 변경
+            refundContainer.style.maxHeight = "186px";
+            toggleBtn.textContent = '상품필수정보 더보기';
+        } else {
+            // 펼치기 상태로 변경 (scrollHeight 사용)
+            refundContainer.style.maxHeight = refundContainer.scrollHeight + "px";
+            toggleBtn.textContent = '상품필수정보 접기';
+        }
+
+        // 'expanded' 클래스 토글
+        refundContainer.classList.toggle("expanded");
+    }
+
+</script>

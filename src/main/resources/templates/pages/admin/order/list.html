@@ -1,0 +1,356 @@
+<link rel="stylesheet" th:href="@{/css/admin/order/list.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div class="container">
+        <div class="header">
+            <span class="header-title">주문현황</span>
+            <div class="header-right">
+                <span>HOME</span>
+                <span>></span>
+                <span>주문관리</span>
+                <span>></span>
+                <span class="bold">주문현황</span>
+            </div>
+        </div>
+
+        <div class="header-gubun"></div>
+
+        <section class="categoryProduct">
+            <form class="order-search">
+                <select name="searchType">
+                    <option value="orderId">주문번호</option>
+                    <option value="custId">주문자</option>
+                    <option value="custName">주문자명</option>
+                </select>
+                <input name="keyword" type="text" placeholder="검색어입력">
+                <button type="submit">검색</button>
+            </form>
+            <table class="tb1">
+                <tr>
+                    <th style="width: 7%;">주문번호</th>
+                    <th style="width: 7%;">주문자</th>
+                    <th style="width: 7%;">주문자명</th>
+                    <th>상품명</th>
+                    <th style="width: 7%;">주문건수</th>
+                    <th style="width: 12%;">주문합계</th>
+                    <th style="width: 7%;">주문상태</th>
+                    <th>주문일</th>
+                    <th style="width: 7%;">배송</th>
+                </tr>
+                <tr th:each="order:${orders}">
+                    <td th:onclick="openOrderPopup(1,[[${order.orderId}]])" style="text-decoration: underline; cursor:pointer;" th:text="${order.orderId}">10121111</td>
+                    <td th:text="${order.memUid}">abc1</td>
+                    <td th:text="${order.custName}">김유신</td>
+                    <td th:text="${order.prodName}">OOO</td>
+                    <td th:text="${order.orderItemCount}">2</td>
+                    <td th:text="${#numbers.formatInteger(order.orderItemTotal, 1,'COMMA')+'원'}">102,999</td>
+                    <td style="color: #00B050;"  th:switch="${order.orderState}">
+                        <span th:case="0">결제완료</span>
+                        <span th:case="1" style="color: #444">배송중</span>
+                        <span th:case="2" style="color: #444">반품</span>
+                        <span th:case="3" style="color: #444">교환</span>
+                        <span th:case="4" style="color: #444">배송완료</span>
+                        <span th:case="5" style="color: #444">구매확정</span>
+                        <span th:case="6" style="color: #e30614">주문취소</span>
+                    </td>
+                    <td th:text="${order.orderRdate}">2024.10.16<br>00:00:00</td>
+                    <td th:onclick="openOrderPopup(2,[[${order.orderId}]])" style="cursor:pointer">배송하기</td>
+                </tr>
+            </table>
+            <div class="page">
+                <a class="none" th:href="@{/admin/order/orders(page=0, searchType=${searchType}, keyword=${keyword})}"><<</a>
+                <a class="none" th:href="@{/admin/order/orders(page=${page - 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/admin/order/orders(page=${page - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/admin/order/orders(page=${page + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/admin/order/orders(page=${page + 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/admin/order/orders(page=${totalPages - 1}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+            </div>
+        </section>
+        <div class="popup"></div>
+        <div class="popupbg"></div>
+    </div>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+<script>
+    const popup = document.querySelector('.popup')
+    const bg = document.querySelector('.popupbg')
+    let orderItemId;
+    async function openOrderPopup(a, orderId) {
+        try {
+            let apiUrl, data;
+
+
+
+                apiUrl = `/admin/prod/order/${orderId}`;
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('주문 상세 정보를 불러오지 못했습니다.');
+
+                data = await response.json();
+
+                console.log(data)
+            let paymentMethod;
+            switch (data.order.payment) {
+                case 1:
+                    paymentMethod = "신용카드";
+                    break;
+                case 2:
+                    paymentMethod = "체크카드";
+                    break;
+                case 3:
+                    paymentMethod = "계좌이체";
+                    break;
+                case 4:
+                    paymentMethod = "무통장입금";
+                    break;
+                case 5:
+                    paymentMethod = "휴대폰결제";
+                    break;
+                case 6:
+                    paymentMethod = "카카오페이";
+                    break;
+            }
+            let orderState;
+            switch (data.order.orderState){
+                case 0: orderState = "결제완료"; break;
+                case 1: orderState = "배송중"; break;
+                case 2: orderState = "배송완료"; break;
+                case 3: orderState = "배송완료"; break;
+                case 4: orderState = "주문완료"; break;
+                case 5: orderState = "주문취소"; break;
+
+            }
+            const totalProdPrice = data.order.orderItemDtos.reduce((sum, item) => sum + item.prodPrice, 0);
+            const totalDiscount = data.order.orderItemDtos.reduce((sum, item) => sum + item.discount*item.quantity, 0);
+            const totalDeliPrice = data.order.orderItemDtos.reduce((sum, item) => sum + item.delivery, 0);
+            const totalOrderPrice = data.order.orderItemDtos.reduce((sum, item) => sum + item.totalPrice, 0);
+
+                if(a===1){
+                    popup.innerHTML = `
+                    <div class="header fixed">
+                        <div class="title">주문상세 <span style="color: white">${data.order.orderId}</span></div>
+                        <div onclick="closeShopPopup()" class="btn">X</div>
+                    </div>
+                    <div style="margin: 20px; margin-bottom: 30px;">
+                        <div class="header2">
+                            <span class="header-title">상품정보</span>
+                        </div>
+                        <div class="header-gubun"></div>
+                        <table class="tb2">
+                            <tr>
+                                <th>이미지</th>
+                                <th>상품번호</th>
+                                <th>상품명</th>
+                                <th>판매자</th>
+                                <th>가격</th>
+                                <th>할인</th>
+                                <th>수량</th>
+                                <th>배송비</th>
+                                <th>결제금액</th>
+                            </tr>
+                            ${data.order.orderItemDtos.map(item => `
+                            <tr>
+                                <td><img  style="width: 60px; height: 60px;" src="/file/${item.prodListImg}" alt="상품이미지" width="35" height="35"></td>
+                                <td>${item.prodId}</td>
+                                <td>${item.prodName}</td>
+                                <td>${item.sellerName}</td>
+                                <td>${item.prodPrice.toLocaleString()}원</td>
+                                <td>${item.discount.toLocaleString()}원</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.delivery>0?item.delivery.toLocaleString()+'원':'무료'}</td>
+                                <td>${item.totalPrice.toLocaleString()}원</td>
+                            </tr>`).join('')}
+                        </table>
+                        <div class="total">
+                            <div class="right-bg">
+                                <div>
+                                    <p>총 상품금액</p><p>${totalProdPrice.toLocaleString()}원</p>
+                                </div>
+                                <div>
+                                    <p>총 할인금액</p><p>${totalDiscount.toLocaleString()}원</p>
+                                </div>
+                                <div>
+                                    <p>배송비</p><p>${totalDeliPrice>0?totalDeliPrice.toLocaleString()+'원':'무료'}</p>
+                                </div>
+                                <div>
+                                    <p>총 결제금액</p><p style="color: red">${data.order.orderTotal.toLocaleString()}원</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header2">
+                            <span class="header-title">결제정보</span>
+                        </div>
+
+                        <div class="header-gubun"></div>
+                        <table class="tb3">
+                            <tr>
+                                <th>주문번호</th>
+                                <td>${data.order.orderId}</td>
+                            </tr>
+                            <tr>
+                                <th>결제방법</th>
+                                <td>${paymentMethod}</td>
+                            </tr>
+                            <tr>
+                                <th>주문자 / 연락처</th>
+                                <td>${data.order.custName} / ${data.order.custHp}</td>
+                            </tr>
+                            <tr>
+                                <th>결제상태</th>
+                                <td>${orderState}</td>
+                            </tr>
+                        </table>
+                        <div class="total-price">
+                            <p>총 결제금액</p><p style="color: red">${data.order.orderTotal.toLocaleString()}원</p>
+                        </div>
+                        <div class="header2">
+                            <span class="header-title">배송정보</span>
+                        </div>
+                        <div class="header-gubun"></div>
+                        <table class="tb3">
+                            <tr>
+                                <th>수취인</th>
+                                <td>${data.order.receiverName}</td>
+                            </tr>
+                            <tr>
+                                <th>연락처</th>
+                                <td>${data.order.receiverHp}</td>
+                            </tr>
+                            <tr>
+                                <th>배송지주소</th>
+                                <td>${data.order.receiverAddr1} ${data.order.receiverAddr2} ${data.order.receiverAddr3}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    `
+                } else if(a===2) {
+
+                    popup.innerHTML = `
+                    <div class="header fixed">
+                        <div class="title">배송입력 <span style="color: white">${data.order.orderId}</span></div>
+                        <div onclick="closeShopPopup()" class="btn">X</div>
+                    </div>
+                    <div style="margin: 20px; margin-bottom: 30px;">
+                        <table class="tb4">
+                            <tr>
+                                <th>주문번호</th>
+                                <td><input type="text" value="${data.order.orderId}"></td>
+                            </tr>
+                            <tr>
+                                <th>주문 상품</th>
+                                <td>
+                                    <select style="width: 175px;" onchange="selectItems(event)">
+                                    ${data.itemNames.map(v =>
+                                        `<option value="${v.orderItemId}">${v.orderItemName}</option>`).join('')}
+                                    )}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>수령인</th>
+                                <td><input value="${data.order.receiverName}"></td>
+                            </tr>
+                            <tr>
+                                <th>우편번호</th>
+                                <td><input value="${data.order.receiverAddr1}"></td>
+                            </tr>
+                            <tr>
+                                <th>기본주소</th>
+                                <td><input value="${data.order.receiverAddr2}"></td>
+                            </tr>
+                            <tr>
+                                <th>상세주소</th>
+                                <td><input value="${data.order.receiverAddr3}"></td>
+                            </tr>
+                            <tr>
+                                <th>택배사</th>
+                                <td>
+                                    <select class="compa">
+                                        <option value="1">로젠택배</option>
+                                        <option value="2">한신택배</option>
+                                        <option value="3">우체국택배</option>
+                                        <option value="4">대한통운</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>운송장번호</th>
+                                <td><input placeholder="운송장번호를 입력하세요." value="${data.order.orderItemDtos[0].orderDeliId}"></td>
+                            </tr>
+                            <tr>
+                                <th>기타</th>
+                                <td><textarea readonly>${data.order.orderReq}</textarea></td>
+                            </tr>
+                        </table>
+                        <div class="btns"><button>등록하기</button></div>
+                    </div>
+                    `
+                    document.querySelector('.btns button').addEventListener('click', updateShippingData);
+                    orderItemId = data.itemNames[0].orderItemId;
+                }
+            popup.style.display = "block";
+            bg.style.display = "flex";
+        } catch (error) {
+            console.error(error);
+            alert("데이터를 불러오는 데 실패했습니다.");
+        }
+    }
+
+    function closeShopPopup() {
+        popup.style.display = "none";
+        bg.style.display = "none";
+    }
+
+    function selectItems(event){
+        const selectedItem = event.target.options[event.target.selectedIndex]
+        orderItemId = selectedItem.value;
+    }
+
+     async function updateShippingData(e){
+        e.preventDefault();
+         const inputs = document.querySelectorAll('.tb4 input');
+         const deli = document.querySelector('.tb4 .compa').value;
+
+
+        if(!inputs[5].value.trim()){
+            alert('운송장 번호를 입력해 주세요.');
+            return;
+        }
+
+        const jsonData = {
+            "orderId":inputs[0].value,
+            "orderDeli":deli,
+            "orderState":1,
+            "orderDeliId":inputs[5].value,
+            "orderItemId":orderItemId
+        }
+        console.log(jsonData)
+        try {
+            const response = await fetch('/admin/prod/order/delivery',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+
+            if (!response.ok) throw new Error('주문 상세 정보를 불러오지 못했습니다.');
+
+            data = await response.json();
+            console.log(data);
+
+            if(data){
+                alert('배송 정보를 등록했습니다.');
+            }else{
+                alert('배송 정보 등록에 실패했습니다. 다시 시도해 주세요.');
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("등록에 실패했습니다. 다시 시도해 주세요. 캐치");
+        }
+    }
+</script>

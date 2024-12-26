@@ -1,0 +1,66 @@
+<!-- 타임리프 문법으로 변환된 HTML -->
+
+<!-- AOS CSS 추가 -->
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css}">
+<link rel="stylesheet" th:href="@{/css/company/media.css}">
+<link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}">
+<link th:href="@{https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap}" rel="stylesheet">
+
+<header th:replace="layout/company/header.html"></header>
+
+<!-- 미디어 섹션 -->
+<main class="media-section">
+    <!-- Content Head -->
+    <div class="contentHead" data-aos="fade-down">
+        <h1>미디어 세상 속 롯데ON을 소개합니다!</h1>
+        <p>더 다양한 LotteON 영상을 소개합니다.</p>
+    </div>
+
+    <!-- Media Video Section -->
+    <section class="media-videos">
+
+        <!-- Video 1 -->
+        <div class="mediaVideo" data-aos="fade-up" data-aos-delay="100">
+            <iframe width="100%" height="315" th:src="@{https://www.youtube.com/embed/Q4_2Vkj32X4?si=qdhjk1yzPPdowfWN}" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div>
+                <p>#[롯데ON] 24년 첫 번째 롯데ON세상</p>
+                <span>#롯데월드타워에 빨간 불이 켜지면 선착순 무적쿠폰이 찾아온다!</span>
+            </div>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="mediaVideo" data-aos="fade-up" data-aos-delay="200">
+            <iframe width="100%" height="315" th:src="@{https://www.youtube.com/embed/HLlLVVYkTMg?si=23lcHATXZDeunRor}" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div>
+                <p>#[롯데ON] Shopping Fantasy ON Making Film (Part.2)</p>
+                <span>#롯데ON의 뮤즈, ✨이효리✨와 함께한 광고 촬영 현장 전격 대공개!</span>
+            </div>
+        </div>
+
+        <!-- Video 3 -->
+        <div class="mediaVideo" data-aos="fade-up" data-aos-delay="300">
+            <iframe width="100%" height="315" th:src="@{https://www.youtube.com/embed/LoQ_m-CGGAQ?si=nRHYG7MQ2zfb6QUy}" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div>
+                <p>"롯데ON" 캠페인 뮤즈 히밥과 함께</p>
+                <span>#여러분을 롯데ON 캠페인의 세계로 초대합니다!</span>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<footer th:replace="layout/company/footer.html"></footer>
+
+<!-- AOS JS 추가 -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js}"></script>
+<script>
+    // AOS 초기화
+    AOS.init({
+        duration: 1000, // 애니메이션 지속 시간
+        once: true // 스크롤 시 한 번만 애니메이션 작동
+    });
+</script>

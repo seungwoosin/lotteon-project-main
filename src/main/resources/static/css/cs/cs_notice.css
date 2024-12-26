@@ -1,0 +1,122 @@
+/* 공통 스타일 설정 */
+body, .box, .cs_aside, .notice_box, .view_content, .view_title, .autolink {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+}
+
+/* 전체 컨테이너 */
+.box {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: transparent; /* 회색 테두리 및 배경 제거 */
+}
+
+/* 사이드바 */
+.cs_aside {
+    width: 220px;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 상단 정보 영역 */
+.top-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #333; /* 하단 구분선 */
+}
+
+/* 카테고리 제목 */
+.cate_title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    white-space: nowrap; /* 글자 잘림 방지 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 네비게이션 스타일 */
+.cs_nav {
+    text-align: right;
+}
+
+/* 홈 > 공지사항 아래 회색선 문제 해결 */
+.cs_nav_tit {
+    font-size: 0.9em;
+    color: #555;
+    margin: 0;
+    border: none; /* 불필요한 테두리 제거 */
+    background: none; /* 배경 제거 */
+}
+
+
+/* 리스트 카드 스타일 */
+.notice_box {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    width: 100%;
+    padding: 15px;
+    background-color: transparent; /* 배경 제거 */
+}
+
+.notice {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notice:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notice .n_cate {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.notice .n_content {
+    flex: 1;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333333;
+}
+
+.notice .n_date {
+    font-size: 0.85em;
+    color: #999999;
+    text-align: right;
+}
+
+/* 목록 버튼 스타일 */
+.btn_list {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.btn_list:hover {
+    background-color: #cccccc;
+}

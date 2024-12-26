@@ -1,0 +1,114 @@
+/* General Styles */
+body {
+    background-color: #f9f9f9;
+    font-family: 'Noto Sans', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6; /* 가독성을 높이기 위한 줄 간격 */
+}
+
+/* Media Section */
+.media-section {
+    padding: 60px 20px;
+    background-color: #f0f0f0;
+}
+
+.contentHead {
+    text-align: center;
+    margin-bottom: 100px; /* 제목 아래 간격 */
+}
+
+.contentHead h1 {
+    font-size: 3em; /* 메인 제목은 크게 */
+    font-weight: 800; /* 메인 제목 굵게 */
+    color: #2c3e50; /* 딥한 네이비 계열로 세련된 느낌 */
+    letter-spacing: 2px; /* 글자 간격을 조금 넓게 */
+    text-transform: uppercase; /* 대문자로 변환 */
+    margin-left: 30px;
+}
+
+.contentHead p {
+    font-size: 1.5em; /* 부제목은 적당한 크기 */
+    font-weight: 400; /* 가벼운 폰트 굵기 */
+    color: #7f8c8d; /* 회색 계열로 부드럽게 */
+    margin-top: 10px;
+}
+
+/* Media Videos Section */
+.media-videos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+.mediaVideo {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 25px;
+}
+
+.mediaVideo:hover {
+    transform: scale(1.05); /* 호버 시 확대 */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 강화 */
+}
+
+.mediaVideo iframe {
+    width: 100%;
+    height: 315px;
+    border: none;
+    border-radius: 10px;
+}
+
+.mediaVideo div {
+    margin-top: 20px;
+}
+
+.mediaVideo p {
+    font-size: 1.8em; /* 비디오 제목은 크게 */
+    font-weight: 600; /* 제목은 중간 굵기로 설정 */
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.mediaVideo span {
+    font-size: 1.2em; /* 설명 텍스트는 조금 작게 */
+    font-weight: 400; /* 부드러운 느낌의 가벼운 폰트 */
+    color: #7f8c8d;
+}
+
+/* AOS 효과 */
+[data-aos] {
+    opacity: 0;
+    transition-property: opacity, transform;
+}
+
+[data-aos="fade-up"] {
+    transform: translateY(20px);
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .contentHead h1 {
+        font-size: 2.2em; /* 모바일에서 제목 크기 조정 */
+    }
+
+    .contentHead p {
+        font-size: 1.2em; /* 부제목도 적당히 줄임 */
+    }
+
+    .mediaVideo iframe {
+        height: 240px;
+    }
+}

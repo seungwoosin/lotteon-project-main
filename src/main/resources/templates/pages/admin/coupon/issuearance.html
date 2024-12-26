@@ -1,0 +1,157 @@
+<link rel="stylesheet" th:href="@{/css/admin/coupon/list.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<script th:src="@{/js/axios.min.js}"></script>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div class="container">
+        <div class="header">
+            <span class="header-title">쿠폰발급현황</span>
+            <div class="header-right">
+                <span>HOME</span>
+                <span>></span>
+                <span>쿠폰관리</span>
+                <span>></span>
+                <span class="bold">쿠폰발급현황</span>
+            </div>
+        </div>
+
+        <div class="header-gubun"></div>
+
+        <section class="categoryProduct">
+            <form th:action="@{/admin/coupon/issuearances}" method="get" class="order-search">
+                <select name="searchType" class="admin-btn">
+                    <option th:selected="${searchType=='id'}" value="id">발급번호</option>
+                    <option th:selected="${searchType=='couponId'}" value="couponId">쿠폰번호</option>
+                    <option th:selected="${searchType=='couponName'}" value="couponName">쿠폰명</option>
+                    <option th:selected="${searchType=='customer'}" value="customer">사용자</option>
+                </select>
+                <input class="admin-btn" name="keyword" type="text" placeholder="검색어입력">
+                <button class="" type="submit">검색</button>
+            </form>
+            <table class="tb1">
+                <tr>
+                    <th>발급번호</th>
+                    <th>쿠폰번호</th>
+                    <th>쿠폰종류</th>
+                    <th>쿠폰명</th>
+                    <th>사용자</th>
+                    <th>사용일</th>
+                    <th>관리</th>
+                </tr>
+                <tr th:each="coupon : ${custCoupons}">
+                    <td th:text="${coupon.id}" onclick="openCustPopup(event)" style="text-decoration: underline; cursor:pointer;">10121111</td>
+                    <td th:text="${coupon.couponId}">abc1</td>
+                    <td th:text="${coupon.couponType}">김유신</td>
+                    <td th:text="${coupon.couponName}">OOO</td>
+                    <td th:text="${coupon.memUid}">2</td>
+                    <td th:text="${coupon.custCouponUdate}">2024.10.16<br>00:00:00</td>
+                    <td th:if="${coupon.custCouponState == 1}" th:data-id="${coupon.id}" onclick="updateCouponState(event)" style="cursor:pointer">중단</td>
+                    <td th:if="${coupon.custCouponState == 0}" th:data-id="${coupon.id}" onclick="updateCouponState(event)" style="cursor:pointer">활성화</td>
+                    <td th:if="${coupon.custCouponState == 2}" th:data-id="${coupon.id}" style="cursor:pointer">사용완료</td>
+                </tr>
+            </table>
+            <div class="page">
+                <a class="none" th:href="@{/admin/coupon/issuearances(page=0, searchType=${searchType}, keyword=${keyword})}"><<</a>
+                <a class="none" th:href="@{/admin/coupon/issuearances(page=${page - 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/admin/coupon/issuearances(page=${page - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/admin/coupon/issuearances(page=${page + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/admin/coupon/issuearances(page=${page + 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/admin/coupon/issuearances(page=${totalPages - 1}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+            </div>
+        </section>
+        <div class="popup"></div>
+        <div class="popupbg"></div>
+    </div>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+<script>
+    const popup = document.querySelector('.popup')
+    const bg = document.querySelector('.popupbg')
+    async function openCustPopup(event){
+        let url = `/admin/coupon/cust?id=${event.target.innerText}`;
+
+        const resp = await axios.get(url,{
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        })
+
+        const coupon = resp.data.coupon
+
+        popup.innerHTML = `
+            <div class="header">
+                <div class="title">쿠폰정보 <span style="color: white">1012000000</span></div>
+                <div onclick="closePopup()" class="btn">X</div>
+            </div>
+            <div style="margin: 20px; margin-bottom: 30px;">
+                <table class="tb4">
+                    <tr>
+                        <th>쿠폰번호</th>
+                        <td><input readonly value="${coupon.couponId}"></td>
+                    </tr>
+                    <tr>
+                        <th>발급처</th>
+                        <td><input readonly value="${coupon.memUid}"></td>
+                    </tr>
+                    <tr>
+                        <th>발급번호</th>
+                        <td><input readonly value="${coupon.id}"></td>
+                    </tr>
+                    <tr>
+                        <th>사용여부</th>
+                        <td><input readonly value="${coupon.couponState}"></td>
+                    </tr>
+                    <tr>
+                        <th>쿠폰종류</th>
+                        <td><input readonly value="${coupon.couponType}"></td>
+                    </tr>
+                    <tr>
+                        <th>발급대상</th>
+                        <td><input readonly value="${coupon.user}"></td>
+                    </tr>
+                    <tr>
+                        <th>쿠폰명</th>
+                        <td><input readonly value="${coupon.couponName}"></td>
+                    </tr>
+                    <tr>
+                        <th>혜택</th>
+                        <td><input readonly value="${coupon.couponDiscount}"></td>
+                    </tr>
+                    <tr>
+                        <th>사용기간</th>
+                        <td>
+                            ${coupon.couponExpiration}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>유의사항</th>
+                        <td><textarea readonly>${coupon.couponCaution}</textarea></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="margin-bottom:20px;" class="btns"><button onclick="closePopup(event)">닫기</button></div>
+            `
+        popup.style.display = "block";
+        bg.style.display = "flex";
+    }
+
+    function closePopup() {
+        popup.style.display = "none";
+        bg.style.display = "none";
+    }
+
+    async function updateCouponState(event){
+        const submitData = {
+            "id" : event.target.dataset.id
+        }
+        const resp = await axios.patch("/admin/coupon/cust",submitData,{
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        })
+        window.location.href = "/admin/coupon/issuearances"
+    }
+</script>

@@ -1,0 +1,9 @@
+  <a
+    class="banner"
+    th:unless="${banner eq null}"
+    th:href="@{'/'+${banner.bannerLink}}"
+    th:style="'background-color:'+${banner.bannerBg}">
+    <img
+      th:src="@{'/file/'+${banner.bannerImg}}"
+      th:alt="${banner.bannerName}">
+  </a>

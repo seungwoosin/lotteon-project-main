@@ -1,0 +1,302 @@
+<link rel="stylesheet" th:href="@{/css/admin/cs/recruit/list.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{/js/axios.min.js}"></script>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+  <aside th:replace="layout/admin/aside.html"></aside>
+  <section id="admin-product-list" class="container">
+    <div id="search_input">
+      <nav class="qna-nav">
+        <h3>채용하기 목록</h3>
+        <p>HOME > 고객센터 > <strong>채용하기</strong></p>
+      </nav>
+      <form th:action="@{/admin/cs/recruits}" method="get" class="search">
+        <select class="recruit cate admin-btn" name="searchType" onchange="firstOption()">
+          <option th:selected="${searchType == 'id'}" value="id">채용번호</option>
+          <option th:selected="${searchType == 'department'}" value="department">채용부서</option>
+          <option th:selected="${searchType == 'type'}" value="type">채용형태</option>
+          <option th:selected="${searchType == 'state'}" value="state">상태</option>
+        </select>
+        <input class="recruit admin-btn" name="keyword" placeholder="검색어 입력"/>
+        <button type="submit" class="btnsearch">검색</button>
+      </form>
+    </div>
+    <article>
+      <table class="tb1" style="width: 100%">
+        <tr>
+          <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
+          <th style="width: 5%">번호</th>
+          <th>채용부서</th>
+          <th>경력사항</th>
+          <th>채용형태</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>상태</th>
+          <th>모집기간</th>
+          <th>작성일</th>
+        </tr>
+
+        <tr th:data-id="${recruit.id}" th:each="recruit : ${recruits}" onclick="openRecruitPopup(2,event)">
+          <td><input onclick="event.stopPropagation();" th:data-id="${recruit.id}" type="checkbox" /></td>
+          <td th:text="${recruit.id}">120</td>
+          <td th:text="${recruit.department}">광고사업</td>
+          <td th:text="${recruit.career}">경력 4~5년</td>
+          <td th:text="${recruit.type}">정규직</td>
+          <td th:text="${recruit.title}">광고 플랫폼 기획</td>
+          <td th:text="${recruit.memUid}">관리자</td>
+          <td th:if="${recruit.state == 1}" class="status_ing">모집 중</td>
+          <td th:if="${recruit.state != 1}" class="status_end">종료</td>
+          <td th:text="${recruit.sdate} + ' ~ ' + ${recruit.edate}">0000-00-00 ~ 0000-00-00</td>
+          <td th:text="${recruit.rdate}">0000-00-00 00.00.00</td>
+        </tr>
+        <!-- 한번 반복할때마다 pageStartNum을 1씩 차감 -->
+      </table>
+    </article>
+
+    <div class="button-group">
+      <button class="button--delete">선택삭제</button>
+      <button class="btn_blue" onclick="openRecruitPopup(1,event)">채용등록</button>
+    </div>
+    <!-- 페이지 네비게이션 -->
+    <div class="page">
+      <a class="none" th:href="@{/admin/cs/recruits(page=0, searchType=${searchType}, keyword=${keyword})}"><<</a>
+      <a class="none" th:href="@{/admin/cs/recruits(page=${page - 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+      <a class="none" th:href="@{/admin/cs/recruits(page=${page - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+      <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+      <a class="none" th:href="@{/admin/cs/recruits(page=${page + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+      <a class="none" th:href="@{/admin/cs/recruits(page=${page + 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+      <a class="none" th:href="@{/admin/cs/recruits(page=${totalPages - 1}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+    </div>
+    <div class="popup"></div>
+    <div class="popupbg"></div>
+  </section>
+
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+<script>
+  const popup = document.querySelector('.popup')
+  const bg = document.querySelector('.popupbg')
+  async function openRecruitPopup(a,event) {
+    if(a===1){
+      popup.innerHTML = `
+            <div class="header">
+                <div class="title">채용등록 </div>
+                <div onclick="closeShopPopup()" class="btn">X</div>
+            </div>
+            <div style="margin: 20px; margin-bottom: 30px;">
+                <table class="tb4">
+                    <tr>
+                        <th>제목</th>
+                        <td><input id="title" type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>채용부서</th>
+                        <td>
+                            <select id="department">
+                                <option value="">채용부서 선택</option>
+                                <option value="광고사업">광고사업</option>
+                                <option value="IT">IT</option>
+                                <option value="운영">운영</option>
+                                <option value="마케팅">마케팅</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>경력사항</th>
+                        <td>
+                            <select id="career">
+                                <option value="">경력사항 선택</option>
+                                <option value="신입">신입</option>
+                                <option value="경력">경력</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>채용형태</th>
+                        <td>
+                            <select id="type">
+                                <option value="">채용형태 선택</option>
+                                <option value="계약직">계약직</option>
+                                <option value="정규직">정규직</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>모집기간</th>
+                        <td><input id="sDate" type="date"> ~ <input id="eDate" type="date"></td>
+                    </tr>
+                    <tr>
+                        <th>비고</th>
+                        <td><textarea id="etc"></textarea></td>
+                    </tr>
+                </table>
+                <div class="popup_btn">
+                    <button onclick="closeShopPopup()" class="btn_gray">취소</button>
+                    <button onclick="postRecruit()" class="btn_blue">등록</button>
+                </div>
+            </div>
+            `
+    } else {
+      let id = event.target.dataset.id || event.target.parentElement.dataset.id;
+      try {
+        const resp = await axios.get("/admin/cs/recruit",{
+          headers : {
+            "Content-Type" : "application/json"
+          },
+          params : {
+            'id' : id
+          }
+        })
+        console.log("=============================================")
+        const recruit = resp.data.recruit;
+        console.log(recruit)
+
+
+        popup.innerHTML = `
+            <div class="header">
+                <div class="title">채용등록 </div>
+                <div onclick="closeShopPopup()" class="btn">X</div>
+            </div>
+            <div style="margin: 20px; margin-bottom: 30px;">
+                <table class="tb4">
+                    <tr>
+                        <th>제목</th>
+                        <td><input value="${recruit.title}" id="title" type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>채용부서</th>
+                        <td>
+                            <select id="department">
+                                <option value="">채용부서 선택</option>
+                                <option value="광고사업">광고사업</option>
+                                <option value="IT">IT</option>
+                                <option value="운영">운영</option>
+                                <option value="마케팅">마케팅</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>경력사항</th>
+                        <td>
+                            <select id="career">
+                                <option value="">경력사항 선택</option>
+                                <option value="신입">신입</option>
+                                <option value="경력">경력</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>채용형태</th>
+                        <td>
+                            <select id="type">
+                                <option value="">채용형태 선택</option>
+                                <option value="계약직">계약직</option>
+                                <option value="정규직">정규직</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>모집기간</th>
+                        <td><input value="${recruit.sdate}" id="sDate" type="date"> ~ <input value="${recruit.edate}" id="eDate" type="date"></td>
+                    </tr>
+                    <tr>
+                        <th>비고</th>
+                        <td><textarea id="etc">${recruit.etc}</textarea></td>
+                    </tr>
+                </table>
+                <div class="popup_btn">
+                    <button onclick="closeShopPopup()" class="btn_gray">취소</button>
+                    <button data-id="${recruit.id}" onclick="putRecruit(event)" class="btn_blue">수정</button>
+                </div>
+            </div>
+            `
+        const departmentSelect = document.getElementById("department");
+        const career = document.getElementById('career')
+        const type = document.getElementById('type')
+        const selectedCareer = recruit.career;
+        const selectedType = recruit.type;
+        const selectedDepartment = recruit.department; // recruit 객체에서 department 값 가져오기
+        Array.from(career.options).forEach(option => {
+          if (option.value === selectedCareer) {
+            option.selected = true;
+          }
+        });
+        Array.from(type.options).forEach(option => {
+          if (option.value === selectedType) {
+            option.selected = true;
+          }
+        });
+        Array.from(departmentSelect.options).forEach(option => {
+          if (option.value === selectedDepartment) {
+            option.selected = true;
+          }
+        });
+      } catch (e) {
+        
+      }
+
+
+    }
+    popup.style.display = "block";
+    bg.style.display = "flex";
+  }
+
+  function closeShopPopup() {
+    popup.style.display = "none";
+    bg.style.display = "none";
+  }
+
+  async function postRecruit() {
+    const submitData = {
+      'title' : document.getElementById('title').value,
+      'department' : document.getElementById('department').value,
+      'career' : document.getElementById('career').value,
+      'type' : document.getElementById('type').value,
+      'sdate' : document.getElementById('sDate').value,
+      'edate' : document.getElementById('eDate').value,
+      'etc' : document.getElementById('etc').value
+    }
+    console.log(submitData)
+    
+    try {
+      const resp = await axios.post("/admin/cs/recruit",submitData,{
+        headers : {
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status===200){
+        window.location.href = "/admin/cs/recruits"
+      }
+    } catch (e) {
+      
+    }
+  }
+
+  async function putRecruit(event){
+    submitData = {
+      'id' : event.target.dataset.id,
+      'title' : document.getElementById('title').value,
+      'department' : document.getElementById('department').value,
+      'career' : document.getElementById('career').value,
+      'type' : document.getElementById('type').value,
+      'sdate' : document.getElementById('sDate').value,
+      'edate' : document.getElementById('eDate').value,
+      'etc' : document.getElementById('etc').value
+    }
+
+    try {
+      const resp = await axios.put("/admin/cs/recruit",submitData,{
+        headers : {
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status===200){
+        window.location.href = "/admin/cs/recruits"
+      }
+    } catch (e) {
+
+    }
+
+  }
+</script>
+

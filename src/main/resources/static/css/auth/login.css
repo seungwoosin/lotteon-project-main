@@ -1,0 +1,135 @@
+#lsh-container .container {
+    width: 800px;
+    margin: 0 auto;
+}
+
+#lsh-container .header-title{
+    margin: 50px 0 10px 0;
+}
+
+#lsh-container .header-gubun {
+    width: 1200px;
+    height: 3px;
+    background-image: url(/images/Vector.png);
+    margin-bottom: 30px;
+}
+
+#lsh-container .header-gubun-bottom {
+    width: 1200px;
+    height: 3px;
+    background-image: url(/images/login-gubun-bottom.png);
+    margin-top: 30px;
+}
+
+#lsh-container .main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+
+#lsh-container .main-inp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+}
+
+#lsh-container .main-img{
+    width: 420px;
+    height: 100%;
+    overflow: hidden;
+}
+#lsh-container .main-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+#lsh-container .inp-top {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 400px;
+}
+
+#lsh-container .inp {
+    display: block;
+    width: 400px;
+    height: 50px;
+    float: right;
+    padding-left: 10px;
+    outline: none;
+    border: 1px solid #c7c7c7;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+#lsh-container .login-btn {
+    background: #E60012;
+    width: 400px;
+    height: 50px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+#lsh-container .social-ctn>a.social{display: inline-block; margin: 20px 10px -20px}
+.social-ctn>a.social.google{width: 30px; height: 30px;background: url(/images/ico_social_sprites.png) -10px -10px;}
+.social-ctn>a.social.kakao{width: 30px; height: 30px;background: url(/images/ico_social_sprites.png) -60px -10px;}
+.social-ctn>a.social.naver{width: 30px; height: 30px;background: url(/images/ico_social_sprites.png) -10px -60px;}
+
+#lsh-container .login-btn:hover{
+    opacity: 0.8;
+}
+
+#lsh-container .inp-bottom {
+    display: flex;
+    gap: 20px;
+    font-size: 10px;
+    margin-top: 10px;
+}
+
+
+
+#lsh-container .inp-bottom .link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#lsh-container .auto {
+    position: relative;
+    right: 5px;
+    bottom: 1px;
+    cursor: pointer;
+}
+
+#lsh-container .award-logos {
+    display: flex;
+    gap: 5px;
+    width: 1200px;
+    /*margin: 0 auto;*/
+    margin-top: 50px;
+}
+
+#lsh-container .label {
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    align-items: center;
+}
+
+
+/*#lsh-container > .container > .logo > img{*/
+/*    width: 50px;*/
+/*    height: 50px;*/
+/*    cursor: pointer;*/
+/*}*/

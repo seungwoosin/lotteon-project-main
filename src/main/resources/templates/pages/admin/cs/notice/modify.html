@@ -1,0 +1,146 @@
+<link rel="stylesheet" th:href="@{/css/admin/cs/notice/modify.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+  <aside th:replace="layout/admin/aside.html"></aside>
+  <section id="admin-product-list" class="container">
+    <script>
+      // 1차 카테고리 선택 시 2차 카테고리 로드
+      function loadSecondCategory() {
+        const cateId1 = document.getElementById("cateId1").value;
+
+        fetch(`/admin/cs/notice/categories/child?parentId=${cateId1}`)
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error("2차 카테고리 로드 실패: " + response.statusText);
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  const cateId2 = document.getElementById("cateId2");
+                  cateId2.innerHTML = '<option>2차선택</option>'; // 초기화
+
+                  if (data.length === 0) {
+                    console.warn("해당 1차 카테고리에 대한 2차 카테고리가 없습니다.");
+                  }
+
+                  data.forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.id;  // DTO에서 ID 필드에 접근
+                    option.textContent = category.categoryName;  // DTO에서 categoryName 필드에 접근
+                    cateId2.appendChild(option);
+                  });
+                })
+                .catch(error => console.error("2차 카테고리 로드 실패:", error));
+      }
+
+      // 타입별 카테조회
+      function firstOption() {
+        const CateOption = event.target; // 내가 함수를 호출한 현재 태그
+        const CateValue = CateOption.value; // select태그의 value값
+        const noticeType = document.getElementsByName("noticeType")[0];
+
+        console.log(CateValue);
+        if (CateValue != null) {
+          // 원래 있던 option들 삭제
+          const noticeTypeChild = noticeType.childNodes; // name이 faqType인 select태그 안에있는 option태그 전부
+          Array.from(noticeTypeChild).forEach(function (child) {
+            child.remove();
+          });
+          // 새로운 옵션 삽입
+          const TypeOption = `<option>2차선택</option>
+                                        <option value="guide">안내</option>
+                                        <option value="announce">발표</option>
+                                        <option value="prodinfo">위해상품정보</option>
+                                        <option value="uservice">고객서비스</option>`;
+          noticeType.insertAdjacentHTML("beforeend", TypeOption);
+        }
+      }
+      function checkSelection() {
+        const cate = document.getElementsByName("noticeCate")[0].value;
+        const type = document.getElementsByName("noticeType")[0].value;
+
+        if (cate === "1차선택" || type === "2차선택") {
+          alert("문의유형의 모든 항목을 선택해주세요.");
+          return false;
+        }
+        return true;
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const noticeCateOption = document.getElementsByName("noticeCate")[0];
+        const noticeTypeOption = document.getElementsByName("noticeType")[0];
+        const noticeCateValue = document.getElementsByName("noticeCate2")[0];
+        const noticeTypeValue = document.getElementsByName("noticeType2")[0];
+
+        noticeCateOption.value = noticeCateValue.value;
+        noticeTypeOption.value = noticeTypeValue.value;
+      });
+      function goModify(event) {
+        const chk = confirm("정말 수정하시겠습니까?");
+        if (!chk) {
+          event.preventDefault();
+        }
+      }
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+    <nav class="notice-nav">
+      <h3>공지사항 수정</h3>
+      <p>HOME > 고객센터 > <strong>공지사항</strong></p>
+    </nav>
+    <article>
+      <form class="formBox" method="post" th:action="@{/admin/cs/notice/modify/{id}(id=${notice.id})}">
+        <!-- 공지사항 ID 및 기타 숨겨진 필드 -->
+        <input type="hidden" name="id" th:value="${notice.id}" />
+        <input type="hidden" name="memberId" th:value="${notice.memberId}" />
+        <input type="hidden" name="cateId1" th:value="${notice.cateId1}" />
+        <input type="hidden" name="cateId2" th:value="${notice.cateId2}" />
+        <input type="hidden" name="noticeType2" />
+        <table>
+          <tbody>
+          <tr>
+            <th>유형</th>
+            <td>
+              <select name="cateId1" id="cateId1" onchange="loadSecondCategory()" th:value="${notice.cateId1}">
+                <option value="1" th:selected="${notice.category1Name == '고객서비스'}">고객서비스</option>
+                <option value="2" th:selected="${notice.category1Name == '이벤트당첨'}">이벤트당첨</option>
+                <option value="4" th:selected="${notice.category1Name == '안전거래'}">안전거래</option>
+                <option value="5" th:selected="${notice.category1Name == '위해상품'}">위해상품</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>상세 유형</th>
+            <td>
+              <select name="cateId2" id="cateId2">
+                <option>2차선택</option>
+                <!-- 2차 카테고리가 동적으로 삽입될 위치 -->
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>제목</th>
+            <td>
+              <input type="text" name="noticeTitle" th:value="${notice.noticeTitle}" class="noticeTitle" placeholder="제목을 입력하세요." />
+            </td>
+          </tr>
+          <tr>
+            <th>내용</th>
+            <td>
+              <textarea name="noticeContent" th:text="${notice.noticeContent}" class="noticeContent" placeholder="내용을 입력하세요."></textarea>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="button-group">
+          <button type="submit" class="button--write">수정하기</button>
+          <button type="button" class="button--back" onclick="window.history.back()">취소하기</button>
+        </div>
+      </form>
+    </article>
+  </section>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+

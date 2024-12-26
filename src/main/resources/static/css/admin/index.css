@@ -1,0 +1,127 @@
+.admin_index{width: 800px;}
+.notice-nav{display: flex; height: 50px; line-height: 60px;border-bottom: 1px solid #808080;}
+.notice-nav h3{font-size: 18px; font-weight: 900;}
+.notice-nav p{margin-left: auto; margin-top: 7px;}
+.notice-nav strong{font-weight: 900;}
+
+.admin_current{width: 750px; margin: 0 auto; }
+.admin_current>h4{ height: 30px; font-size: 16px; font-weight: 900; margin-top: 30px;}
+
+table{width: 100%; border-top: 2px solid #A6A6A6; border-collapse: collapse;}
+.operate_tbl td, th{text-align: center!important;}
+.operate_tbl tr{height: 30px;}
+.count td{color: #C00000; font-weight: 900;}
+.pc>th{width: 10%;border-bottom: none;}
+.order_tbl td,th{text-align: center!important;}
+.order_tbl tr{height: 30px;}
+.order_tbl {margin-bottom: 10px}
+
+table tr>th,table tr>td{border-right: 1px solid #ddd;}
+table tr>th:last-child,table tr>td:last-child{border-right: none;}
+
+table tr:nth-of-type(even) > *{border-bottom: 1px solid #ddd;}
+
+
+/* list */
+.admin_list{display: flex; justify-content: space-around;}
+.admin_list>.list{width: 380px; margin-top: 30px;}
+
+/* notice */
+/*
+.list>ul{border-top: 2px solid #A6A6A6;}
+.list>h4{ height: 30px; font-size: 16px; font-weight: 900;}
+.list .notice{height: 40px; line-height: 40px; border-bottom: 1px solid #D3D3D3;}
+
+.notice>a{display: flex;}
+.notice>a>.cate{width: 50px;}
+.notice>a>.content{width: 150px;}
+*/
+
+/* 공지사항 스타일 */
+.list>ul {
+    border-top: 2px solid #A6A6A6;
+}
+
+.list>h4 {
+    height: 30px;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.list .notice {
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #D3D3D3;
+}
+
+.notice>a {
+    display: flex;
+    text-decoration: none; /* 링크 밑줄 제거 */
+    color: #000; /* 텍스트 색상 검정으로 */
+}
+
+.notice>a>.cate {
+    width: 80px; /* 카테고리 칸 너비 늘리기 */
+}
+
+.notice>a>.content {
+    width: 250px; /* 제목 칸 너비 조절 */
+}
+
+.notice .date {
+    color: #666; /* 날짜 색상 */
+}
+
+
+/* qna */
+/* 전체 리스트 스타일 */
+.list .qna-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list .qna {
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #D3D3D3;
+    display: flex;
+    align-items: center;
+}
+
+.qna > a {
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    justify-content: space-between; /* 요소 간의 균등한 간격을 위해 */
+}
+
+.qna > a > .cate {
+    width: 100px;
+    color: #333;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qna > a > .content {
+    width: 250px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qna > a > .nick {
+    width: 80px;
+    text-align: center;
+    color: #666;
+}
+
+.qna > a > .date {
+    width: 80px;
+    text-align: right;
+    color: #666;
+}

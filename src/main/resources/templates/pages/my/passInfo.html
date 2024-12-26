@@ -1,0 +1,63 @@
+<link rel="stylesheet" th:href="@{/css/my/my.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" th:href="@{/css/my/popup.css}">
+<header th:replace="layout/main/header.html"></header>
+<th:block th:replace="layout/my/modal.html"></th:block>
+<main style="margin-top: 230px">
+  <div id="my">
+    <th:block th:replace="layout/my/aside.html"></th:block>
+    <main>
+      <th:block th:replace="layout/my/banner.html"></th:block>
+      <section>
+        <div class="passInfo_nav">
+          <div class="passInfo_dd">
+            <h4>나의설정</h4>
+            <p class="passInfoP">고객님의 소중한 정보 보호를 위해 비밀번호를 다시 한번 확인해 주세요.</p>
+          </div>
+        </div>
+        <article>
+          <div class="passInfoDiv">
+            <input id="memId" type="hidden" th:value="${memId}"/>
+            <input class="passInfo" type="password" placeholder="비밀번호를 입력해주세요"/>
+            <button class="btnPassInfo">확인</button>
+          </div>
+        </article>
+      </section>
+      </main>
+    </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+<script>
+  const btnPassInfo = document.querySelector('.btnPassInfo')
+  btnPassInfo.addEventListener('click',async function (e){
+    e.preventDefault();
+    const pass = document.querySelector('.passInfo').value;
+    const memId = document.querySelector('#memId').value;
+
+    if(!pass.trim()){
+      alert('비밀번호를 입력해 주세요.')
+      return
+    }
+    const jsonData = {
+      pass:pass,
+      memId: memId
+    }
+    console.log(jsonData);
+
+    const resp = await axios.patch("/my/info/password",jsonData,{
+      headers:{
+        "Content-Type": "application/json"
+      }
+    })
+    console.log(resp.data)
+    if(resp.data){
+      alert('비밀번호가 확인되었습니다.')
+      location.replace('/my/info')
+    }else{
+      alert('비밀번호가 일치하지 않습니다. 다시 확인해 주세요.')
+      location.reload()
+    }
+
+  })
+</script>

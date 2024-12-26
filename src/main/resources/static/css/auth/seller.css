@@ -1,0 +1,137 @@
+.container {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.header-title{
+    margin-top: 50px;
+    width: 1000px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.header-gubun {
+    width: 1000px;
+    height: 3px;
+    background-image: url(/images/Vector.png);
+    
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.customer {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.tb1 {
+    width: 1000px;
+    border-top: 2px solid #bfbfbf;
+    border-bottom: 2px solid #bfbfbf;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.tb1 th {
+    background-color: #f2f2f2;
+    width: 150px;
+    height: 50px;
+    text-align: left;
+    padding-left: 15px;
+}
+
+.tb1 td {
+    padding-left: 15px;
+}
+
+.tb1 td input {
+    outline: none;
+    border: 2px solid #bfbfbf;
+    width: 200px;
+    height: 30px;
+}
+
+.tb2 {
+    width: 1000px;
+    border-top: 2px solid #bfbfbf;
+    border-bottom: 2px solid #bfbfbf;
+    border-collapse: collapse;
+}
+
+.tb2 th {
+    background-color: #f2f2f2;
+    width: 150px;
+    height: 50px;
+    text-align: left;
+    padding-left: 15px;
+}
+
+.tb2 td {
+    padding-left: 15px;
+}
+
+.inp{
+    outline: none;
+    border: 2px solid #bfbfbf;
+    width: 200px;
+    height: 30px;
+}
+
+.tb2 td .addr1 {
+    outline: none;
+    border: 2px solid #bfbfbf;
+    width: 200px;
+    height: 30px;
+    margin-top: 8px;
+}
+
+.tb2 .td-addr {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.addr2 {
+    outline: none;
+    border: 2px solid #bfbfbf;
+    width: 390px;
+    height: 30px;
+}
+
+.addr3 {
+    outline: none;
+    border: 2px solid #bfbfbf;
+    width: 390px;
+    height: 30px;
+    margin-bottom: 13px;
+}
+
+.signup {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.signup-btn {
+    width: 250px;
+    height: 50px;
+    background-color: #cc3434;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:  40px 0;
+}
+
+.retry-btn {
+    background-color: transparent;
+    width: 40px;
+    height: 30px;
+    border: 2px solid #bfbfbf;
+    outline: none;
+}
+
+.customer .success-color {color: blue}
+.customer .error-color {color: red}

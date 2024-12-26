@@ -1,0 +1,467 @@
+<link rel="stylesheet" th:href="@{/css/admin/user/user.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<!--
+     날짜 : 2024/10/25 (금)
+     이름 : 김민희
+     내용 : 관리자 회원목록 출력을 위한 타임리프 구문 추가
+
+     수정이력
+      - 2024/10/27 (일) 김민희 - 회원수정 팝업호출 기능 추가
+      - 2024/11/03 (일) 김민희 - 검색 기능 추가
+      - 2024/11/06 (수) 김주경 - 선택수정 기능 추가
+-->
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div id="wrap">
+        <div class="container">
+            <nav id="navi">
+                <h2 class="sub_tit">회원목록</h2>
+                <p class="location">
+                    <span>HOME</span>
+                    <span>회원관리</span>
+                    <span>회원목록</span>
+                </p>
+            </nav><!-- .navi -->
+
+            <!-- 검색 -->
+            <form th:action="@{/admin/user/user}" method="get" class="search">
+                <select name="searchType" class="search-option">
+                    <option th:selected="${searchType=='memUid'}" value="memUid">아이디</option>
+                    <option th:selected="${searchType=='custName'}" value="custName">이름</option>
+                    <option th:selected="${searchType=='custEmail'}" value="custEmail">이메일</option>
+                    <option th:selected="${searchType=='custHp'}" value="custHp">휴대폰</option>
+                </select>
+                <input class="search-keyword" type="text" name="keyword" placeholder="검색어 입력">
+                <button class="search-btn" type="submit">검색</button>
+            </form><!-- .search -->
+
+            <div class="header-gubun-bottom"></div>
+
+            <table class="tb1 user">
+                <thead>
+                    <tr>
+                        <th class="checkbox">
+                            <input type="checkbox" class="selectall">
+                        </th>
+                        <th>번호</th>
+                        <th>아이디</th>
+                        <th>이름</th>
+                        <th>성별</th>
+                        <th>등급</th>
+                        <th>포인트</th>
+                        <th>이메일</th>
+                        <th>휴대폰</th>
+                        <th>가입일</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="cust : ${customers}">
+                    <tr th:id="${'mem'+cust.custId}" th:data-id="${cust.custId}">
+                       <!-- 번호, 아이디, 이름, 성별, 등급, 포인트, 이메일, 휴대폰, 가입일, 상태, 관리 -->
+                        <th class="checkbox">
+                            <input type="checkbox" class="select">
+                        </th>
+                        <td th:text="${cust.custId}" class="custId">번호</td>
+
+                        <td th:text="${cust.memUid}" class="memUid">아이디</td>
+                        <td th:text="${cust.custName}" class="custName">이름</td>
+                        <td th:text="${cust.custGender?'남':'여'}" class="custGender">성별</td>
+
+                        <td class="custGrade"> <!-- 사용자 등급 (VVIP, VIP, GOLD, SILVER, FAMILY) -->
+                            <select name="search" class="grade custgrade custGrade" th:data-id="${cust.memUid}">
+                                <option value="VVIP" th:selected="${cust.custGrade}=='VVIP'">VVIP</option>
+                                <option value="VIP" th:selected="${cust.custGrade}=='VIP'">VIP</option>
+                                <option value="GOLD" th:selected="${cust.custGrade}=='GOLD'">GOLD</option>
+                                <option value="SILVER" th:selected="${cust.custGrade}=='SILVER'">SILVER</option>
+                                <option value="FAMILY" th:selected="${cust.custGrade}=='FAMILY'">FAMILY</option>
+                            </select>
+                        </td>
+
+                        <td th:text="${cust.custPoint}" class="custPoint">포인트</td>
+                        <td th:text="${cust.custEmail}" class="custEmail">이메일</td>
+                        <td th:text="${cust.custHp}" class="custHp">휴대폰</td>
+                        <td th:text="${#dates.format(cust.memRdate, 'yy-MM-dd')}" class="memRdate">가입일</td>
+                        <!-- <td th:text="${#dates.format(cust.memRdate, 'yy-MM-dd HH:mm:ss')}" class="memRdate">가입일</td> -->
+
+
+                        <!-- 회원상태 (4가지 - 정상, 중지, 휴면, 탈퇴) -->
+                        <td th:if="${cust.memState == 'start'}" th:data-id="${cust.memState}" onclick="stateChanger(event)" class="memState start">-</td>
+                        <td th:if="${cust.memState == 'stop'}" th:data-id="${cust.memState}" onclick="stateChanger(event)" class="memState stop">중지</td>
+                        <td th:if="${cust.memState == 'basic'}" th:data-id="${cust.memState}" onclick="stateChanger(event)" class="memState basic">정상</td>
+                        <td th:if="${cust.memState == 'sleep'}" th:data-id="${cust.memState}" onclick="stateChanger(event)" class="memState sleep">휴면</td>
+                        <td th:if="${cust.memState == 'leave'}" th:data-id="${cust.memState}" onclick="stateChanger(event)" class="memState leave">탈퇴</td>
+
+                        <td class="td-admin">
+                            <input type="button" value="수정" th:data-id="${cust.custId}" onclick="openCustUpdatePopup(event)">
+                            <input type="button" th:value="${cust.memState eq 'stop'?'재개':'중지'}" th:data-id="${cust.custId}" th:data-state="${cust.memState}" th:class="'state-modify '+${cust.memState}">
+                        </td>
+
+                    </tr>
+                </th:block>
+                </tbody>
+            </table><!-- .tb1 .user-->
+
+            <div class="btns">
+                <button class="modify-btn">선택수정</button>
+            </div><!-- .btns -->
+
+            <!-- 페이지 이동 -->
+            <div class="page">
+                <a class="none" th:href="@{/admin/user/user(page=0, searchType=${searchType}, keyword=${keyword})}"><<</a>
+                <a class="none" th:href="@{/admin/user/user(page=${page - 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/admin/user/user(page=${page - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/admin/user/user(page=${page + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/admin/user/user(page=${page + 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/admin/user/user(page=${totalPages - 1}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+            </div><!-- .page -->
+
+            <div class="popup"></div><!-- .popup -->
+            <div class="popupbg"></div><!-- .popupbg -->
+        </div><!-- .container -->
+    </div><!-- .wrap -->
+</main>
+
+
+<footer th:replace="layout/admin/footer.html"></footer>
+
+<script>
+    const popup = document.querySelector(".popup");
+    const bg = document.querySelector(".popupbg");
+
+
+    async function openCustUpdatePopup(event) {
+        const id = event.target.dataset.id;
+        console.log(id);
+
+        try {
+            const resp = await fetch(`/admin/user/user/${id}`, {
+                method: 'GET',
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                console.error('서버 에러 응답:', errorData);
+                throw new Error(`Error ${resp.status}: ${errorData.message || JSON.stringify(errorData)}`);
+            }
+
+            const data = await resp.json();
+            console.log("패치 "+data.custId)
+            console.log("패치2222 "+data.id)
+            // 데이터가 있고, 사용자 유형이 "customer"일 때,
+            if (data!=null&&data.memRole==='customer') {
+                // "customer" 팝업 내용 설정
+                popup.innerHTML = `
+                <div class="header">
+                    <div class="title">회원수정</div>
+                    <div onclick="closePopup()" class="btn">X</div>
+                </div>
+
+                <div style="margin: 20px; margin-bottom: 30px;">
+                    <table class="tb4">
+                        <tr>
+                            <th>아이디</th>
+                            <td><input name="memUid" class="memUid" value="${data.memUid}" readonly></td>
+                            <th>이름</th>
+                            <td><input name="custName" class="custName" value="${data.custName}"></td>
+                        </tr>
+                        <tr>
+                            <th>휴대폰</th>
+                            <td><input name="custHp" value="${data.custHp}" class="custHp"></td>
+                            <th>이메일</th>
+                            <td><input name="custEmail" value="${data.custEmail}" class="custEmail"></td>
+
+                        </tr>
+                        <tr>
+                            <th>성별</th>
+                            <td>
+                                <label><input type="radio" name="custGender" class="custGender" value="true" ${+data.custGender === 1 ? "checked" : ""}>남</label>
+                                <label><input type="radio" name="custGender" class="custGender" value="false" ${+data.custGender === 0 ? "checked" : ""}>여</label>
+                            </td>
+                            <th>상태</th>
+                            <td class="memState">${data.memState}</td>
+                        </tr>
+                        <tr>
+                            <th>등급</th>
+                            <td colspan="3"><input name="custGrade" value="${data.custGrade}" class="custGrade" readonly>
+                                <span>등급 수정은 회원 목록에서 선택수정 가능</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>우편번호</th>
+                            <td><input name="custAddr1" value="${data.custAddr1}" class="custAddr1"></td>
+                        <tr>
+                            <th>기본주소</th>
+                            <td><input name="custAddr2" value="${data.custAddr2}" class="custAddr2"></td>
+                        </tr>
+                        <tr>
+                            <th>상세주소</th>
+                            <td><input name="custAddr3" value="${data.custAddr3}" class="custAddr3"></td>
+                        </tr>
+                        <tr>
+                            <th>가입일</th>
+                            <td>${data.memRdate}</td>
+                            <th>최근 로그인 날짜</th>
+                            <td>${data.memLastLoginDate}</td>
+                        </tr>
+                        <tr>
+                            <th>기타</th>
+                            <td colspan="3">
+                                <textarea name="memEtc" data-placeholder="회원에 대한 기타 정보입력">${data.memEtc || ''}</textarea>
+                            </td>
+                        </tr>
+                        <input type="hidden" name="custId" value="${data.custId}">
+                    </table>
+                </div>
+                <div style="margin-bottom:20px" class="btns">
+                    <button onclick="submitForm(${data.id})">수정하기</button>
+                </div>
+                `;
+
+                popup.style.display = "block";
+                bg.style.display = "flex";
+
+
+            } else {
+                alert("해당 사용자는 수정할 수 없습니다.");
+                // Guest 팝업 내용 설정 (소설 sns 회원 = Guest) 수정할 수 없으면 수정할 내용의 팝업창 필요 없는 것 아닌가여?
+                popup.innerHTML = `
+                <div class="header">
+                    <div class="title">소셜 회원수정</div>
+                    <div onclick="closePopup()" class="btn">X</div>
+                </div>
+
+                <div style="margin: 20px; margin-bottom: 30px;">
+                    <table class="tb4">
+                        <tr>
+                            <th>아이디</th>
+                            <td><input name="memUid" value="${data.memUid}" readonly></td>
+                        </tr>
+                        <tr>
+                            <th>이름</th>
+                            <td><input name="custName" value="${data.custName}"></td>
+                        </tr>
+                        <tr>
+                            <th>이메일</th>
+                            <td><input name="custEmail" value="${data.custEmail}"></td>
+                        </tr>
+                        <tr>
+                            <th>가입일</th>
+                            <td>${data.memRdate}</td>
+                        </tr>
+                        <tr>
+                            <th>최근 로그인 날짜</th>
+                            <td>${data.lastLoginDate}</td>
+                        </tr>
+                        <input type="hidden" name="custId" value="${data.custId}">
+                    </table>
+                </div>
+                <div style="margin-bottom:20px" class="btns">
+                    <button onclick="submitForm(${data.id})">수정하기</button>
+                </div>
+
+                `;
+                // popup.style.display = "block";
+                // bg.style.display = "flex";
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            alert(err.message);
+        }
+    }
+
+    // 폼 제출 및 데이터 전송
+    function submitForm(id) {
+        console.log('1'+document.querySelector('input[name="memUid"]').value);
+        console.log('2'+document.querySelector('input[name="custId"]').value);
+        console.log('3'+document.querySelector('input[name="custName"]').value);
+        console.log('4'+document.querySelector('input[name="custGender"]').value);
+        console.log('5'+document.querySelector('input[name="custGrade"]').value);
+        console.log('6'+document.getElementsByClassName('memState')[0].innerText);
+        console.log('7'+document.querySelector('input[name="custEmail"]').value);
+        console.log('8'+document.querySelector('input[name="custHp"]').value);
+        console.log('9'+document.querySelector('input[name="custAddr1"]').value);
+        console.log('10'+document.querySelector('input[name="custAddr2"]').value);
+        console.log('11'+document.querySelector('input[name="custAddr3"]').value);
+        console.log('12'+document.querySelector('textarea[name="memEtc"]').value);
+        const element = document.getElementById("id");
+        const data = {
+            memUid: document.querySelector('input[name="memUid"]').value,
+            custId: document.querySelector('input[name="custId"]').value,
+            custName: document.querySelector('input[name="custName"]').value,
+            custGender: document.querySelector('input[name="custGender"]:checked').value,
+            custGrade: document.querySelector('input[name="custGrade"]').value,
+            memState: document.getElementsByClassName('memState')[0].innerText,
+            custEmail: document.querySelector('input[name="custEmail"]').value,
+            custHp: document.querySelector('input[name="custHp"]').value,
+            custAddr1: document.querySelector('input[name="custAddr1"]').value,
+            custAddr2: document.querySelector('input[name="custAddr2"]').value,
+            custAddr3: document.querySelector('input[name="custAddr3"]').value,
+            memEtc: document.querySelector('textarea[name="memEtc"]').value
+        };
+        console.log('hi22222');
+
+        fetch(`/admin/user/user/${data.custId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("회원 정보를 수정하는 데 실패했습니다.");
+                }
+                return response.json();
+            })
+            .then(updatedData => {
+                alert('회원 정보가 성공적으로 수정되었습니다.');
+
+                // alert 창 닫은 후, HTML 요소 업데이트 (새로고침 없이)
+                window.location.href ="/admin/user/user";
+                // 팝업 닫기 (alert 확인 버튼 클릭 후)
+                document.querySelector('.popup').style.display = 'none';
+                document.querySelector('.popupbg').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('회원 정보 수정 오류:', error);
+                alert(error.message);
+            });
+        return false;
+    }
+
+    // 팝업 닫기
+    function closePopup() {
+        popup.style.display = "none";
+        bg.style.display = "none";
+    }
+
+
+    // 회원 상태 (4가지 - 정상, 중지, 휴면, 탈퇴) if문 스크립트
+    async function stateChanger(event){
+        const submitData = {
+            "id" : event.target.dataset.id
+        }
+        const resp = await axios.patch("/admin/user/user",submitData,{
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        })
+        window.location.href = "/admin/user/user"
+    }
+
+    // 선택 수정
+    document.addEventListener('click',function (e){
+        const selectall = document.querySelector('.selectall');
+        const checkboxes = document.querySelectorAll('.select');
+
+        if (e.target.classList.contains('selectall')) {selectAll(e.target);}
+        if (e.target.classList.contains('select')) {updateSelectAllCheckbox();}
+
+        function selectAll(selectAllCheckbox) {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        }
+
+        function updateSelectAllCheckbox() {
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            selectall.checked = allChecked;
+        }
+
+        if (e.target.classList.contains('state-modify')) {
+            e.preventDefault();
+            e.target.disabled = true; // 버튼 비활성화 (fetch 중복 방지)
+
+            const confirmMsg = e.target.value;
+
+            if(!confirm(`정말 해당 계정을 ${confirmMsg}하시겠습니까?`)){return;}
+
+            const id = e.target.dataset.id;
+            const state = e.target.dataset.state;
+
+            const changeState = state !== 'stop' ? 'stop' : 'basic';
+            fetch(`/admin/user/${id}/${changeState}`, {
+                method: 'PATCH'
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`성공적으로 ${confirmMsg}되었습니다.`);
+                        location.href="";
+                    } else {
+                        alert('수정에 실패했습니다.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('회원 상태 수정 중 오류가 발생했습니다.');
+                })
+                .finally(() => {
+                    e.target.disabled = false; // 버튼 비활성화 (fetch 중복 방지)
+                });
+
+
+        }
+            // 선택수정 버튼 클릭 시
+        if (e.target.classList.contains('modify-btn')) {
+            e.preventDefault();
+
+            e.target.disabled = true; // 버튼 비활성화 (fetch 중복 방지)
+            const selectedCheckboxes = document.querySelectorAll('.select:checked');
+            let selectedIds = [];
+            let changedGrade = [];
+
+            for (let checkbox of selectedCheckboxes) {
+                const row = checkbox.closest('tr');
+                const memberId = row.dataset.id;
+                const chngGrd = row.querySelector('.grade').value;
+                console.log(memberId);
+                console.log(chngGrd);
+                selectedIds.push(+memberId);
+                changedGrade.push(chngGrd);
+            }
+
+            if (selectedIds.length === 0) {
+                alert('수정할 회원을 선택하세요.');
+                return;
+            }
+            const formData = new FormData();
+            formData.append("ids",selectedIds);
+            formData.append("grades",changedGrade);
+            console.log('Form Data:', ...formData.entries()); // 폼 데이터 출력
+
+            fetch('/admin/user/select', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "ids": selectedIds,
+                    "grades": changedGrade
+                })
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('수정되었습니다.');
+                        location.href="";
+                    } else {
+                        alert('수정에 실패했습니다.');
+                    }
+
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('수정 중 오류가 발생했습니다.');
+                })
+                .finally(() => {
+                    e.target.disabled = false; // 버튼 비활성화 (fetch 중복 방지)
+                });
+        }
+    })
+
+</script>

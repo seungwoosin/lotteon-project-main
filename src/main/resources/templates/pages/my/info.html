@@ -1,0 +1,335 @@
+<link rel="stylesheet" th:href="@{/css/my/my.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js}"></script>
+<header th:replace="layout/main/header.html"></header>
+<main style="margin-top: 230px">
+  <div id="my">
+    <th:block th:replace="layout/my/aside.html"></th:block>
+    <main>
+      <th:block th:replace="layout/my/banner.html"></th:block>
+    <section>
+        <div class="passInfo_nav">
+            <div class="passInfo_dd">
+                <h4>나의설정</h4>
+                <p class="passInfoP">가입하신 계정의 LotteON 회원 정보입니다.</p>
+            </div>
+        </div>
+
+      <article>
+        <form id="myInfoForm" th:action="@{/my/info}" method="post">
+          <table border="0" class="myInfo" style="width: 800px;">
+<!--            <th:block th:each="cust : ${customer}">-->
+              <tr>
+                <th>사용자 ID</th>
+                <td>
+                    <input type="hidden" id="memUId" name="memId" th:value="${#authentication.principal.user.id}">
+                    <input type="hidden" id="custId" name="custId" th:value="${#authentication.principal.user.customer.id}">
+                  <input type="text" id="uid" class="uid" name="uid" th:value="${cust.memUid}" disabled/>
+                </td>
+              </tr>
+              <tr>
+                <th>비밀번호</th>
+                <td>
+                    <input type="password" placeholder="수정할 비밀번호를 입력해 주세요." name="pass" id="pass" class="pass"/>
+                    <button type="button" id="btnPass2" class="btn modify">수정하기</button>
+                    <span style="margin-left: 7px;">영문, 숫자, 특수문자 8~12자 설정</span>
+                </td>
+              </tr>
+              <tr>
+                <th>이름</th>
+                <td>
+<!--                  <input type="text" disabled value="홍길동" />-->
+                  <input type="text" disabled th:value="${cust.custName}" />
+                </td>
+              </tr>
+              <tr>
+                <th>생년월일</th>
+                <td>
+<!--                  <input type="text" disabled value="1990년 12월 30일" />-->
+                  <input type="text" disabled th:value="${cust.custBirth}" />
+                </td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>
+                  <input type="text" name="custEmail1" th:value="${cust.custEmail1}" class="email1"/> @
+                  <input type="text" name="custEmail2" th:value="${cust.custEmail2}" class="email2"/><br/>
+                   <!-- 이메일 select 시 변경 -->
+                  <select onchange="changeDomain()" style="width: 197px;" id="emailDomainSelect">
+                    <option value="" selected>직접입력</option> <!-- "직접입력" 이 기본 선택된 상태로 보여짐 -->
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="daum.net">daum.net</option>
+                  </select><!-- #emailDomainSelect -->
+                    <button type="button" id="btnEmail" data-type="email" class="btn modify btnEmail" >수정하기</button>
+
+                </td>
+              </tr>
+              <tr>
+                <th>휴대폰</th>
+                <td>
+                  <input type="text" style="width: 100px;" th:value="${cust.custHp1}" name="custHp1" max="999" class="hp1"/> -
+                  <input type="text" style="width: 100px;" th:value="${cust.custHp2}" name="custHp2" max="9999" class="hp2"/> -
+                  <input type="text" style="width: 100px;" th:value="${cust.custHp3}" name="custHp3" max="9999" class="hp3"/>
+                    <button type="button" id="btnHp" class="btn modify" data-type="hp" >수정하기</button>
+                </td>
+              </tr>
+              <tr>
+                <th>주소</th>
+                <td>
+                  <input name="custAddr1" id="addr1" type="text" placeholder="우편번호" th:value="${cust.custAddr1}" readonly class="addr1"/>
+                    <button type="button" class="btn" id="btnSearchAddr" >주소검색</button><br/>
+                  <input name="custAddr2" id="addr2" class="addr addr2" type="text" placeholder="기본주소" th:value="${cust.custAddr2}" /><br />
+                  <input name="custAddr3" id="addr3" class="addr addr3" type="text" placeholder="상세주소" th:value="${cust.custAddr3}" />
+                </td>
+              </tr>
+              <tr>
+                <th>탈퇴</th>
+                <td style="display: flex;height: 45px;">
+                    <button type="button" id="btnleave" class="btn quit">탈퇴하기</button>
+                    <input type="password" id="quitPass" style="display: none;position: relative;top: -3px;"/>
+                    <span class="passSpan" style="line-height: 30px;margin-left: 7px;"></span>
+                </td>
+              </tr>
+          </table>
+          <p><input type="submit" class="btn submit" id="submit" value="수정하기" /></p>
+        </form>
+      </article>
+    </section>
+  </main>
+  </div>
+</main>
+
+<footer th:replace="layout/main/footer.html"></footer>
+<script th:src="@{/js/axios.min.js}"></script>
+<script th:inline="javascript">
+    //페이지가 로드될 때 이메일 도메인 초기화
+    window.onload = function() {
+        const email2Input = document.querySelector(".email2");
+        const selectedDomain = document.getElementById("emailDomainSelect").value;
+
+        if (selectedDomain) { // 기본값이 있는 경우 설정
+            email2Input.value = selectedDomain;
+            email2Input.setAttribute("readonly", true);
+        }
+    };
+
+    const memid =  document.querySelector('#memUid').value
+
+    const btnPass = document.querySelector('#btnPass2')
+    btnPass.addEventListener('click', async function (e){
+        const pass =  document.querySelector('#pass').value
+        const jsonData = {
+            "memId":memid,
+            "pass":pass
+        }
+        console.log(jsonData)
+        if(confirm('비밀번호를 수정하시겠습니까?')){
+            try {
+                const resp = await axios.post("/my/info/pass2",jsonData, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                const passResult = resp.data;
+                console.log(passResult)
+                if(passResult){
+                    alert('수정이 완료되었습니다. 다시 로그인해주세요.')
+                    window.location.href = "/auth/login/view"
+                }else{
+                    alert('비밀번호 수정에 실패했습니다. 다시 시도해 주세요.')
+                    location.reload();
+                }
+            }catch (err){
+                console.log(err)
+                alert('수정 중 오류가 발생했습니다.')
+            }
+
+        }
+    })
+
+    const btnleave = document.querySelector('#btnleave');
+
+    btnleave.addEventListener('click',async function (e){
+        e.preventDefault();
+        const leavePass =  document.querySelector('#quitPass').value;
+        const passSpan = document.querySelector('.passSpan');
+        console.log(leavePass)
+
+        if(leavePass==null || leavePass == ''){
+            quitPass.style.display='block';
+            passSpan.innerText = '비밀번호 입력 후 탈퇴 버튼을 눌러주세요.'
+            return;
+        }else{
+            const jsonData = {
+                "memId":memid,
+                "pass":leavePass
+            }
+            console.log(jsonData)
+            const isConfirmed = confirm('정말 탈퇴하시겠습니까?\n확인 버튼 선택시, 계정은 삭제되며 복구되지 않습니다.');
+            console.log(isConfirmed)
+            if(isConfirmed){
+                const resp = await axios.post("/my/info/confirmPass",jsonData,{
+                    headers:{
+                        "Content-Type": "application/json"
+                    }
+                })
+                console.log("결과 "+resp.data)
+                if(resp.data){
+                    alert('회원탈퇴가 완료되었습니다.\n지금까지 LotteOn을 이용해 주신 것을 진심으로 감사드립니다.')
+                    window.location.replace('/auth/logout');
+                }else{
+                    alert('비밀번호가 맞지 않습니다.\n다시 시도해 주세요.')
+                    location.reload();
+                }
+            }
+        }
+    })
+
+    document.getElementById("emailDomainSelect").addEventListener("change", function() {
+        const emailDomain = this.value;
+        const email2Input = document.querySelector(".email2");
+
+        // "직접입력"이 아니면 email2에 값 설정 및 읽기 전용 처리
+        if (emailDomain) {
+            email2Input.value = emailDomain;
+            email2Input.setAttribute("readonly", true);
+        } else { // 직접 입력 시 필드를 비우고 입력 가능하게 설정
+            email2Input.value = "";
+            email2Input.removeAttribute("readonly");
+        }
+    });
+
+    const btnSearchAddr = document.querySelector('#btnSearchAddr');
+    btnSearchAddr.addEventListener('click',function (e){
+        e.preventDefault();
+        postcode();
+    })
+
+    function postcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if (data.userSelectedType === 'R') {
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if (data.buildingName !== '' && data.apartment === 'Y') {
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if (extraAddr !== '') {
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    //document.getElementById("sample6_extraAddress").value = extraAddr;
+
+                } else {
+                    document.getElementById("sample6_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('addr1').value = data.zonecode;
+                document.getElementById("addr2").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("addr3").focus();
+            }
+        }).open();
+    }
+    // 수정 버튼 클릭 시 Fetch 요청 처리
+    const myInfoForm = document.querySelector('#myInfoForm')
+    const submit = document.querySelector('#submit');
+    submit.addEventListener('click', async function (e){
+        e.preventDefault();
+        jsonData = {
+            "custId":myInfoForm.custId.value,
+            "custEmail1":myInfoForm.custEmail1.value,
+            "custEmail2":myInfoForm.custEmail2.value,
+            "custHp1":myInfoForm.custHp1.value,
+            "custHp2":myInfoForm.custHp2.value,
+            "custHp3":myInfoForm.custHp3.value,
+            "custAddr1":myInfoForm.custAddr1.value,
+            "custAddr2":myInfoForm.custAddr2.value,
+            "custAddr3":myInfoForm.custAddr3.value
+        }
+        console.log(jsonData);
+
+        try {
+            const resp = await axios.post("/my/info",jsonData,{
+                headers:{
+                    "Content-Type": "application/json"
+                }
+            })
+            if(resp.data){
+                alert('수정이 완료되었습니다.');
+                location.reload();
+            }
+        }catch (err){
+            console.log(err);
+            alert('수정 중 오류가 발생했습니다.')
+        }
+    })
+
+
+    const btnEmail = document.querySelector('#btnEmail');
+    const btnHp = document.querySelector('#btnHp');
+
+    btnEmail.addEventListener('click',function (e){
+        e.preventDefault();
+        const type = btnEmail.dataset.type;
+        const Email = document.querySelector('.email1').value + "@"+ document.querySelector('.email2').value
+        const jsonData = {
+            "custId": document.querySelector('#custId').value,
+            "custEmail": Email
+        };
+        console.log(type)
+        if(confirm('이메일을 수정하시겠습니까?')){
+            modify(type, jsonData)
+        }
+    })
+
+    btnHp.addEventListener('click',function (e){
+        e.preventDefault();
+        const type = btnHp.dataset.type;
+        const hp = document.querySelector('.hp1').value + "-"+ document.querySelector('.hp2').value+"-"+document.querySelector('.hp3').value
+        const jsonData = {
+            "custId": document.querySelector('#custId').value,
+            "custHp": hp
+        };
+        console.log(type+hp)
+        if(confirm('휴대폰 번호를 수정하시겠습니까?')){
+            modify(type, jsonData)
+        }
+    })
+
+    function modify(type, jsonData){
+        console.log(type)
+        console.log(jsonData)
+        fetch(`/my/info/${type}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(jsonData)
+        })
+            .then(resp => resp.ok ? resp.json() : Promise.reject("서버 응답 오류"))
+            .then(data => alert(data.success ? '수정에 실패했습니다.' : '성공적으로 수정되었습니다.'), location.reload)
+            .catch(err => alert('수정 중 오류가 발생했습니다.'))
+            .finally(() => button.disabled = false);
+    }
+</script>

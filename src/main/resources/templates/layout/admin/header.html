@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[[${site.configTitle}]] [[${site.configSub}]]</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/admin/header.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/config/config.css}">
+    <script th:src="@{/js/axios.min.js}"></script>
+    <script defer th:src="@{/js/postVisitor.js}"></script>
+    <link rel="shortcut icon" th:href="@{'/file/'+${site.configFabicon}}">
+</head>
+<body>
+        <section class="s1">
+            <div class="top-link">
+                <!-- 로그인 시 || 안녕하세요, 000님 환영합니다. (사용자별) -->
+                <span sec:authorize="hasRole('admin')">안녕하세요, 관리자님</span>
+                <span sec:authorize="hasRole('seller')">안녕하세요, 판매자님</span>
+
+                <a th:href="@{/}">홈</a>
+                <a th:href="@{/auth/logout}">로그아웃</a>
+                <a th:href="@{/cs/index}">고객센터</a>
+
+            </div><!-- .top-link -->
+        </section>
+        <div onclick="getHome()" class="logo" style="cursor: pointer">
+            <img th:src="@{'/file/'+${site.configHeaderLogo}}" style="width: 120px" alt="">
+        </div>
+
+
+<script>
+    function getHome() {
+        window.location.href = "/admin/config/index"
+    }
+</script>

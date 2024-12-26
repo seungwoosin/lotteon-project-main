@@ -1,0 +1,52 @@
+main {
+    display: flex;
+    gap: 60px;
+    width: 1200px;
+    margin: 130px auto;
+    user-select: none;
+    align-items: flex-start;
+}
+
+
+
+#main {
+    display: flex;
+    flex-direction: column;
+}
+#my > main {
+    display: block;
+    width: 810px; height: auto;float: left; margin: 30px; margin-top: 60px; box-sizing: border-box;
+}
+
+#wrap > #main {
+    margin: 0 auto;
+    width: 811px;
+    height: auto;
+    border: none;
+    gap: 10px;
+}
+
+#wrap > #navi {
+    width: 800px;
+}
+
+.admin-btn{
+    border-radius: 5px;
+}
+
+span.ratingBg{
+    position: relative;
+    display: inline-block;
+    background: url("/images/ico_rating_star.png") no-repeat 0 0;
+    width: 84px;
+    height: 16px;
+}
+span.ratingBg > span.rating{
+    width: 84px;
+    height: 16px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    background: url("/images/ico_rating_star.png") no-repeat 0 -200px;
+}

@@ -1,0 +1,300 @@
+<link rel="stylesheet" th:href="@{/css/admin/coupon/list.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<script th:src="@{/js/axios.min.js}"></script>
+<script th:inline="javascript">
+    let memId = /*[[${memId}]]*/ '0';
+    let issuer = /*[[${issuer}]]*/ '';
+</script>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div class="container">
+        <div class="header">
+            <span class="header-title">쿠폰목록</span>
+            <div class="header-right">
+                <span>HOME</span>
+                <span>></span>
+                <span>쿠폰관리</span>
+                <span>></span>
+                <span class="bold">쿠폰목록</span>
+            </div>
+        </div>
+
+        <div class="header-gubun"></div>
+
+        <section class="categoryProduct">
+            <form th:action="@{/admin/coupon/coupons}" method="get" class="order-search">
+                <select name="searchType">
+                    <option th:selected="${searchType=='id'}" value="id">쿠폰번호</option>
+                    <option th:selected="${searchType=='couponName'}" value="couponName">쿠폰명</option>
+                    <option th:selected="${searchType=='couponIssuer'}" th:if="${searchCondition=='admin'}" value="couponIssuer">발급자</option>
+                </select>
+                <input name="keyword" type="text" placeholder="검색어입력">
+                <button type="submit">검색</button>
+            </form>
+            <table class="tb1">
+                <tr>
+                    <th>쿠폰번호</th>
+                    <th>쿠폰종류</th>
+                    <th>쿠폰명</th>
+                    <th>혜택</th>
+                    <th>발급기간</th>
+                    <th>발급자</th>
+                    <th>발급수</th>
+                    <th>사용수</th>
+                    <th>상태</th>
+                    <th>발급일</th>
+                    <th>관리</th>
+                </tr>
+                <tr th:each="coupon : ${coupons}">
+                    <td onclick="openCouponPopup(1,event)" th:data-id="${coupon.id}" th:text="${coupon.id}" style="text-decoration: underline; cursor:pointer; width: 45px;">10121111</td>
+                    <td style="width:70px;" th:text="${coupon.couponType}">abc1</td>
+                    <td style="width: 140px;" th:text="${coupon.couponName}">김유신</td>
+                    <td style="width: 80px;" th:text="${coupon.couponDiscountOption1}+${coupon.couponDiscount} + ${coupon.couponDiscountOption2}">OOO</td>
+                    <td style="width: 110px;" th:text="${coupon.couponExpiration}">2</td>
+                    <td style="width: 80px;" th:text="${coupon.couponIssuer}">102,999</td>
+                    <td style="width: 40px;" th:text="${coupon.couponIssueCount}">신용카드</td>
+                    <td style="color: #00B050; width:40px; " th:text="${coupon.couponUseCount}">결제완료</td>
+                    <td style="width: 50px;" th:text="${coupon.couponState}">2024.10.16<br>00:00:00</td>
+                    <td style="width: 80px;" th:text="${coupon.couponRdate}">배송하기</td>
+                    <td style="width:70px; display: flex; flex-direction: column; gap: 2px;justify-content: center;" th:if="${coupon.couponState=='발급중'}"
+                    ><button onclick="updateCouponState(1,event)" th:data-id="${coupon.id}" class="active-btn"
+                             style="cursor: pointer; border: 1px solid #0070C0; color: #0070C0; padding: 3px 1px; background-color: transparent;"
+                    >종료</button>
+                        <button th:if="${coupon.couponBannerState == '이벤트'}" onclick="updateCouponState(3,event)" th:data-id="${coupon.id}"
+                                class="active-btn" style="cursor: pointer; border: 1px solid #0070C0; color: #0070C0; padding: 3px 1px; background-color: transparent;"
+                        >이벤트신청</button>
+                        <button th:if="${coupon.couponBannerState == '이벤트종료'}" onclick="updateCouponState(3,event)" th:data-id="${coupon.id}"
+                                class="active-btn" style="cursor: pointer; border: 1px solid #0070C0; color: #0070C0; padding: 3px 1px; background-color: transparent;"
+                        >이벤트종료</button>
+                    </td>
+                    <td th:data-id="${coupon.id}" th:if="${coupon.couponState=='종료'}">
+                        <button onclick="updateCouponState(2,event)" th:data-id="${coupon.id}" class="active-btn"
+                                style="cursor: pointer; border: 1px solid #0070C0; color: #0070C0; padding: 3px 1px; background-color: transparent;"
+                        >활성화</button>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="page">
+                <a class="none" th:href="@{/admin/coupon/coupons(page=0, searchType=${searchType}, keyword=${keyword})}"><<</a>
+                <a class="none" th:href="@{/admin/coupon/coupons(page=${page - 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/admin/coupon/coupons(page=${page - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/admin/coupon/coupons(page=${page + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/admin/coupon/coupons(page=${page + 2}, searchType=${searchType}, keyword=${keyword})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/admin/coupon/coupons(page=${totalPages - 1}, searchType=${searchType}, keyword=${keyword})}" >>></a>
+            </div>
+        </section>
+        <div class="green2"><button onclick="openCouponPopup(2,event)"  class="btn_green2">등록하기</button></div>
+        <div class="popup"></div>
+        <div class="popupbg"></div>
+    </div>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+
+<script>
+    const popup = document.querySelector('.popup')
+    const bg = document.querySelector('.popupbg')
+    async function openCouponPopup(a,event) {
+        if(a===1){
+            console.log(event.target.dataset.id)
+            let url = `/admin/coupon/coupon?id=${event.target.dataset.id}`;
+            const resp = await axios.get(url,{
+                headers: {
+                    "Content-Type" : "application/json"
+                }
+            })
+
+            const coupon = resp.data.coupon;
+            console.log(coupon)
+            popup.innerHTML = `
+            <div class="header">
+                <div class="title">쿠폰정보 <span style="color: white">1012000000</span></div>
+                <div onclick="closeShopPopup()" class="btn">X</div>
+            </div>
+            <div style="margin: 20px; margin-bottom: 30px;">
+                <table class="tb4">
+                    <tr>
+                        <th>쿠폰번호</th>
+                        <td><input value="${coupon.id}"></td>
+                    </tr>
+                    <tr>
+                        <th>발급처</th>
+                        <td><input value="${coupon.couponIssuer}"></td>
+                    </tr>
+                    <tr>
+                        <th>쿠폰종류</th>
+                        <td><input value="${coupon.couponType}"></td>
+                    </tr>
+                    <tr>
+                        <th>쿠폰명</th>
+                        <td><input value="${coupon.couponName}"></td>
+                    </tr>
+                    <tr>
+                        <th>혜택</th>
+                        <td><input value="${coupon.couponDiscount}${coupon.couponDiscountOption}"></td>
+                    </tr>
+                    <tr>
+                        <th>발행기간</th>
+                        <td>
+                            ${coupon.couponExpiration}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>유의사항</th>
+                        <td><textarea readonly>${coupon.couponCaution}</textarea></td>
+                    </tr>
+                </table>
+            </div>
+            `
+        } else {
+            popup.innerHTML = `
+            <div class="header">
+                <div class="title">쿠폰등록 <span style="color: white">1012000000</span></div>
+                <div onclick="closeShopPopup()" class="btn">X</div>
+            </div>
+            <div style="margin: 20px; margin-bottom: 30px;">
+                <table class="tb4">
+                    <tr>
+                        <th>발급처</th>
+
+                        <td><input value="${issuer}" readonly>
+                            <input type="hidden" value="${memId}" readonly id="memId">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>쿠폰명</th>
+                        <td><input id="couponName"></td>
+                    </tr>
+                    <tr>
+                        <th>혜택</th>
+                        <td>
+                            <select id="couponDiscount">
+                                <option value="1000/w">1000원 할인</option>
+                                <option value="2000/w">2000원 할인</option>
+                                <option value="3000/w">3000원 할인</option>
+                                <option value="10000/w">10000원 할인</option>
+                                <option value="10/p">10% 할인</option>
+                                <option value="20/p">20% 할인</option>
+                                <option value="50/p">50% 할인</option>
+                                <option value="1000/d">배송비 1000원 할인</option>
+                                <option value="2000/d">배송비 2000원 할인</option>
+                                <option value="3000/d">배송비 3000원 할인</option>
+                                <option value="all/d">배송비 무료</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>최소적용금액</th>
+                        <td>
+                            <input id="couponMinPrice">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>발행기간</th>
+                        <td>
+                            <input id="couponExpiration1" type="date"> ~ <input id="couponExpiration2" type="date">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>발행 후 사용기간</th>
+                        <td>
+                            <input id="customerCouponExpiration" type="number" placeholder="일 단위로 적어주세요.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>유의사항</th>
+                        <td><textarea id="couponCaution"></textarea></td>
+                    </tr>
+                </table>
+                <div class="btns"><button onclick="postCoupon(event)">등록하기</button></div>
+            </div>
+            `
+        }
+        popup.style.display = "block";
+        bg.style.display = "flex";
+    }
+
+    function closeShopPopup() {
+        popup.style.display = "none";
+        bg.style.display = "none";
+    }
+
+    async function postCoupon(event) {
+        const submitData = {
+            'memId' : document.getElementById('memId').value,
+            'couponName' : document.getElementById('couponName').value,
+            'couponDiscount' : document.getElementById('couponDiscount').value,
+            'couponMinPrice' : document.getElementById('couponMinPrice').value,
+            'couponExpiration' : document.getElementById('couponExpiration1').value + '~' + document.getElementById('couponExpiration2').value,
+            'couponCaution' : document.getElementById('couponCaution').value,
+            'customerCouponExpiration' : document.getElementById('customerCouponExpiration').value
+        }
+
+        const resp = await axios.post("/admin/coupon/coupon",submitData,{
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        })
+        if(resp.status===200){
+            window.location.href = "/admin/coupon/coupons"
+        }
+
+    }
+
+
+    async function updateCouponState(a,event){
+        if(a===1) {
+            const submitData = {
+                "id" : event.target.dataset.id
+            }
+
+            const resp = await axios.patch("/admin/coupon/coupon",submitData,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            })
+
+            console.log(resp.data)
+            if(resp.data==="SU"){
+                window.location.href = "/admin/coupon/coupons"
+            }
+        } else if (a===2){
+            const submitData = {
+                "id" : event.target.dataset.id
+            }
+
+            const resp = await axios.patch("/admin/coupon/coupon",submitData,{
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            })
+
+            if(resp.data==="SU"){
+                window.location.href = "/admin/coupon/coupons"
+            }
+        } else if (a===3){
+            const submitData = {
+                "id" : event.target.dataset.id
+            }
+
+            try {
+                const resp = await axios.patch("/admin/coupon/event",submitData,{
+                    headers : {
+                        "Content-Type" : "application/json"
+                    }
+                })
+                if(resp.status===200){
+                    window.location.href = "/admin/coupon/coupons"
+                }
+            } catch (e) {
+
+            }
+        }
+
+    }
+
+</script>

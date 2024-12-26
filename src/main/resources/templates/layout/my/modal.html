@@ -1,0 +1,361 @@
+<div>
+    <!-- 판매자정보 팝업 -->
+    <dialog  id="popSeller">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>판매자 정보</h1>
+                <button class="btn close-btn">X</button>
+            </nav>
+            <section>
+                <table>
+                    <tr>
+                        <th>판매자 등급</th>
+                        <td class="level">판매자 등급</td>
+                    </tr>
+                    <tr>
+                        <th>상호</th>
+                        <td class="company">(주)회사명</td>
+                    </tr>
+                    <tr>
+                        <th>대표자</th>
+                        <td class="ceo">홍길동</td>
+                    </tr>
+                    <tr>
+                        <th>전화번호</th>
+                        <td class="tel">000-123-4567</td>
+                    </tr>
+                    <tr>
+                        <th>FAX</th>
+                        <td class="fax">000-123-4567</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td class="email">company@abc.com</td>
+                    </tr>
+                    <tr>
+                        <th>사업자번호</th>
+                        <td class="bizNum">123-12-123457</td>
+                    </tr>
+                    <tr>
+                        <th>영업소재지</th>
+                        <td class="address">
+                            [우편번호] 부산광역시 부산진구 중앙대로 749 3층
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                    ※ 위 정보는 전자상거래법 제 20조 제 2항 및 동법 시행령 제 25조 제 2항에 의거하여<br>
+                    소비자보호에 의거 공개합니다.
+                </p>
+
+                <div>
+                    <button id="qna-submit" class="btn color">문의하기</button>
+                </div>
+
+            </section>
+        </div>
+    </dialog>
+
+
+    <!-- 주문상세 팝업 -->
+    <dialog  id="popOrder">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>주문상세  <span class="orderId">오더아이디</span></h1>
+                <button class="btn" onclick="closeModal()">X</button>
+            </nav>
+            <section>
+                <article class="order">
+                    <h3>주문정보<span class="orderDate">주문날짜</span></h3>
+                    <table>
+                        <tr>
+                            <th>상품이미지</th>
+                            <th>상품정보</th>
+                            <th>결제금액</th>
+                            <th>상태</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="imgbox80">
+                                    <img src="https://via.placeholder.com/80x80" alt="">
+                                </div>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li class="company">상호명</li>
+                                    <li class="prodName">상품명</li>
+                                    <li>수량 : <span class="prodCount">1</span>개</li>
+                                    <li>옵션 : <span class="prodCount options">라지</span></li>
+                                    <li>운송장번호 :
+                                        (<span class="prodCount orderDeliCompany">택배사</span>)<span class="orderDeliId">12345679</span>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td class="payment">
+                                <ul>
+                                    <li class="price">
+                                        <span>판매가</span>
+                                        <span>34,000원</span>
+                                    </li>
+                                    <li class="discount">
+                                        <span>할인</span>
+                                        <span>- 3,000원</span>
+                                    </li>
+                                    <li class="discount">
+                                        <span>배송비</span>
+                                        <span>- 3,000원</span>
+                                    </li>
+                                    <li class="total">
+                                        <span>결제금액</span>
+                                        <strong>34,000원</strong>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td class="status">배송완료</td>
+                        </tr>
+                    </table>
+                    <div>
+                        <span>결제금액</span>
+                        <strong class="orderTotalPrice">얼마</strong>
+                    </div>
+                </article>
+                <article class="delivery">
+                    <h3>배송정보</h3>
+                    <table>
+                        <tr>
+                            <th>주문자</th>
+                            <td class="custName">홍길동</td>
+                        </tr>
+                        <tr>
+                            <th>받는 사람</th>
+                            <td class="receiverName">홍길동</td>
+                        </tr>
+                        <tr>
+                            <th>연락처</th>
+                            <td class="receiverHp">010-1234-1001</td>
+                        </tr>
+                        <tr>
+                            <th>배송지</th>
+                            <td>[<span class="receiverAddr1">210**</span>]
+                                <span class="receiverAddr2">부산광역시 부산진구 대연동</span>
+                                <span class="receiverAddr3">121 10층 1004호</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>결제방법</th>
+                            <td class="paymentvalue"></td>
+                        </tr>
+                        <tr>
+                            <th>배송요청사항</th>
+                            <td class="orderReq">없음</td>
+                        </tr>
+                    </table>
+                </article>
+            </section>
+        </div>
+    </dialog>
+
+    <!--
+        TODO:  마이페이지 문의하기 팝업
+    -->
+    <!-- 문의하기 팝업 -->
+    <dialog id="popQuestion">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>문의하기</h1>
+                <button class="btn close-btn">X</button>
+            </nav>
+            <section>
+                <form method="post" th:action="@{/my/qna}">
+                    <input class="memId" type="hidden" name="memId" th:value="${memId}" />
+                    <input class="sellId" type="hidden" name="sellCompany"/>
+                    <table>
+                        <tr>
+                            <th>문의종류</th>
+                            <td class="kind">
+                                <label><input type="radio" name="cate2Name" value="product"/>상품</label>
+                                <label><input type="radio" name="cate2Name" value="delivery2"/>배송</label>
+                                <label><input type="radio" name="cate2Name" value="orderCancel"/>주문취소</label>
+                                <label><input type="radio" name="cate2Name" value="refundMethod"/>교환/환불</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td class="email">
+                                <input type="text" name="email" value="chh**@gmail.com" readonly/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>제목</th>
+                            <td class="title">
+                                <input type="text" name="title" placeholder="제목입력"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>내용</th>
+                            <td class="content">
+                                <textarea name="content" placeholder="내용입력"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                    <small>
+                        ※ 정확한 정보를 입력하셔야 빠른 답변을 받으실수 있습니다.
+                    </small>
+
+                    <div>
+                        <input type="submit" class="btn color" value="등록하기"/>
+                        <button class="btn grey cancel-btn">취소</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </dialog>
+
+    <!-- 수취확인 팝업 -->
+    <dialog id="popReceive">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>수취확인</h1>
+                <button class="btn" onclick="closeReceive()">X</button>
+            </nav>
+            <section>
+                <p>
+                    상품을 잘 받으셨나요?<br>
+                    상품을 받으셨으면 수취확인을 눌러주세요.
+                </p>
+                <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                    <select>
+
+                    </select>
+                </div>
+                <div>
+                    <button onclick="receiveConfirmBtn()" class="btn color">확인</button>
+                    <button onclick="closeReceive()" class="btn grey">취소</button>
+                </div>
+            </section>
+        </div>
+    </dialog>
+
+    <dialog id="popReturn">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>반품신청</h1>
+                <button class="btn" onclick="closeReturn()">X</button>
+            </nav>
+            <section>
+                <p>
+                    반품하시겠습니까?<br>
+                    <input style="margin-top: 20px;" placeholder="반품 사유를 적어주세요.">
+                </p>
+                <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                    <select>
+
+                    </select>
+                </div>
+                <div>
+                    <button onclick="postReturn()" class="btn color">반품하기</button>
+                    <button onclick="closeReturn()" class="btn grey">취소</button>
+                </div>
+            </section>
+        </div>
+    </dialog>
+
+    <dialog id="popChange">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>반품신청</h1>
+                <button class="btn" onclick="closeChange()">X</button>
+            </nav>
+            <section>
+                <p>
+                    교환하시겠습니까?<br>
+                    <input style="margin-top: 20px;" placeholder="교환 사유를 적어주세요.">
+                </p>
+                <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                    <select>
+
+                    </select>
+                </div>
+                <div>
+                    <button onclick="postChange()" class="btn color">교환하기</button>
+                    <button onclick="closeChange()" class="btn grey">취소</button>
+                </div>
+            </section>
+        </div>
+    </dialog>
+
+    <dialog id="popDeliveryDate">
+        <div style="width: 400px;" class="popup">
+            <nav class="popup_top color">
+                <h1>배송예정일</h1>
+                <button class="btn" onclick="closeDelivery()">X</button>
+            </nav>
+            <section>
+
+            </section>
+        </div>
+    </dialog>
+
+
+
+    <!-- 상품평쓰기 팝업 -->
+    <dialog  id="popReview">
+        <div class="popup">
+            <nav class="popup_top color">
+                <h1>상품평 작성하기</h1>
+                <button class="btn">X</button>
+            </nav>
+            <section>
+                <form>
+                    <table>
+                        <tr>
+                            <th>상품명</th>
+                            <td class="productName">
+                                <select id="select-prod-name">
+
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>사진첨부</th>
+                            <td>
+                                <input class="review-img" type="file">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>만족도</th>
+                            <td class="rating">
+                                <div style="display: flex;align-items: center">
+                                <fieldset class="my-rating">
+                                    <input type="radio" id="rating10" name="rating" data-value="50" class="star" value="5"><label for="rating10" title="5점"></label>
+                                    <input type="radio" id="rating9" name="rating" data-value="45" class="star" value="4.5"><label class="half" for="rating9" title="4.5점"></label>
+                                    <input type="radio" id="rating8" name="rating" data-value="40" class="star" value="4"><label for="rating8" title="4점"></label>
+                                    <input type="radio" id="rating7" name="rating" data-value="35" class="star" value="3.5"><label class="half" for="rating7" title="3.5점"></label>
+                                    <input type="radio" id="rating6" name="rating" data-value="30" class="star" value="3"><label for="rating6" title="3점"></label>
+                                    <input type="radio" id="rating5" name="rating" data-value="25" class="star" value="2.5"><label class="half" for="rating5" title="2.5점"></label>
+                                    <input type="radio" id="rating4" name="rating" data-value="20" class="star" value="2"><label for="rating4" title="2점"></label>
+                                    <input type="radio" id="rating3" name="rating" data-value="15" class="star" value="1.5"><label class="half" for="rating3" title="1.5점"></label>
+                                    <input type="radio" id="rating2" name="rating" data-value="10" class="star" value="1"><label for="rating2" title="1점"></label>
+                                    <input type="radio" id="rating1" name="rating" data-value="5" class="star" value="0.5"><label class="half" for="rating1" title="0.5점"></label>
+                                </fieldset>
+                                <span id="rating_span">0</span>점
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>내용</th>
+                            <td class="review">
+                                <textarea id="review-content" name="review" placeholder="내용입력"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div>
+                        <input id="reviewButton" type="button" class="btn color" value="작성완료"/>
+                        <button class="btn grey">취소</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </dialog>
+</div>

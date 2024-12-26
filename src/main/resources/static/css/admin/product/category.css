@@ -1,0 +1,233 @@
+li {list-style: none;}
+
+.container {
+    width: 800px;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 50px auto 20px;
+}
+
+.header-title{
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.header-right {
+    font-size: 14px;
+}
+
+.header-right .bold {
+    font-weight: 600;
+}
+
+.header-gubun {
+    height: 3px;
+    background-image: url(/images/Vector.png);
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+.main {
+    width: 780px;
+    box-sizing: border-box;
+}
+
+.main-title{
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.main-description {
+    background-color: #f2f2f2;
+    font-size: 14px;
+    font-weight: 400;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+#sidebar2 {
+    width: 283px;
+    height: auto;
+    background-color: #f2f3f7;
+    border-radius: 10px;
+
+}
+
+.navi2 {
+    /*background-color: aliceblue;*/
+}
+
+.navi2 li {
+    padding: 20px 0;
+    cursor: pointer;
+    padding-left: 25px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 5px;
+    /*background-color: white;*/
+    font-size: 16px;
+
+    &:hover {
+        color: blueviolet;
+        opacity: 0.8;
+    }
+}
+
+.advice-footer {
+    background-color: #FFFFCC;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    padding: 20px;
+    margin: 30px 0;
+    color: #595959;
+}
+
+
+.btn {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit-btn{
+    background-color: #8EB4E3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 95.87px;
+    height: 36.79px;
+}
+
+.delBtn {
+    border: 1px solid red;
+    color: red;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+    top: -36px;
+    left: 150px;
+
+    &:hover {
+        background-color: #dfdfdf;
+    }
+}
+
+.delBtn2 {
+    border: 1px solid red;
+    color: red;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #dfdfdf;
+    }
+}
+
+.depth2 > li {
+    font-size: 13px;
+    padding-left: 30px;
+    background-color: white;
+    margin-right: 20px;
+    margin-left: 20px;
+    border-bottom: 1px solid lavenderblush;
+}
+
+.depth3 > li {
+    font-size: 13px;
+    padding-left: 30px;
+    background-color: #f2f3f7;
+    border: 1px solid white;
+    border-radius: 7px;
+}
+
+
+.depth3 {
+    position: relative;
+    top: -100px;
+    left: 286px;
+    height: 0;
+}
+
+.add-category {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.delete-categories {
+    background-image: url(/images/delete_category.png);
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    top: 93%;
+    left: -61%;
+    translate: -50% -50%;
+    opacity: 1;
+    z-index: 1000;
+    margin-top: 20px;
+
+}
+
+.add-inp {
+    border: none;
+    outline: none;
+    padding: 5px 20px;
+    background-color: #f2f3f7;
+    color: black;
+    margin-right: 20px;
+    top: 2px;
+    border-radius: 10px;
+    left: -498px;
+    height: 38px;
+    position: relative;
+    width: 230px;
+}
+
+.category-animate {
+    opacity: 0; /* 처음에는 안 보이게 설정 */
+    max-height: 0; /* 초기 높이를 0으로 설정하여 보이지 않도록 함 */
+    /*overflow: hidden; */
+    transition: max-height 1s ease, opacity 1s ease; /* 높이와 투명도에 애니메이션 효과 추가 */
+}
+
+/* 카테고리가 펼쳐질 때의 상태 */
+.category-animate.active {
+    opacity: 1; /* 보이게 설정 */
+    max-height: 500px; /* 최대 높이를 지정하여 요소가 펼쳐지게 함 (필요에 따라 높이 조정) */
+}
+
+.cate3 {
+    transition: background-color 1s ease; /* 배경색 전환 애니메이션 */
+}
+
+/* hover 시 배경색 변경 */
+.cate3:hover {
+    background-color: #e0e0e0; /* 호버 시 색 변경 */
+}
+
+.fade-in {
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

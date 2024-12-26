@@ -1,0 +1,278 @@
+/* Google Fonts 추가 */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@600;700&display=swap');
+/* 전체 레이아웃 설정 */
+body {
+    max-width: 1200px;
+    margin: 50px auto;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: #f9f9f9;
+    line-height: 1.6;
+    color: #333; /* 검은색 */
+    padding: 0 20px; /* 좌우에 여백 추가 */
+    transition: background-color 0.5s ease; /* 배경색 전환 애니메이션 */
+}
+
+/* 큰 제목 스타일 */
+h3 {
+    font-weight: 700;
+    font-size: 2.5em;
+    color: #ff6f61; /* 연한 빨간색 */
+    margin-bottom: 30px;
+    text-align: left;
+    animation: slide-in 1s ease-out forwards; /* 텍스트 슬라이드 애니메이션 */
+}
+
+/* 본문 텍스트와 강조된 텍스트 */
+p, em {
+    font-weight: 400;
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 20px;
+    animation: fade-in 1.2s ease-in forwards; /* 텍스트가 천천히 나타나는 애니메이션 */
+}
+
+/* 강조된 텍스트 (em 태그) */
+em {
+    font-weight: 600;
+    color: #ff6f61; /* 연한 빨간색 */
+}
+
+/* 플렉스 레이아웃: 이미지와 텍스트 정렬 */
+.a1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 50px 0;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fade-in 1s ease-in forwards 0.5s; /* 이미지와 텍스트 등장 애니메이션 */
+}
+
+/* 이미지 스타일 */
+.a1 img {
+    width: 45%;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, filter 0.3s ease;
+    margin-right: 20px;
+}
+
+/* 이미지에 마우스 오버 시 확대 및 흐림 효과 */
+.a1 img:hover {
+    transform: scale(1.1); /* 이미지 확대 */
+    filter: brightness(80%); /* 이미지 흐림 효과 */
+}
+
+/* 텍스트 컨텐츠 영역 */
+.con2 {
+    width: 50%;
+    padding-left: 40px;
+}
+
+/* 전체 컨테이너 레이아웃 */
+.container {
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* 헤더 제목 스타일 */
+.header-title {
+    font-size: 3em;
+    font-weight: 700;
+    text-align: center;
+    margin: 60px 0;
+    color: #333333; /* 연한 빨간색 */
+    animation: slide-in 1s ease-out forwards; /* 헤더 타이틀 슬라이드 애니메이션 */
+}
+
+/* AOS 스크롤 애니메이션 */
+[data-aos] {
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+    transition-timing-function: ease-in-out;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+[data-aos="fade-up"] {
+    transform: translate(0, 50px);
+}
+
+[data-aos="fade-right"] {
+    transform: translateX(-50px);
+}
+
+[data-aos="fade-left"] {
+    transform: translateX(50px);
+}
+
+/* 헤더 오른쪽 텍스트 스타일 */
+.header-right {
+    font-size: 1em;
+    color: #ff6f61;
+    text-align: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fade-in 1.5s ease-in forwards 0.8s; /* 천천히 나타나는 애니메이션 */
+}
+
+/* 구분선 스타일 */
+.header-gubun {
+    width: 100%;
+    height: 2px;
+    background-color: #333;
+    margin: 20px 0;
+}
+
+/* 버튼 스타일 */
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* 애니메이션 추가 */
+    margin-top: 20px;
+}
+
+/* 버튼에 마우스 오버 시 색상 변경 및 크기 확대 */
+button:hover {
+    background-color: #555;
+    transform: scale(1.05); /* 버튼 확대 */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .a1 {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .a1 img {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .con2 {
+        padding-left: 0;
+        width: 100%;
+    }
+
+    .header-title {
+        font-size: 2.5em;
+    }
+
+    h3 {
+        font-size: 2em;
+    }
+}
+
+/* 추가된 애니메이션 키프레임 */
+@keyframes slide-in {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* 배너 이미지 섹션 */
+.job.img {
+    max-width: 1200px; /* 페이지 전체와 동일한 너비 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px 0; /* 상하 패딩 추가 */
+    text-align: center;
+}
+
+.job.img img {
+    width: 100%; /* 이미지 너비를 부모 요소에 맞춤 */
+    border-radius: 10px; /* 이미지 모서리 둥글게 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+}
+
+/* s1 섹션 스타일 */
+.s1 {
+    background-color: #fff; /* 밝은 배경색 */
+    padding: 60px 20px; /* 패딩 추가 */
+    border-radius: 10px; /* 코너 둥글게 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 20px;
+    background-image: url('/images/banner.jpg'); /* 배너 이미지 추가 */
+    background-size: cover; /* 이미지가 영역을 덮도록 설정 */
+    background-position: center; /* 이미지를 중앙에 배치 */
+    color: black; /* 기본 검은색으로 변경 */
+}
+
+/* 큰 제목 스타일 */
+.highlight-title {
+    font-family: 'Poppins', sans-serif; /* 새로운 폰트 추가 */
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #ff6f61; /* 진한 빨간색 유지 */
+    margin-bottom: 20px;
+    line-height: 1.4;
+    text-shadow: none; /* 텍스트 그림자 제거 */
+}
+
+/* 작은 제목 스타일 */
+.highlight-subtitle {
+    font-family: 'Roboto', sans-serif; /* 새로운 폰트 추가 */
+    font-size: 1.5em;
+    font-weight: 400;
+    color: #333; /* 검은색으로 변경 */
+    line-height: 1.8;
+    margin-bottom: 20px;
+    text-shadow: none; /* 텍스트 그림자 제거 */
+}
+
+/* 강조된 텍스트 스타일 */
+.highlight {
+    color: #ff6f61; /* 강조된 텍스트 색상 유지 */
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif; /* 강조된 텍스트에 특별한 폰트 */
+}
+
+/* strong 태그 스타일 */
+strong {
+    color: #ff6f61; /* 파란색 강조 */
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .highlight-title {
+        font-size: 1.8em; /* 모바일 화면에서 글자 크기 축소 */
+    }
+
+    .highlight-subtitle {
+        font-size: 1.2em;
+    }
+
+    .s1 {
+        padding: 40px 10px; /* 모바일에서 패딩 조정 */
+    }
+}

@@ -1,0 +1,173 @@
+
+<link rel="stylesheet" th:href="@{/css/admin/product/list.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<script>
+    window.onload = function (){
+
+        document.getElementById('allCheckbox').addEventListener('change', function() {
+            // 모든 개별 체크박스를 선택 (class="checkbox"를 가진)
+            const checkboxes = document.querySelectorAll('input[type="checkbox"].checkbox');
+            const isChecked = this.checked;
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        });
+    }
+
+    function deleteEvent (){
+
+        let checkboxes = document.querySelectorAll(".checkbox:checked");
+        const checkedValues = Array.from(checkboxes).map(checkbox => checkbox.value);
+        console.log(checkedValues);
+
+        if(confirm("정말 삭제하시겠습니까?")){
+
+            fetch("/admin/prod/product/delete", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(checkedValues)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log(data);
+                    if(data.success){
+                        alert("선택하신 상품이 삭제되었습니다!")
+                        location.reload();
+                    }
+                })
+                .catch(err => {
+                console.log(err);
+            })
+        }
+    }
+    function deleteOne (button){
+        const prodId = button.dataset.id;
+        console.log(prodId);
+
+        if(confirm("정말 삭제하시겠습니까?")){
+            const prodIdList = [prodId];
+            fetch("/admin/prod/product/delete", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(prodIdList)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log(data);
+                    if(data.success){
+                        alert("선택하신 상품이 삭제되었습니다!")
+                        location.reload();
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    alert('상품이 이미 주문되어있어서 삭제할 수 없습니다!');
+                })
+        }
+
+
+    }
+
+    function modifyProduct(button) {
+        const prodId = button.getAttribute("data-id");
+        location.href = '/admin/prod/product/modify?prodId=' + prodId;
+    }
+</script>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div class="container">
+        <div class="header">
+            <span class="header-title">상품현황</span>
+            <div class="header-right">
+                 <span>HOME</span>
+                <span>></span>
+                <span>상품관리</span>
+                <span>></span>
+                <span class="bold">상품목록</span>
+            </div>
+        </div>
+
+        <div class="header-gubun"></div>
+
+        <form th:action="@{/admin/prod/products}" class="search">
+            <select name="type" class="search-option">
+                <option value="상품명">상품명</option>
+                <option value="상품번호">상품번호</option>
+                <option value="판매자">판매자</option>
+            </select>
+            <input class="search-keyword" type="text" name="keyword" placeholder="키워드 입력">
+            <button class="search-btn" type="submit">검색</button>
+        </form>
+
+        <div class="header-gubun-bottom"></div>
+        <table class="tb1">
+            <tr>
+                <th class="checkbox">
+                    <input type="checkbox" id="allCheckbox">
+                </th>
+                <th class="picture">사진</th>
+                <th class="prodId">상품코드</th>
+                <th class="name">상품명</th>
+                <th class="price">판매가격</th>
+                <th class="discount">할인율</th>
+                <th class="point">포인트</th>
+                <th class="stock">재고</th>
+                <th class="seller">판매자</th>
+                <th class="views">조회수</th>
+                <th class="admin">관리</th>
+            </tr>
+
+            <tr th:each="product, i:${products.getDtoList()}">
+                <td>
+                    <input type="checkbox" class="checkbox" th:value="${product.getId()}" >
+                </td>
+                <td class="td-picture">
+                    <img th:src="@{'/file/'+${product.getProdListImg()}}" alt="">
+                    <img th:src="@{'/file/'+${product.getProdBasicImg()}}" alt="">
+                    <img th:src="@{'/file/'+${product.getProdDetailImg()}}" alt="">
+                </td>
+                <td class="td-prodId">[[${product.getId}]]</td>
+                <td class="td-name">[[${product.getProdName}]]</td>
+                <td class="td-price">[[${#numbers.formatInteger(product.getProdPrice(), 1)}]]</td>
+                <td class="td-discount">[[${#numbers.formatInteger(product.getProdDiscount(), 1)}]]%</td>
+                <td class="td-point">[[${product.getProdPoint}]]p</td>
+                <td class="td-stock">[[${product.getProdStock}]]</td>
+                <td class="td-seller">[[${product.getSellCompany}]]</td>
+                <td class="td-views">[[${product.getProdViews}]]</td>
+                <td class="td-admin">
+                    <input type="button" class="deleteBtn" value="[ 삭제 ]" th:data-id="${product.getId()}" onclick="deleteOne(this)">
+                    <input type="button" class="modifyBtn" value="[ 수정 ]" th:data-id="${product.getId()}" onclick="modifyProduct(this)">
+                </td>
+            </tr>
+        </table>
+        <div class="btns">
+            <button class="delete-btn" onclick="deleteEvent()">선택삭제</button>
+            <button class="insert-btn" onclick="location.href='/admin/prod/product/post'">상품등록</button>
+        </div>
+        <div class="page" th:if="${not #lists.isEmpty(products.dtoList)}">
+
+            <th:block th:if="${products.prev}">
+                <a th:if="${products.keyword == null}" th:href="@{/admin/prod/products/(pg=${products.start - 1})}" class="first"><<</a>
+                <a th:if="${products.keyword != null}" th:href="@{/admin/prod/products/(pg=${products.start - 1}, type=${products.type}, keyword=${products.keyword})}" class="first"><<</a>
+            </th:block>
+            <th:block th:each="num:${#numbers.sequence(products.start, products.end)}">
+                <a th:if="${products.keyword == null}" th:href="@{/admin/prod/products(pg=${num})}" th:class="${num == products.pg} ? 'on' : 'num'">[[${num}]]</a>
+                <a th:if="${products.keyword != null}" th:href="@{/admin/prod/products(pg=${num}, type=${products.type}, keyword=${products.keyword})}" th:class="${num == products.pg} ? 'on' : 'num'">[[${num}]]</a>
+
+            </th:block>
+            <th:block th:if="${products.next}">
+                <a th:if="${products.keyword == null}" th:href="@{/admin/prod/products/(pg=${products.end + 1})}" class="first"><<</a>
+                <a th:if="${products.keyword != null}" th:href="@{/admin/prod/products/(pg=${products.end + 1}, type=${products.type}, keyword=${products.keyword})}" class="first"><<</a>
+            </th:block>
+
+        </div>
+    </div>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>

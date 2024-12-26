@@ -1,0 +1,687 @@
+<link rel="stylesheet" th:href="@{/css/my/my.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<link rel="stylesheet" th:href="@{/css/my/popup.css}">
+<header th:replace="layout/main/header.html"></header>
+<th:block th:replace="layout/my/modal.html"></th:block>
+<main style="margin-top: 230px">
+  <div id="my">
+    <th:block th:replace="layout/my/aside.html"></th:block>
+    <main>
+      <th:block th:replace="layout/my/banner.html"></th:block>
+    <section>
+      <h3>최근 주문내역<a th:if="${!orders.isEmpty()}" href="/my/orders">더보기 &gt; </a></h3>
+      <article>
+        <table border="0" class="order">
+          <tr>
+            <th>날짜</th>
+            <th>이미지</th>
+            <th>상품정보</th>
+            <th>상태</th>
+            <th>확인/신청</th>
+          </tr>
+          <tr th:if="${orders.isEmpty()}">
+            <td colspan="4" ><div style="width: 810px; font-size: 13px;"> 주문 내역이 없습니다... </div></td>
+          </tr>
+          <tr th:unless="${orders.isEmpty()}" th:each="order, iterStat : ${orders}" th:if="${iterStat.index}<3">
+            <td class="date" th:text="${order.orderRdate}">2022-12-13</td>
+            <td>
+              <div class="thumb">
+                <a th:href="@{'/prod/product?prodId='+${order.prodId}}">
+                  <img  style="width: 80px; height: 80px;" th:src="@{'/file/'+${order.getProdListImg()}}"  alt="상품이미지" />
+                </a>
+              </div>
+            </td>
+            <td><ul>
+              <li th:data-sell="${order.seller}" onclick="openSellerInfo(event)" class="company" th:text="${order.seller}">(주) 회사명</li>
+              <li class="prodName"><a th:data-order="${order.orderId}" onclick="orderPop(this)" th:text="${order.orderItemCount}>1 ? ${order.prodName}+'외'+(${order.orderItemCount}-1)+'개' : ${order.prodName}">상품명</a></li>
+              <li>
+                수량 : <span class="prodCount" th:text="${order.orderQuantity}==null?0:${order.orderQuantity}">5</span>개 / 주문번호 :
+                <span class="ordNo" th:text="${order.orderId}">1234567</span>
+              </li>
+              <li class="prodPrice" th:text="${order.orderTotal}==null?0:${order.orderTotal}">34,000</li>
+            </ul></td>
+            <td class="status" th:switch="${order.orderState}">
+              <span th:case="0">결제완료</span>
+              <span th:case="1">배송중</span>
+              <span th:case="2">확인중</span>
+              <span th:case="3">개별처리중</span>
+              <span th:case="4">주문완료</span>
+              <span th:case="5">취소완료</span>
+            </td>
+            <td class="confirm">
+              <button th:if="${order.orderState==0}" th:data-id="${order.orderId}" onclick="orderCancel(event)" class="exchange grey">주문취소</button>
+              <button th:if="${order.orderState==1}" th:data-id="${order.orderId}" onclick="opendeliDate(event)" class="exchange grey">배송예정일</button>
+              <button th:if="${order.orderState==2 || order.orderState==3}" th:data-id="${order.orderId}" onclick="openReceive(event)" class="receive color">수취확인</button>
+              <button th:if="${order.orderState==3 || order.orderState==4}" onclick="openReviewWrite(event)" th:data-name="${order.prodName}" th:data-id="${order.orderId}" th:data-prod="${order.prodId}" class="review color">상품평쓰기</button>
+              <button th:if="${order.orderState==2 || order.orderState==3}" th:data-id="${order.orderId}" onclick="openReturn(event)" class="refund grey">반품신청</button>
+              <button th:if="${order.orderState==2 || order.orderState==3}" th:data-id="${order.orderId}" onclick="openChange(event)" class="exchange grey">교환신청</button>
+            </td>
+          </tr>
+        </table>
+      </article>
+
+      <h3>포인트 적립내역<a th:if="${!noPoint}" th:href="@{/my/points}">더보기 &gt; </a></h3>
+      <article>
+        <table th:if="${!noPoint}" border="0" class="point">
+          <tr>
+            <th>날짜</th>
+            <th>구분</th>
+            <th>주문번호</th>
+            <th>적립금액</th>
+            <th>비고</th>
+            <th>유효기간</th>
+          </tr>
+          <tr th:each="point : ${points}">
+            <td th:text="${point.rdate}">날짜</td>
+            <td th:text="${point.pointType}">구분</td>
+            <td th:text="${point.orderId}">주문번호</td>
+            <td th:text="${point.pointVar}">적립금액</td>
+            <td th:text="${point.pointEtc}">비고</td>
+            <td th:classappend="${point.warningExpiration == 'active'} ? 'warning' : ''" th:text="${point.pointExpiration}">유효기간</td>
+          </tr>
+          <tr  th:if="${noPoint}">
+            <td colspan="4" ><div style="width: 810px; font-size: 13px;">포인트 적립내역이 없습니다... </div></td>
+          </tr>
+        </table>
+        <div th:if="${noPoint}" class="noReview">포인트 적립내역이 없습니다...</div>
+      </article>
+
+      <h3>상품평<a th:if="${!noReview}" th:href="@{/my/reviews/{page}(page=${page})}">더보기 &gt; </a></h3>
+      <article>
+        <table border="0" class="review">
+          <tr>
+            <th>번호</th>
+            <th>상품명</th>
+            <th>내용</th>
+            <th>평점</th>
+            <th>작성일</th>
+          </tr>
+          <tr th:if="${!noReview}" th:each="review, stat : ${reviews}">
+            <td th:text="${stat.index + 1}">1</td>
+            <td><span th:text="${review.prodId}">상품번호</span> / <span> [[${#strings.length(review.prodName) > 10 ? #strings.substring(review.prodName, 0, 10) + '...' : review.prodName}]]</span></td>
+            <td style="text-align: center;" th:text="${review.review}">배송이 빠릅니다. 잘 사용하겠습니다.</td>
+            <td>
+                <span class="ratingBg">
+                    <span class="rating" th:style="'width:'+ ${review.score * 2}+'%;'"></span>
+                </span>
+            </td>
+            <td th:text="${review.rdate}">2024-12-10</td>
+          </tr>
+          <tr th:if="${noReview}">
+            <td colspan="4" ><div style="width: 810px; font-size: 13px;"> 등록된 상품평이 없습니다... </div></td>
+          </tr>
+        </table>
+      </article>
+
+
+      <h3>문의내역 <a th:href="@{/my/qnas}" target="_self"  th:if="${!#lists.isEmpty(qnaList)}">더보기 &gt;</a></h3>
+      <article>
+        <table border="0" class="qna">
+          <tr>
+            <th>번호</th>
+            <th>문의채널</th>
+            <th>문의유형</th>
+            <th>제목</th>
+            <th>작성일</th>
+            <th>상태</th>
+          </tr>
+          <tr th:if="${#lists.isEmpty(qnaList)}">
+            <td colspan="6">문의내역이 없습니다...</td>
+          </tr>
+          <tr th:each="qna, iterStat : ${qnaList}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <!-- 문의채널 -->
+            <td>
+              <span th:text="${qna.type != null ? (qna.type == 0 ? '고객센터' : '판매자 게시판') : 'N/A'}">N/A</span>
+            </td>
+            <!-- 1차 유형 -->
+            <td class="cate1" th:data-value="${qna.cate1.categoryName}" th:text="${qna.cate1.categoryName}">1차 유형</td>
+            <!-- 제목 -->
+            <td>
+              <a th:href="@{'/cs/qna/view/' + ${qna.id}}" th:text="${qna.title}">문의 제목</a>
+            </td>            <!-- 작성일 -->
+            <td th:text="${#temporals.format(qna.rdate, 'yyyy-MM-dd')}">2024-12-12</td>
+            <!-- 상태 -->
+            <td>
+                <span class="status confirm"
+                      th:classappend="${qna.answer != null && !#strings.isEmpty(qna.answer) ? 'answer-complete' : ''}"
+                      th:text="${qna.answer != null && !#strings.isEmpty(qna.answer) ? '답변완료' : '검토 중'}">검토 중</span>
+            </td>
+          </tr>
+
+        </table>
+      </article>
+
+      <h3>나의설정</h3>
+      <article class="user-settings">
+        <section class="user">
+            <article onclick="window.location.href='/my/address'">
+              <div><b>기본배송지 설정</b> <a>변경</a></div>
+              <th:block th:each="addr:${addrs}">
+                <th:block th:if="${addr.getState()>0}">
+                  <p class="addr1">[[${addr.getAddr1()}]]</p>
+                  <p class="addr2">[[${addr.getAddr3()}]]</p>
+                </th:block>
+              </th:block>
+            </article>
+          <article onclick="window.location.href='/my/infoPass'">
+              <div><b>Email 설정</b> <a>변경</a></div>
+              <p>[[${cust.custEmail1}]]@[[${cust.custEmail2}]]</p>
+              <p th:if="${emailDitector}" th:text="'최종 수정일' + ${emailDitector}" class="lastUpdate">(최종수정일 2021-12-10)</p>
+            </article>
+          <article onclick="window.location.href='/my/infoPass'">
+              <div><b>휴대폰 설정</b> <a>변경</a></div>
+              <p>[[${cust.custHp1}]]-[[${cust.custHp2}]]-[[${cust.custHp3}]]</p>
+              <p th:if="${hpDitector}" th:text="'최종 수정일' + ${hpDitector}" class="lastUpdate">(최종수정일 2021-12-10)</p>
+            </article>
+        </section>
+      </article>
+    </section>
+    </main>
+  </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+<script th:inline="javascript">
+  let orderId;
+  let prodId;
+  let content;
+  let score;
+  let selectedSellerCompany;
+
+  async function openReturn(event){
+    const orderId = event.target.dataset.id;
+    const popReturn = document.getElementById('popReturn')
+    try {
+      const resp = await axios.get(`/my/order/receive?id=${orderId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const selectItem = popReturn.querySelector('select')
+      if(resp.data.length>0){
+        selectItem.innerHTML = resp.data.map(v=>`
+        <option value="${v.orderItemId}">${v.prodName}</option>
+      `)
+      } else {
+        selectItem.innerHTML = `
+          <option>배송완료된 상품이 없습니다.</option>
+        `
+      }
+      popReturn.showModal();
+    } catch (e) {
+
+    }
+  }
+
+  async function openChange(event){
+    const orderId = event.target.dataset.id;
+    const popChange = document.getElementById('popChange')
+    try {
+      const resp = await axios.get(`/my/order/receive?id=${orderId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const selectItem = popChange.querySelector('select')
+      if(resp.data.length>0){
+        selectItem.innerHTML = resp.data.map(v=>`
+        <option value="${v.orderItemId}">${v.prodName}</option>
+      `)
+      } else {
+        selectItem.innerHTML = `
+          <option>배송완료된 상품이 없습니다.</option>
+        `
+      }
+      popChange.showModal();
+    } catch (e) {
+
+    }
+  }
+
+  async function openReceive(event){
+    const orderId = event.target.dataset.id
+    try {
+      const popReceive = document.getElementById('popReceive')
+      const resp = await axios.get(`/my/order/receive?id=${orderId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const selectItem = popReceive.querySelector('select')
+      if(resp.data.length>0){
+        selectItem.innerHTML = resp.data.map(v=>`
+        <option value="${v.orderItemId}">${v.prodName}</option>
+      `)
+      } else {
+        selectItem.innerHTML = `
+          <option>배송완료된 상품이 없습니다.</option>
+        `
+      }
+
+      popReceive.showModal();
+    } catch (e) {
+
+    }
+  }
+
+  async function receiveConfirmBtn(){
+    const popReceive = document.getElementById('popReceive')
+    const selectItem = popReceive.querySelector('select')
+    const selectedItemId = selectItem.options[selectItem.selectedIndex]
+    const orderItemId = selectedItemId.value;
+
+    try {
+      const resp = await axios.patch(`/my/order/receive?id=${orderItemId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status ===200){
+        document.getElementById('popReceive').close();
+        window.location.href = '/my/orders'
+      }
+    } catch (e) {
+
+    }
+  }
+
+  async function orderCancel(event){
+    event.preventDefault();
+    const orderId = event.target.dataset.id;
+    console.log(orderId)
+    if(confirm('주문을 취소하시겠습니까?')){
+      try {
+        const resp = await axios.patch(`/my/order/cancel?id=${orderId}`,null,{
+          headers: {
+            "Content-Type" : "application/json"
+          }
+        })
+        window.location.href="/my/index"
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
+
+  async function postReturn(){
+    const popReceive = document.getElementById('popReturn')
+    const selectItem = popReceive.querySelector('select')
+    const selectedItemId = selectItem.options[selectItem.selectedIndex]
+    const orderItemId = selectedItemId.value;
+    try {
+      const resp = await axios.patch(`/my/order/return?id=${orderItemId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status ===200){
+        document.getElementById('popReturn').close();
+        window.location.href = '/my/orders'
+      }
+    } catch (e) {
+
+    }
+  }
+
+  async function postChange(){
+    const popReceive = document.getElementById('popChange')
+    const selectItem = popReceive.querySelector('select')
+    const selectedItemId = selectItem.options[selectItem.selectedIndex]
+    const orderItemId = selectedItemId.value;
+    try {
+      const resp = await axios.patch(`/my/order/change?id=${orderItemId}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status ===200){
+        document.getElementById('popChange').close();
+        window.location.href = '/my/orders'
+      }
+    } catch (e) {
+
+    }
+  }
+
+  function closeReceive(){
+    document.getElementById('popReceive').close();
+  }
+  function closeReturn(){
+    document.getElementById('popReturn').close();
+  }
+  function closeChange(){
+    document.getElementById('popChange').close();
+  }
+
+  async function opendeliDate(event){
+    console.log(event.target.dataset.id)
+    try {
+      const resp = await axios.get(`/my/order/delivery-date?id=${event.target.dataset.id}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const deliModal = document.getElementById('popDeliveryDate')
+      deliModal.querySelector('section').innerHTML =
+              resp.data.map(v=>`
+        <div style="display: flex;justify-content: space-between; border-bottom: 1px solid black;">
+          <span style="font-weight: 600;">${v.prodName.length > 30 ? v.prodName.substring(0, 30) + '...' : v.prodName}</span>
+          <span>${v.date}</span>
+        </div>
+      `)
+      deliModal.showModal();
+    } catch (e) {
+      console.log(e)
+    }
+
+
+  }
+
+  function closeDelivery(){
+    document.getElementById('popDeliveryDate').close();
+  }
+
+
+  async function openSellerInfo(event){
+    event.preventDefault();
+    const sellerDialog = document.getElementById('popSeller')
+    const company = event.target.dataset.sell
+    try {
+      const resp = await axios.get("/my/order/seller-info", {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        params: {
+          "company": company
+        }
+      })
+      const seller = resp.data;
+      console.log("콘솔 "+seller);
+      document.querySelector('#popSeller .level').innerText = seller.sellGrade
+      document.querySelector('#popSeller .company').innerText = seller.company
+      document.querySelector('#popSeller .ceo').innerText = seller.name
+      document.querySelector('#popSeller .tel').innerText = seller.hp
+      document.querySelector('#popSeller .fax').innerText = seller.fax
+      document.querySelector('#popSeller .email').innerText = seller.email
+      document.querySelector('#popSeller .bizNum').innerText = seller.busiCode
+      document.querySelector('#popSeller .address').innerText = seller.address
+      selectedSellerCompany = seller.company
+      sellerDialog.showModal();
+    } catch (e) {
+      console.log(e)
+    }
+
+    const closeBtn = document.querySelector('#popSeller .close-btn')
+    closeBtn.addEventListener('click', () => {
+      sellerDialog.close(); // 다이얼로그 닫기
+    });
+  }
+
+  async function openReviewWrite(event) {
+    orderId = event.target.dataset.id;
+    prodId = event.target.dataset.prod;
+
+    try {
+      const resp = await axios.get("/prod/review/names",{
+        headers:{
+          "Content-Type" : "application/json"
+        },
+        params : {
+          "orderId" : orderId
+        }
+      })
+      const prods = resp.data.names
+      const selectNames = document.getElementById('select-prod-name')
+      selectNames.innerHTML = prods.map(v=>`
+        <option value="${v.prodId}">${v.productName}</option>
+      `).join('');
+
+      selectNames.addEventListener('change', (event) => {
+        prodId = event.target.value;  // 선택된 값으로 prodId 업데이트
+        console.log('선택된 prodId:', prodId);  // 콘솔에 선택된 prodId 출력
+      });
+
+    } catch (e) {
+
+    }
+
+    const popReviewDialog = document.getElementById("popReview");
+    popReviewDialog.showModal();
+  }
+
+  const stars = document.querySelectorAll('.star');
+  // const selectedRatingDisplay = document.getElementById('selected-rating');
+
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const ratingValue = this.dataset.value;
+      const ta = document.querySelector("#review-content");
+
+      document.querySelector('#rating_span').innerText = this.value;
+      if(+ratingValue>40){
+        ta.placeholder =`상품의 어떤 점이 좋으셨나요?`
+      }else if(+ratingValue>=30){
+        ta.placeholder =`받아보신 상품은 어떠셨나요?`
+      }else{
+        ta.placeholder =`상품의 어떤 부분이 마음에 들지 않으셨나요?`
+      }
+
+      score = ratingValue;
+    });
+  });
+
+  document.getElementById('review-content').addEventListener('input',(e)=>{
+    content = e.target.value;
+  })
+
+  document.getElementById('reviewButton').addEventListener('click',async ()=>{
+    const reviewImgInput = document.querySelector('.review-img');
+    const reviewImg = reviewImgInput.files[0];
+    const submitData = new FormData();
+    const jsonData = {
+      'prodId' : prodId,
+      'orderId' : orderId,
+      'review' : content,
+      'score' : score
+    }
+    submitData.append('jsonData',JSON.stringify(jsonData))
+    if (reviewImg) {
+      submitData.append('reviewImg',reviewImg);
+    } else {
+      console.log('파일이 선택되지 않았습니다.');
+    }
+    console.log(submitData)
+    try {
+      const resp = await axios.post("/prod/review",submitData,{
+        headers: {
+          "Content-Type" : "multipart/form-data"
+        }
+      })
+      alert(resp.data)
+      const popReviewDialog = document.getElementById("popReview");
+      popReviewDialog.close();
+    } catch (e) {
+
+    }
+  })
+
+  const firstCategoryMap = {
+    "user": "회원",
+    "coupon": "쿠폰/이벤트",
+    "order": "주문/결제",
+    "delivery": "배송",
+    "cancel": "취소/반품/환불",
+    "travel": "여행/숙박/항공",
+    "safe": "안전결제"
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cate1').forEach(function (item) {
+      const value = item.getAttribute('data-value');
+      console.log('data-value:', value);  // data-value 출력
+      console.log('매핑 결과:', firstCategoryMap[value] || value);  // 매핑 결과 확인
+      item.textContent = firstCategoryMap[value] || value;
+    });
+
+    const popSeller = document.querySelector("#popSeller");
+    const submitBtn = document.querySelector("#qna-submit");
+
+    const popQuestion = document.querySelector('#popQuestion');
+    // x 버튼
+    const qnaCloseBtn = popQuestion.querySelector(".close-btn");
+    // 취소 버튼
+    const qnaCancelBtn = popQuestion.querySelector(".cancel-btn");
+
+    submitBtn.addEventListener('click', function(event) {
+      document.getElementById('popQuestion').querySelector('.sellId').value = selectedSellerCompany
+      popSeller.close();
+
+      popQuestion.showModal();
+
+      const email  =  /*[[${email}]]*/ "";
+      // email input 을 가져옴
+      const emailInput = popQuestion.querySelector(".email > input");
+      // email input에 타임리프 변수 email 등록
+      emailInput.value = email;
+    })
+
+    qnaCloseBtn.addEventListener('click', function(event) {
+      popQuestion.close();
+    })
+
+    qnaCancelBtn.addEventListener('click', function(event) {
+      popSeller.showModal();
+      popQuestion.close();
+    })
+  });
+
+  const popOrderDialog = document.getElementById("popOrder");
+  async function orderPop(element) {
+    event.preventDefault();
+    const orderId = event.target.dataset.order
+    console.log('orderId : '+orderId)
+
+
+
+    try {
+      const resp = await axios.get("/my/order/orderInfo", {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        params: {
+          "orderId": orderId
+        }
+      })
+      const orders = resp.data;
+      let payment = null;
+      switch (orders.payment) {
+        case 1:
+          payment = '신용카드';
+          break;
+        case 2:
+          payment = '체크카드';
+          break;
+        case 3:
+          payment = '계좌이체';
+          break;
+        case 4:
+          payment = '무통장입금';
+          break;
+        case 5:
+          payment = '휴대폰결제';
+          break;
+        case 6:
+          payment = '카카오페이';
+          break;
+      }
+      console.log("resp data : " + orders.orderId)
+      document.querySelector('#popOrder .orderId').innerText = orders.orderId;
+      document.querySelector('#popOrder .orderDate').innerText = orders.orderDate;
+      document.querySelector('#popOrder .custName').innerText = orders.custName;
+      document.querySelector('#popOrder .receiverName').innerText = orders.receiverName;
+      document.querySelector('#popOrder .receiverHp').innerText = orders.receiverHp;
+      document.querySelector('#popOrder .receiverAddr1').innerText = orders.receiverAddr1;
+      document.querySelector('#popOrder .receiverAddr2').innerText = orders.receiverAddr2;
+      document.querySelector('#popOrder .receiverAddr3').innerText = orders.receiverAddr3;
+      document.querySelector('#popOrder .paymentvalue').innerText = payment;
+      document.querySelector('#popOrder .orderTotalPrice').innerText = orders.orderTotal;
+      if (orders.orderReq != null) {
+        document.querySelector('#popOrder .orderReq').innerText = orders.orderReq;
+      }
+      const orderTable = document.querySelector('#popOrder .order table');
+
+      // 기존의 내용을 지우고 새로 채우기
+      orderTable.innerHTML = `
+        <tr>
+          <th>상품이미지</th>
+          <th>상품정보</th>
+          <th>결제금액</th>
+          <th>상태</th>
+        </tr>
+        `;
+      // orderItemDtos 배열을 순회하며 행을 추가
+      orders.orderItemDtos.forEach(item => {
+
+        let orderStatus;
+        switch (item.orderItemState2) {
+          case 0: orderStatus = '주문확인'; break;
+          case 1: orderStatus = '배송중'; break;
+          case 2: orderStatus = '반품완료'; break;
+          case 3: orderStatus = '교환완료'; break;
+          case 4: orderStatus = '배송완료'; break;
+          case 5: orderStatus = '구매확정'; break;
+        }
+
+        let orderDeliCompany;
+        switch (item.orderDeliCompany){
+          case 1: orderDeliCompany = '로젠택배'; break;
+          case 2: orderDeliCompany =  '한신택배'; break;
+          case 3: orderDeliCompany = '우체국택배'; break;
+          case 4: orderDeliCompany = '대한통운'; break;
+        }
+
+        const itemRow = `
+        <tr>
+          <td>
+            <div class="imgbox80">
+              <img src="/file/${item.prodListImg}" alt="상품 이미지">
+            </div>
+          </td>
+          <td>
+            <ul>
+              <li class="company">${item.sellerName}</li>
+              <li class="prodName">${item.prodName}</li>
+              <li>수량 : <span class="prodCount">${item.quantity}</span>개</li>
+              <li>옵션 : <span class="prodCount options">${item.options.join(", ")}</span><span class="prodCount">${item.additionalPrice==0?'':'(+'+item.additionalPrice+')'}</span></li>
+              <li>운송장번호 : <span class="prodCount orderDeliCompany">${item.orderDeliCompany==0?'':`(${orderDeliCompany})`}</span><span class="prodCount">${item.orderDeliId}</span></li>
+            </ul>
+          </td>
+          <td class="payment">
+            <ul>
+              <li class="price"><span>판매가</span><span>${item.prodPrice}원</span></li>
+              <li class="discount"><span>할인</span><span>- ${item.discount}원</span></li>
+              <li class="delivery"><span>배송비</span><span>${item.delivery}원</span></li>
+              <li class="total"><span>결제금액</span><strong>${item.totalPrice}원</strong></li>
+            </ul>
+          </td>
+          <td class="status">${orderStatus}</td>
+        </tr>
+      `;
+        orderTable.insertAdjacentHTML('beforeend', itemRow);
+      });
+
+      popOrderDialog.showModal();
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  function closeModal(){
+    popOrderDialog.close();
+  }
+
+
+</script>
+
+

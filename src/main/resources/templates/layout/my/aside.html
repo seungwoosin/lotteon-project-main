@@ -1,0 +1,29 @@
+<nav class="info">
+  <h2 class="tit">나의쇼핑정보</h2>
+  <table>
+    <tr>
+      <td><a th:href="@{/my/orders}">주문</a></td>
+      <td><a th:href="@{/my/coupons}">쿠폰</a></td>
+      <td><a th:href="@{/my/points}">포인트</a></td>
+      <td><a th:href="@{/my/qnas}">문의</a></td>
+    </tr>
+    <tr>
+      <td><a th:text="${hasOrder}">2</a></td>
+      <td><a th:text="${hasCoupon}" href=""></a></td>
+      <td><a th:text="${hasPoint}" href="">1,800</a></td>
+      <td><a th:text="${hasQna}" href="">1</a></td>
+    </tr>
+  </table>
+</nav>
+<aside>
+  <ul class="aside_cate" style="margin-top: 58px;">
+    <li><a th:href="@{/my/orders}">전체주문내역</a></li>
+    <li><a th:href="@{/my/points}">포인트내역</a></li>
+    <li><a th:href="@{/my/points/use}">포인트사용내역</a></li>
+    <li><a th:href="@{/my/coupons}">쿠폰</a></li>
+    <li><a th:href="@{/my/reviews}">나의리뷰</a></li>
+    <li><a th:href="@{/my/qnas}">문의하기</a></li>
+    <li><a th:href="@{/my/infoPass}">나의설정</a></li>
+    <li><a th:href="@{/my/address}">배송지설정</a></li>
+  </ul>
+</aside>

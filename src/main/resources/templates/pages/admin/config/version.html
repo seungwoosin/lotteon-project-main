@@ -1,0 +1,267 @@
+<link rel="stylesheet" th:href="@{/css/admin/config/version.css}"/>
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+  <header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div class="container">
+      <div class="header">
+        <span class="header-title">버전관리</span>
+        <div class="header-right">
+          <span>HOME</span>
+          <span>></span>
+          <span>환경설정</span>
+          <span>></span>
+          <span class="bold">버전관리</span>
+        </div>
+      </div>
+      <div class="header-gubun"></div>
+
+      <section>
+        <article class="header-title2">버전 목록</article>
+        <article class="dis1">사이트 버전 목록 입니다.</article>
+        <div class="header-gubun2"></div>
+        <table class="tb1">
+          <tr>
+            <th><input type="checkbox" class="selectall"/></th>
+            <th>번호</th>
+            <th>버전</th>
+            <th>작성자</th>
+            <th>등록일시</th>
+            <th>변경내역</th>
+          </tr>
+          <tr class="td" th:each="version,i:${resp.getDtoList()}" th:data-no="${version.id}">
+            <td>
+              <input type="checkbox" class="inp select" />
+            </td>
+            <td>[[${resp.startNo-i.index}]]</td>
+            <td>[[${version.verName}]]</td>
+            <td>[[${version.memUid}]]</td>
+            <td>[[${#strings.substring(version.verRdate,0,19)}]]</td>
+            <td>
+              <button onclick="getVersionPopup(event)"
+                      th:data-name="${version.verName}"
+                      th:data-content="${version.verContent}">[ 확인 ]</button>
+            </td>
+          </tr>
+
+        </table>
+
+        <div class="btns">
+          <button class="delete-btn admin-btn">선택삭제</button>
+          <button onclick="postVersion()" class="insert-btn admin-btn">등록</button>
+        </div>
+        <div class="page" th:if="${not #lists.isEmpty(resp.dtoList)}">
+
+          <th:block th:if="${resp.prev}">
+            <a th:href="@{/admin/config/versions/{pg}(pg=${resp.start - 1})}"
+               class="first"><<</a>
+          </th:block>
+          <th:block th:each="num:${#numbers.sequence(resp.start, resp.end)}">
+            <a th:class="${num == resp.pg} ? 'on' : 'num'"
+               th:href="@{/admin/config/versions/{pg}(pg=${num})}">[[${num}]]</a>
+          </th:block>
+          <th:block th:if="${resp.next}">
+            <a th:href="@{/admin/config/versions/{pg}(pg=${resp.end + 1})}"
+               class="last">>></a>
+          </th:block>
+
+        </div>
+      </section>
+      <input type="hidden" id="appVer" th:value="${appVersion}">
+      <input type="hidden" id="mem_id" th:value="${#authentication.principal.user.id}">
+      <input type="hidden" id="memUid" th:value="${#authentication.principal.user.memUid}">
+      <div class="popup"></div>
+      <div class="bg"></div>
+    </div>
+  </main>
+  <footer th:replace="layout/admin/footer.html"></footer>
+
+
+
+    <script>
+      const popup = document.querySelector(".popup");
+      const bg = document.querySelector(".bg");
+      const title = document.getElementById("title");
+      const content = document.getElementById("content");
+      const body = document.getElementsByTagName('body')[0];
+
+      function getVersionPopup(e) {
+        const verName = e.target.dataset.name;
+        const verContent = e.target.dataset.content;
+        popup.innerHTML = `
+                <div class="header">
+                <div class="title">버전확인</div>
+                <div onclick="closePopup()" class="btn">X</div>
+            </div>
+            <div class="tb-div">
+                <table class="tb2">
+                    <tr>
+                        <th>버전</th>
+                        <td id="title">
+                            ${verName}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>변경확인</th>
+                        <td class="td">
+                            <div id="content">
+                                <textarea class="ta" disabled style="outline: none;border: none;background: #FFF">${verContent}</textarea>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="btns">
+                <button type="button" onclick="closePopup()" class="submit-btn">닫기</button>
+            </div>
+            `;
+        popup.style.display = "block";
+        bg.style.display = "block";
+        body.style.overflow = 'hidden';
+      }
+
+      function closePopup() {
+        popup.style.display = "none";
+        bg.style.display = "none";
+        body.style.overflow = 'auto';
+      }
+
+      function postVersion() {
+        const userId = document.getElementById('mem_id').value;
+        const memUid = document.getElementById('memUid').value;
+        const appVersion = document.getElementById('appVer').value;
+        popup.innerHTML = `
+                <div class="header">
+                <div class="title">버전확인</div>
+                <div onclick="closePopup()" class="btn">X</div>
+            </div>
+            <div class="tb-div">
+                <form id="version">
+                    <input type="hidden" name="mem_id" value="${userId}">
+                    <input type="hidden" name="memUid" value="${memUid}">
+                <table class="tb2">
+                    <tr>
+                        <th>버전</th>
+                        <td id="title">
+                           <input class="inp" type=text name="verName" value="${appVersion}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>변경내역</th>
+                        <td class="td">
+                            <textarea class="ta" id="content" name="verContent"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <div class="btns">
+                <button type="button" onclick="submit()" class="submit-btn">등록하기</button>
+            </div>
+            `;
+        popup.style.display = "block";
+        bg.style.display = "block";
+        body.style.overflow = 'hidden';
+      }
+
+      function submit() {
+        if(!confirm("등록하시겠습니까?")){return;}
+
+        const formData = new FormData(document.getElementById('version'));
+        fetch('/admin/config/version',{
+          method: 'POST',
+          body: formData
+        })
+                .then(resp => {
+                  console.log(resp);
+                  if (!resp.ok) {
+                    return resp.json().then(err => {
+                      console.error('Server responded with an error:', err);
+                      throw new Error(`Error ${resp.status}: ${err.message || JSON.stringify(err)}`);
+                    });
+                  }
+                  return resp.json();
+                })
+                .then(data => {
+                  console.log('Response Data:', data);
+                  if(data.id > 0){
+                    alert('성공적으로 등록되었습니다.');
+                    closePopup();
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth' // 부드럽게 스크롤 이동
+                    });
+                  }
+                })
+                .catch()
+      }
+      document.addEventListener('click',function (e){
+        const selectall = document.querySelector('.selectall');
+        const checkboxes = document.querySelectorAll('.select');
+
+        if (e.target.classList.contains('selectall')) {selectAll(e.target);}
+        if (e.target.classList.contains('select')) {updateSelectAllCheckbox();}
+
+        function selectAll(selectAllCheckbox) {
+          checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+          });
+        }
+
+        function updateSelectAllCheckbox() {
+          const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+          selectall.checked = allChecked;
+        }
+
+        // 삭제 버튼 클릭 시
+        if (e.target.classList.contains('delete-btn')) {
+          e.preventDefault();
+
+          const selectedCheckboxes = document.querySelectorAll('.select:checked');
+          let selectedIds = [];
+
+          for (let checkbox of selectedCheckboxes) {
+            const row = checkbox.closest('tr');
+            const versionNo = row.dataset.no;
+            console.log(versionNo);
+            selectedIds.push(versionNo);
+          }
+
+          if (selectedIds.length === 0) {
+            alert('삭제하려는 버전정보를 선택하세요.');
+            return;
+          }
+
+          if (!confirm('선택한 버전정보를 정말 삭제하시겠습니까?')) {
+            return;
+          }
+
+          fetch('/admin/config/versions', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(selectedIds)
+          })
+                  .then(resp => resp.json())
+                  .then(data => {
+                    if (data.success) {
+                      alert('삭제되었습니다.');
+                      for (let checkbox of selectedCheckboxes) {
+                        const row = checkbox.closest('tr');
+                        row.remove();
+                      }
+                    } else {
+                      alert('삭제에 실패했습니다.');
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Error:', err);
+                    alert('삭제 중 오류가 발생했습니다.');
+                  });
+        }
+      })
+    </script>
+  </body>
+</html>

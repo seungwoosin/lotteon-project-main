@@ -1,0 +1,100 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+*{ font-size: 14px; margin: 0; padding: 0;}
+ol,ul{list-style: none; margin: 0; padding: 0;}
+dialog .btn{border-radius: 3px; border: none; height: 40px;}
+
+dialog .color{background: #558ED5; color: #FFF; width: 100px;}
+dialog .grey{background: #BFBFBF; color: #FFF;width: 100px;}
+dialog .imgbox80{width: 80px; height: 80px; overflow: hidden;}
+dialog img{height: 100%; width: 100%; object-fit: cover;}
+.filled {
+    color: gold; /* 채워진 별의 색상 */
+}
+dialog {
+    position: fixed;
+    left: 0;
+    top: 0;
+    /* display: block; */
+    padding: 0;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.popup {display: table;width: auto;height: auto;margin: auto;margin-top: 150px;background: #FFF;border-radius: 5px;overflow: hidden;}
+
+.popup > .popup_top {display: flex;justify-content: space-between;align-items: center;width: 100%;height: auto;padding: 10px;box-sizing: border-box;overflow: hidden;}
+.popup > .popup_top > h1 {font-size: 18px;margin: 0;}
+.popup > .popup_top > .btn {float: right;width: 30px;height: 30px;border: none;color: #FFF;cursor: pointer; background: none;}
+
+/* 판매자정보 */
+.popup > section {padding: 16px;box-sizing: border-box;}
+.popup > section table {width: 100%;border: 1px solid #A6A6A6; border-width: 1px 0; border-collapse: collapse;}
+.popup > section table tr { border-bottom: 1px solid #A6A6A6;}
+.popup > section > table th {width: 105px; text-align: center; background: #F2F2F2;}
+.popup > section > table tr > td {padding: 10px;;box-sizing: border-box;}
+.popup > section > table tr > td:nth-child(2) {width: 250px;}
+
+.popup > section > p {padding: 26px;box-sizing: border-box;font-size: 14px;} 
+.popup > section > div {text-align: center;}
+
+/* 주문상세 */
+.popup > section > article > h3 {font-size: 15px; margin-bottom: 4px; font-weight: 700;}
+.popup > section > article:nth-child(2) > h3 {margin-top: 15px;}
+
+.popup > section > article > table {margin-bottom: 10px;}
+.popup > section > article > table td {padding: 10px;box-sizing: border-box;;vertical-align: top;}
+.popup > section > article > table td:first-child {border-left: none;}
+
+#popOrder article:nth-child(1) > table{ border-top: 2px solid #000; }
+#popOrder article:nth-child(1) > table td { border-left: none;}
+#popOrder article:nth-child(1) > table tr { border-bottom: 1px solid #A6A6A6;}
+.popup > section > article:nth-child(1) > table td {vertical-align: middle;}
+.popup > section > article:nth-child(1) > table td:nth-child(1) {width: 130px; text-align: center;}
+.popup > section > article:nth-child(1) > table td:nth-child(2) {width: 301px; display: flex; align-items: center;}
+.popup > section > article:nth-child(1) > table td:nth-child(2) ul {float: left; margin-left: 20px;}
+.popup > section > article:nth-child(1) > table td:nth-child(3) {width: 200px;}
+.popup > section > article:nth-child(1) > table td:nth-child(4) {width: 130px; text-align: center;}
+
+.popup > section > article:nth-child(1) > table th {text-align: center; background: #A6A6A6; padding: 4px; box-sizing: border-box; color: white;}
+.popup > section > article:nth-child(1) > table .imgbox80 {float: left;}
+
+.popup > section > article:nth-child(1) > table ul > li {display: block;overflow: hidden;}
+.popup > section > article:nth-child(1) > table ul > li > span {display: inline-block;}
+.popup > section > article:nth-child(1) > table ul > li > span:nth-child(1){float: left;}
+.popup > section > article:nth-child(1) > table ul > li > span:nth-child(2){float: right;}
+.popup > section > article:nth-child(1) > table ul > .total > strong{float: right;}
+.popup > section > article:nth-child(1) > table ul > li > span.prodCount {float: none;}
+
+.popup > section > article:nth-child(2) table th {width: 150px; background-color: #F2F2F2; font-weight: 400; text-align: center;border: 1px solid #A6A6A6; border-width: 1px 0;}
+.popup > section > article:nth-child(2) table td {border: 1px solid #A6A6A6; border-width: 1px 0;}
+
+
+/* 문의하기 */
+.popup > section > form > table label {margin-right: 10px;}
+.popup > section > form > table input[type=radio] {margin-right: 5px; margin-top: 2px;}
+.popup > section > form > table input[type=text] {width: 290px;padding: 4px;box-sizing: border-box;border: 1px solid #D9D9D9;vertical-align: middle;}
+.popup > section > form > table textarea {width: 540px;height: 160px;padding: 4px;box-sizing: border-box;border: 1px solid #D9D9D9;vertical-align: middle;resize: none;}
+
+.popup > section > form > table th {width: 120px; font-weight: 400; text-align: center; background-color: #F2F2F2;}
+
+.popup > section > form > table tr {border-bottom: 1px solid #A6A6A6;}
+.popup > section > form > table tr > td {padding: 10px;box-sizing: border-box;}
+.popup > section > form > table tr > td:nth-child(2) {width: 360px;}
+
+.popup > section > form > div {padding: 16px 0; text-align: center;}
+
+.my-rating { display: inline-block;border: 0;margin-right: 15px;}
+.my-rating > input {display: none;}
+.my-rating > label {float: right;color: #E8ECEC; margin-right: 0 !important;}
+.my-rating > label:before {display: inline-block;font-size: 15px;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}
+.my-rating .half:before {content: "\f089 "; position: absolute;padding-right: 0;}
+.my-rating input:checked ~ label,
+.my-rating label:hover,.my-rating label:hover ~ label { color: #F8B907 !important;  }
+.my-rating input:checked + .my-rating label:hover,
+.my-rating input input:checked ~ label:hover,
+.my-rating input:checked ~ .my-rating label:hover ~ label,
+.my-rating label:hover ~ input:checked ~ label { color: rgba(248, 185, 7, 0.6) !important;  }

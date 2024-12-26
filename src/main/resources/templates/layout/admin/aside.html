@@ -1,0 +1,108 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <link rel="stylesheet" th:href="@{/css/layout/admin/aside.css}">
+
+
+    <aside id="sidebar">
+        <div sec:authorize="hasRole('admin')" class="navi">
+            <li class="side1" th:classappend="${config == 'config'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu1')">환경설정</li>
+            <div th:classappend="${config} == 'config' ? 'open' : ''"
+                    class="menues" id="menu1">
+                <a th:classappend="${active} == 'basics' ? 'active' : ''" th:href="@{/admin/config/basics}">- 기본설정</a>
+                <a th:classappend="${active} == 'banners' ? 'active' : ''" th:href="@{/admin/config/banners}">- 배너관리</a>
+                <a th:classappend="${active} == 'terms' ? 'active' : ''" th:href="@{/admin/config/terms}">- 약관관리</a>
+                <a th:classappend="${active} == 'category' ? 'active' : ''" th:href="@{/admin/prod/category}">- 카테고리</a>
+                <a th:classappend="${active} == 'versions' ? 'active' : ''" th:href="@{/admin/config/versions}">- 버전관리</a>
+            </div>
+        </div>
+        <div sec:authorize="hasRole('admin')" class="navi">
+            <li class="side1" th:classappend="${config == 'shop'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu2')">상점관리</li>
+            <div th:classappend="${config} == 'shop' ? 'open' : ''"  class="menues" id="menu2">
+                <a th:classappend="${active} == 'shop' ? 'active' : ''" th:href="@{/admin/shop/shop}">- 상점목록</a>
+                <a th:classappend="${active} == 'income' ? 'active' : ''" th:href="@{/admin/shop/income}">- 매출현황</a>
+            </div>
+        </div>
+        <div sec:authorize="hasRole('admin')" class="navi">
+            <li class="side1" th:classappend="${config == 'user'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu3')">회원관리</li>
+            <div th:classappend="${config} == 'user' ? 'open' : ''"  class="menues" id="menu3">
+                <a th:classappend="${active} == 'user' ? 'active' : ''" th:href="@{/admin/user/user}">- 회원목록</a>
+                <a th:classappend="${active} == 'point' ? 'active' : ''" th:href="@{/admin/user/point}">- 포인트관리</a>
+            </div>
+        </div>
+        <div class="navi">
+            <li class="side1" th:classappend="${config == 'product'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu4')">상품관리</li>
+            <div th:classappend="${config} == 'product' ? 'open' : ''"  class="menues" id="menu4">
+                <a th:classappend="${active} == 'products' ? 'active' : ''" th:href="@{/admin/prod/products}">- 상품현황</a>
+                <a th:classappend="${active} == 'product' ? 'active' : ''" th:href="@{/admin/prod/product/post}">- 상품등록</a>
+            </div>
+        </div>
+        <div class="navi">
+            <li sec:authorize="hasRole('seller')" class="side1" th:classappend="${config == 'order'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu5')">주문관리</li>
+            <div th:classappend="${config} == 'order' ? 'open' : ''" class="menues" id="menu5">
+                <a th:classappend="${active} == 'orders' ? 'active' : ''" th:href="@{/admin/order/orders}">- 주문현황</a>
+                <a th:classappend="${active} == 'deliverys' ? 'active' : ''" th:href="@{/admin/order/deliverys}">- 배송현황</a>
+            </div>
+        </div>
+        <div class="navi">
+            <li class="side1" th:classappend="${config == 'coupon'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu6')">쿠폰관리</li>
+            <div th:classappend="${config} == 'coupon' ? 'open' : ''"
+                 class="menues" id="menu6">
+                <a th:classappend="${active} == 'coupons' ? 'active' : ''" th:href="@{/admin/coupon/coupons}">- 쿠폰목록</a>
+                <a th:classappend="${active} == 'issuearances' ? 'active' : ''" th:href="@{/admin/coupon/issuearances}">- 쿠폰발급현황</a>
+            </div>
+        </div>
+        <div class="navi">
+            <li class="side1" th:classappend="${config == 'cs'} ? 'asideBg' : ''" onclick="openMenu(event, 'menu7')">고객센터</li>
+            <div th:classappend="${config} == 'cs' ? 'open' : ''"
+                    class="menues" id="menu7">
+                <a sec:authorize="hasRole('admin')" th:classappend="${active} == 'notices' ? 'active' : ''" th:href="@{/admin/cs/notices}">- 공지사항</a>
+                <a sec:authorize="hasRole('admin')" th:classappend="${active} == 'faqs' ? 'active' : ''" th:href="@{/admin/cs/faqs}">- 자주묻는질문</a>
+                <a th:classappend="${active} == 'qnas' ? 'active' : ''" th:href="@{/admin/cs/qnas}">- 문의하기</a>
+                <a sec:authorize="hasRole('admin')" th:classappend="${active} == 'recruits' ? 'active' : ''" th:href="@{/admin/cs/recruits}">- 채용하기</a>
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        function openMenu(event, menuId) {
+            const allMenus = document.querySelectorAll('.menues');
+            const allSide1 = document.querySelectorAll('.side1');
+            // event.target.classList.add('asideBg')
+            allSide1.forEach(v=> {
+                if(v.classList.contains('asideBg')){
+                    v.classList.remove('asideBg')
+                }
+            })
+            if(!event.target.classList.contains('asideBg')){
+                event.target.classList.add('asideBg')
+            }
+
+            // 모든 메뉴를 닫기
+            allMenus.forEach(menu => {
+                if (menu.id !== menuId) {
+                    menu.classList.remove('open');
+                    menu.style.transition = 'none';
+                    menu.style.maxHeight = '0';  // 즉시 닫기
+                    menu.style.padding = '0';   
+                }
+            }); 
+
+            // 클릭된 메뉴 열기/닫기
+            const selectedMenu = document.getElementById(menuId);
+            if (selectedMenu.classList.contains('open')) {
+                selectedMenu.classList.remove('open');
+                selectedMenu.style.transition = 'none';  // 닫을 때는 transition을 제거
+                selectedMenu.style.maxHeight = '0';
+                selectedMenu.style.padding = '0';
+            } else {
+                selectedMenu.classList.add('open');
+                // 열릴 때 transition을 다시 추가해서 부드럽게 열리도록 함
+                setTimeout(() => {
+                    selectedMenu.style.transition = 'max-height 0.5s ease-out, padding 0.5s ease-out';
+                    selectedMenu.style.maxHeight = '500px';  // 부드럽게 열기
+                    selectedMenu.style.padding = '20px 0';
+                }, 10);  // 약간의 지연을 줘서 transition이 적용되도록
+            }
+        }
+    </script>

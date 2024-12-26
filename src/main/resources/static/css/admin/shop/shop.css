@@ -1,0 +1,399 @@
+@charset "UTF-8";
+
+*{margin: 0; padding:0; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 400;}
+html{color:#111; position:relative;}
+html, body{height:100%; }
+body{font-size:12px; line-height:18px; font-family: 'Noto Sans KR', sans-serif;}
+a, address, blockquote, br, fieldset, legend, label, form, input, select, textarea, button, cite, code, dl, dt, dd, h1, h2, h3, h4, h5, h6, p, div, iframe, ul, ol, li, hr, img {margin: 0; padding: 0; outline:none;}
+a{color:#111; text-decoration: none;}
+img{border:none; vertical-align: top;}
+ul, ol{list-style:none;}
+address{font-style: normal;}
+/* clearfix */
+.cf{}
+.cf::after {content: ""; display: block; clear: both;}
+
+/* hyper link */
+a, a:link, a:visited, a:active, a:hover{text-decoration: none; color: inherit;}
+
+/* input outline */
+input:active{outline: none;}
+input:focus{outline: none;}
+
+#wrap{
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* 메인 */
+.container {
+    width: 800px;
+    margin: 0 auto;
+}
+/* navi 부분 */
+#navi {
+    width: 786px;
+    height: auto;
+    display: flex;
+    justify-content: space-between; /* 두 요소를 양 끝에 배치 */
+    align-items: center;
+    border-bottom: 1.5px solid #000000;
+    margin: 0 auto;;
+}
+
+.sub_tit {
+   font-size: 20px;
+   font-weight: 700;
+   margin-left: 3px;
+   margin-bottom: 8px; 
+   margin-top: 5px;
+}
+
+/* 로케이션 */
+.location > span::after{content: ' \003E'; }
+.location > span:last-of-type{font-weight: 700;}
+.location > span:last-of-type:after{content:none;}
+
+/* 검색 부분 */
+.search{
+    margin-top: 20px;
+    height: 32.5px;
+    display: flex;
+    gap: 5px;
+}
+
+.search-option {
+    width: 70px;
+    text-align: center;
+    border: 1px solid #c7c7c7;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+}
+
+.search-keyword {
+    border: 1px solid #c7c7c7;
+    outline: none;
+    width: 150px;
+    border-radius: 5px;
+}
+
+.search-keyword::placeholder {
+    padding-left: 8px;
+}
+
+.search-btn {
+    background-color: #303644;
+    color: white;
+    width: 62px;
+    cursor: pointer;
+    border-radius: 5px;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.header-gubun-bottom {
+    text-align: right;
+    width: 800px;
+    height: auto;
+    background-image: url(/images/login-gubun-bottom.png);
+    margin-top: 10px;
+}
+
+/* 운영중,중지,준비 */
+.circle{ position: relative; padding-left: 12px; font-size: 14px;}
+
+.header-gubun-bottom > span::before{ box-sizing: content-box; content: ''; /* 가상 요소에 내용을 비워둠 */
+    width: 8px; height: 8px; border-radius: 50%; position: absolute; left: 0; top: 50%; transform: translateY(-50%);}
+.green{color: #00b050;}
+.green::before{background-color: #00b050;}
+.red{color: #ff0000;}
+.red::before{background-color: #ff0000;}
+.blue{color: #0070c0;}
+.blue::before{background-color: #0070c0;}
+
+/* 테이블1 */
+.tb1 {
+    box-sizing: border-box;
+    border-collapse: collapse;
+    border-top: 1px solid #a6a6a6;
+    width: 100%;
+}
+
+.tb1 th {
+    height: 50px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 2px solid #e8e8e8;
+}
+
+.tb1 td {
+    padding: 5px 0;
+    text-align: center;
+    font-weight: 400;
+    font-size: 12px;
+    border-bottom: 2px solid #e8e8e8;
+    height: 66px;
+}
+
+.cir { width: 10px;  /* 원의 너비 */
+    height: 10px; /* 원의 높이 */
+    background-color: #00b050; /* 원의 색상 */
+    border-radius: 50%; /* 원 모양으로 만들기 */
+    display: inline-block; }
+
+.cir2 { width: 10px;  /* 원의 너비 */
+    height: 10px; /* 원의 높이 */
+    background-color: #ff0000; /* 원의 색상 */
+    border-radius: 50%; /* 원 모양으로 만들기 */
+    display: inline-block; }
+
+.cir3 { width: 10px;  /* 원의 너비 */
+    height: 10px; /* 원의 높이 */
+    background-color: #0070c0; /* 원의 색상 */
+    border-radius: 50%; /* 원 모양으로 만들기 */
+    display: inline-block; }
+
+.td-admin input{
+    border: none;
+    background-color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+/* 삭제, 등록 버튼 */
+
+.btns {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: box-shadow 0.3s ease;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.insert-btn {
+    background-color: #647264;
+    color: white !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: box-shadow 0.3s ease;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.page {
+    margin: 30px 0;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.page a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 0.3;
+    }
+}
+
+.page .on {
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.popup,
+.popupbg {
+    display: none;
+}
+
+.popupbg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #868686;
+    opacity: 0.2;
+    z-index: 999;
+}
+
+.popup {
+    position: fixed;
+    top: 50px;
+    left: 380px;
+    width: 735.53px;
+    background-color: white;
+    z-index: 1000;
+}
+
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    background-color: #404040;
+    color: white;
+    margin-bottom: 0;
+}
+
+.popup .header .title {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+}
+
+.btn {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.popup form {
+    width: 800px;
+    padding: 10px;
+    height: 700px;
+}
+
+.tb2 {
+    border-collapse: collapse;
+}
+
+.tb2 th {
+    width: 136px;
+    height: 26px;
+    background-color: #f2f2f2;
+}
+
+.tb2 td {
+    height: 26px;
+    padding-left: 15px;
+}
+
+/* 안내 문구 글자 어케 줄이냐 */
+.inpo2 {
+    size: 8px;
+}
+
+.popup {
+    margin: 0 auto;
+}
+
+.popup form {
+    width: 90%;
+    padding-left: 50px;
+    height: auto;
+}
+
+.popup .btns {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.popup .submit-btn {
+    background-color: #00b050;
+    width: 130px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    color: white;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.popup .inp {
+    width: 237px;
+    height: 29px;
+    border: 1px solid #bfbfbf;
+    outline: none;
+    padding-left: 10px;
+}
+
+.popup .inp-addr {
+    width: 400px;
+    height: 29px;
+    border: 1px solid #bfbfbf;
+    outline: none;
+    padding-left: 10px;
+}
+
+.popup .inp-etc {
+    width: 400px;
+    height: 60px;
+    border: 1px solid #bfbfbf;
+    outline: none;
+    padding-left: 10px;
+}
+.popup .short {
+    width: 30px;
+    height: 29px;
+    border: 1px solid #bfbfbf;
+    outline: none;
+}
+
+.popup .place {
+    width: 110px;
+    height: 29px;
+    border: 1px solid #bfbfbf;
+    outline: none;
+    padding-left: 10px;
+}
+
+.popup input[type="date"],
+.popup input[type="time"] {
+    width: 200px;
+    height: 29px;
+    border: 1px solid #bfbfbf;
+    outline: none;
+    padding-left: 10px;
+}
+

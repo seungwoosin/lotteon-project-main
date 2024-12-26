@@ -1,0 +1,92 @@
+<link rel="stylesheet" th:href="@{/css/admin/shop/income.css}" />
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<body>
+<header th:replace="layout/admin/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 50px;">
+    <aside th:replace="layout/admin/aside.html"></aside>
+    <div id="wrap">
+        <div class="container">
+            <nav id="navi">
+                <h2 class="sub_tit">매출현황</h2>
+                <p class="location">
+                    <span>HOME</span>
+                    <span>상점관리</span>
+                    <span>매출현황</span>
+                </p>
+            </nav>
+            <form class="search">
+                <select id="searchType" name="searchType" class="search-option">
+                    <option th:selected="${searchType == 'day'}" value="day">일간</option>
+                    <option th:selected="${searchType == 'week'}" value="week">주간</option>
+                    <option th:selected="${searchType == 'month'}" value="month">월간</option>
+                </select>
+            </form>
+
+            <div class="header-gubun-bottom">
+            </div>
+            <table class="tb1">
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 10%;">
+                    <col style="width: 15%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                </colgroup>
+                <tr>
+                    <th>번호</th>
+                    <th>상호명</th>
+                    <th>사업자 등록번호</th>
+                    <th>주문 건수</th>
+                    <th>결제 완료</th>
+                    <th>배송 중</th>
+                    <th>배송 완료</th>
+                    <th>구매 확정</th>
+                    <th>주문 합계</th>
+                    <th>매출 합계</th>
+                </tr>
+                <tr th:each="income : ${incomes}">
+                    <td th:text="${income.id}">5</td>
+                    <td th:text="${income.company}">(주)나다와</td>
+                    <td th:text="${income.busiCode}">112-12-12345</td>
+                    <td th:text="${income.orderCnt}">103</td>
+                    <td th:text="${income.completeCnt}">90</td>
+                    <td th:text="${income.deliCnt}">56</td>
+                    <td th:text="${income.deliCompleteCnt}">52</td>
+                    <td th:text="${income.confirmCnt}">6</td>
+                    <td th:text="${income.totalPrice.intValue()}">구매확정 포인트 지급</td>
+                    <td th:text="${income.totalRealPrice.intValue()}">0000-00-00 00:00:00</td>
+                </tr>
+            </table>
+            <div class="page">
+                <a class="none" th:href="@{/admin/shop/income(page=0, searchType=${searchType})}"><<</a>
+                <a class="none" th:href="@{/admin/shop/income(page=${page - 2}, searchType=${searchType})}" th:if="${page>=2}" th:text="${page}-1"></a>
+                <a class="none" th:href="@{/admin/shop/income(page=${page - 1}, searchType=${searchType})}" th:if="${page>=1}" th:text="${page}"></a>
+                <a class="active" style="font-weight: 600; text-decoration: underline;" th:text="${page}+1"></a>
+                <a class="none" th:href="@{/admin/shop/income(page=${page + 1}, searchType=${searchType})}" th:if="${(totalPages - page)>=2}" th:text="${page}+2"></a>
+                <a class="none" th:href="@{/admin/shop/income(page=${page + 2}, searchType=${searchType})}" th:if="${(totalPages - page)>=3}" th:text="${page}+3"></a>
+                <a class="none" th:href="@{/admin/shop/income(page=${totalPages - 1}, searchType=${searchType})}" >>></a>
+            </div>
+        </div><!--container-->
+    </div>
+</main>
+<footer th:replace="layout/admin/footer.html"></footer>
+
+<script>
+    const searchType = document.getElementById('searchType')
+    searchType.addEventListener('change',(e)=>{
+        const selectedType = searchType.options[searchType.selectedIndex]
+        if(selectedType.value==='day'){
+            window.location.href = "/admin/shop/income?searchType=day"
+        } else if(selectedType.value==='week'){
+            window.location.href = "/admin/shop/income?searchType=week"
+        } else {
+            window.location.href = "/admin/shop/income?searchType=month"
+        }
+    })
+
+</script>

@@ -1,0 +1,889 @@
+<!--
+  이름 : 이상훈
+  날짜 : 2024-10-27
+  작업내용 : 최고관리자쿠폰 / 판매자쿠폰 개별적용기능 추가
+-->
+
+<link rel="stylesheet" th:href="@{/css/product/order.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js}"></script>
+<header th:replace="layout/main/header.html"></header>
+<script th:src="@{/js/main.js}"></script>
+<script>
+  window.onload=function (){
+    function addCommas(amount) {
+      return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // 주문정보 출력
+    const listItems = document.querySelectorAll('table.tb1 tr');
+
+    const AllPrice = document.querySelector('.AllPrice');
+    const qty = document.querySelector('.qty');
+    const AllDiscount = document.querySelector('.AllDiscount');
+    const AllDeliver = document.querySelector('.AllDeliver');
+    const OrderPrice = document.querySelector('.OrderPrice');
+    const AllPoint = document.querySelector('.AllPoint');
+    const AllsavedPoint = document.querySelector('.AllsavedPoint');
+
+    let totalqty = 0;
+    let totalAllPrice = 0;
+    let totalAllDiscount = 0;
+    let totalAllDeliver = 0;
+    let totalOrderPrice = 0;
+    let totalAllPoint = 0;
+
+    listItems.forEach((row, index) => {
+      if (index === 0) return;
+
+      const cells = row.querySelectorAll('td');  // 각 행의 모든 td 선택
+
+      const quantity = parseInt(cells[3]?.textContent.trim()) || 0;     // 수량 (그대로 정수로 변환)
+      const productPrice = parseInt(cells[4]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 상품금액 (숫자 이외의 문자 제거 후 정수로 변환)
+      const discount = parseInt(cells[5]?.textContent.replace(/[^\d]/g, '').trim()) || 0;  // 할인율 (% 제거)
+      const point = parseInt(cells[6]?.textContent.replace(/[^\d]/g, '').trim())*parseInt(cells[3]?.textContent.trim()) || 0;     // 포인트 (P 제거)
+      const deliveryFee = parseInt(cells[7]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 배송비 (숫자 외 제거)
+      const totalPrice = parseInt(cells[8]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 총합 (숫자 외 제거)
+
+      const discountPrice = parseInt(productPrice-(productPrice*(1-(discount/100))));
+
+      totalqty += quantity;
+      totalAllPrice += productPrice;
+      totalAllDiscount += discountPrice;
+      totalAllDeliver += deliveryFee;
+      totalOrderPrice += totalPrice;
+      totalAllPoint += point;
+
+    })
+
+
+    let totalAllDelivery= (totalAllDeliver === 0) ? "무료배송" : addCommas(totalAllDeliver);
+
+
+    AllPrice.innerText = totalAllPrice;
+    qty.innerText = totalqty;
+    AllDiscount.innerText = totalAllDiscount;
+    AllDeliver.innerText = totalAllDelivery;
+    OrderPrice.innerText = totalOrderPrice;
+    AllsavedPoint.innerText = totalAllPoint;
+
+    // 주문하기
+    const btnOrder = document.querySelector('#btnOrder');
+    const form = document.querySelector('.order-form');
+
+    btnOrder.addEventListener('click', function (e){
+      console.log(e.target)
+      e.preventDefault();
+
+      const payment = form.payment.value;
+      const receiverName = form.receiverName.value;
+      const receiverHp = form.receiverHp.value;
+      const receiverZip = form.receiverZip.value;
+      const receiverAddr1 = form.receiverAddr1.value;
+      const receiverAddr2 = form.receiverAddr2.value;
+      const receiverReq = form.receiverReq.value;
+
+
+
+      const orderData = {
+        "orderPayment":payment,
+        "receiverName":receiverName,
+        "receiverHp":receiverHp,
+        "receiverZip":receiverZip,
+        "receiverAddr1":receiverAddr1,
+        "receiverAddr2":receiverAddr2,
+        "orderReq":receiverReq,
+        "orderDeli":totalAllDeliver,
+        "orderDiscount":totalAllDiscount,
+        "orderTotal":totalOrderPrice,
+        "orderQuantity":totalqty
+      };
+      console.log(orderData);
+
+      if(payment==null||!payment.trim()){
+        alert('결제수단을 선택해 주세요.');
+        return;
+      }
+
+      const listItems = document.querySelectorAll('table.tb1 tr');
+      let products = [];
+
+      listItems.forEach((row, index) => {
+        if (index === 0) return; // 첫 번째 행은 헤더이므로 제외
+
+        const cells = row.querySelectorAll('td');  // 각 행의 모든 td 선택
+
+        // `td`의 `data-product-id` 속성에서 값 가져오기
+        const productId = parseInt(cells[1].dataset.productId) || 0;
+        const optionId = parseInt(cells[2].dataset.option);
+        const quantity = parseInt(cells[3]?.textContent.trim()) || 0; // 수량
+        const productPrice = parseInt(cells[4]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 상품금액
+        const discount = parseInt(cells[5]?.textContent.replace(/[^\d]/g, '').trim()) || 0;  // 할인율
+        const savePoint = parseInt(cells[6].textContent.replace(/[^\d]/g, '').trim()) || 0;
+        const deliveryFee = parseInt(cells[7]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 배송비
+        const totalPrice = parseInt(cells[8]?.textContent.replace(/[^\d]/g, '').trim()) || 0; // 총합
+
+        console.log(optionId)
+        // 각 상품을 객체로 만들어 배열에 추가
+        products.push({
+          productId: productId,
+          quantity: quantity,
+          productPrice: productPrice,
+          discount: discount,
+          deliver: deliveryFee,
+          totalPrice: totalPrice,
+          savePoint : savePoint,
+          optionId : optionId
+        });
+      });
+
+      console.log("products "+JSON.stringify(products));
+
+      const jsonData = {
+        orderDto: orderData,
+        orderItemDto:products,
+        orderPointAndCouponDto:submitData
+      }
+
+      console.log("쩨이슨 데이터 "+JSON.stringify(jsonData));
+
+      fetch('/prod/order',{
+        method:'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+      })
+              .then(resp => resp.json())
+              .then(data => {
+                console.log(data);
+                if(data){
+                  alert('주문이 완료되었습니다.');
+                  location.replace('/prod/order/complete');
+                }else{
+                  alert('주문 처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+    })
+
+  };
+  let submitData ={
+    "couponId" : 0,
+    "points" : 0
+  }
+  let couId = 0;
+  let pointValue = 0;
+
+  async function adjustCoupon(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    if(event.target.innerText === '사용하기'){
+      const userConfirmed = confirm("쿠폰을 적용하시겠습니까?");
+      if (userConfirmed) {
+        const selectElement = document.getElementById("couponSelect");
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+        const couponType = selectedOption.dataset.type;
+        const couponDiscount = selectedOption.dataset.discount;
+        const couponOption = selectedOption.dataset.option;
+        const sellId = selectedOption.dataset.id;
+        const couponId = selectedOption.dataset.couponid;
+        const sellerIds = document.querySelectorAll('.couponMatchers')
+        const matchingElements = Array.from(sellerIds).filter(v => v.dataset.sellid === sellId);
+
+        const allDiscount = document.querySelector('.AllDiscount')
+        const allDeliver = document.querySelector('.AllDeliver')
+        const orderPrice = document.querySelector('.OrderPrice')
+        let priceValue = orderPrice.innerText
+        let discountValue = allDiscount.innerText
+        let deliverValue = allDeliver.innerText
+
+        if(couponType==='주문상품할인'){
+          if(couponOption === '원 할인') {
+            wPlusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event)
+          }
+          if(couponOption==='% 할인'){
+            pPlusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event)
+          }
+          if(couponOption === '원 배달비 할인'){
+            dPlusDiscount(couponDiscount,allDeliver,deliverValue,orderPrice,priceValue,event)
+          }
+          couId = couponId
+          createSubmitData()
+        } else {
+          alert("판매자 쿠폰입니다. 쿠폰을 발급 한 해당 판매자 가격만 할인됩니다.")
+          let adjustCouponPrice =0;
+          let highestDeliver = 0;
+          matchingElements.forEach(v=>{
+            if(!v){
+              return;
+            }
+            const tds = v.querySelectorAll('td')
+            const currentValue = Number(tds[8].innerText.replace(/,/g, '').slice(0, -1));
+            const currentDeliver = Number(tds[7].innerText.replace(/,/g, '').slice(0, -1));
+            adjustCouponPrice += currentValue;
+            if (currentDeliver > highestDeliver) {
+              highestDeliver = currentDeliver;
+            }
+          })
+          if(couponOption === '원 할인'){
+            if(adjustCouponPrice > couponDiscount){
+              wPlusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event)
+            } else {
+              const result = confirm("할인금액이 구매물품가격의 총합보다 많습니다. 진행하시겠습니까?")
+              if(result){
+                wPlusDiscount(adjustCouponPrice,allDiscount,discountValue,orderPrice,priceValue,event)
+              } else {
+                return;
+              }
+            }
+          }
+          if(couponOption === '% 할인'){
+            pPlusDiscount2(priceValue,couponDiscount,allDiscount,discountValue,orderPrice,adjustCouponPrice,event)
+          }
+          if(couponOption === '원 배달비 할인'){
+            if(highestDeliver > couponDiscount){
+              dPlusDiscount(couponDiscount,allDeliver,deliverValue,orderPrice,priceValue,event)
+            } else {
+              const result = confirm("할인금액이 구매물품배달비 총합보다 많습니다. 진행하시겠습니까?")
+              if(result){
+                dPlusDiscount(highestDeliver,allDeliver,deliverValue,orderPrice,priceValue,event)
+              }
+            }
+          }
+          couId = couponId
+          createSubmitData()
+        }
+      }
+    } else {
+      const userConfirmed = confirm("쿠폰 사용을 취소하시겠습니까?");
+      if(userConfirmed){
+        const selectElement = document.getElementById("couponSelect");
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+        const couponType = selectedOption.dataset.type;
+        const couponDiscount = selectedOption.dataset.discount;
+        const couponOption = selectedOption.dataset.option;
+        const sellId = selectedOption.dataset.id;
+        const couponId = selectedOption.dataset.couponid;
+        const sellerIds = document.querySelectorAll('.couponMatchers')
+        const matchingElements = Array.from(sellerIds).filter(v => v.dataset.sellid === sellId);
+        const allDiscount = document.querySelector('.AllDiscount')
+        const allDeliver = document.querySelector('.AllDeliver')
+        const orderPrice = document.querySelector('.OrderPrice')
+        let priceValue = orderPrice.innerText
+        let discountValue = allDiscount.innerText
+        let deliverValue = allDeliver.innerText
+
+
+        if(couponType==='주문상품할인'){
+          if (couponOption === '원 할인') {
+            wMinusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event)
+          }
+          if(couponOption === '% 할인'){
+            pMinusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event)
+          }
+          if(couponOption === '원 배달비 할인'){
+            dMinusDiscount(couponDiscount,allDeliver,deliverValue,orderPrice,priceValue,event)
+          }
+          couId = 0
+          createSubmitData()
+        } else {
+          let adjustCouponPrice =0;
+          let highestDeliver = 0;
+          matchingElements.forEach(v=>{
+            if(!v){
+              return;
+            }
+            const tds = v.querySelectorAll('td')
+            const currentValue = Number(tds[8].innerText.replace(/,/g, '').slice(0, -1));
+            const currentDeliver = Number(tds[7].innerText.replace(/,/g, '').slice(0, -1));
+            adjustCouponPrice += currentValue;
+            if (currentDeliver > highestDeliver) {
+              highestDeliver = currentDeliver;
+            }
+          })
+          if(couponOption === '원 할인'){
+            if(adjustCouponPrice > couponDiscount){
+              wMinusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event)
+            } else {
+              wMinusDiscount(adjustCouponPrice,allDiscount,discountValue,orderPrice,priceValue,event)
+            }
+          }
+          if(couponOption === '% 할인'){
+            pMinusDiscount2(priceValue,couponDiscount,allDiscount,discountValue,orderPrice,adjustCouponPrice,event)
+          }
+          if(couponOption === '원 배달비 할인'){
+            if(highestDeliver > couponDiscount){
+              dMinusDiscount(couponDiscount,allDeliver,deliverValue,orderPrice,priceValue,event)
+            } else {
+              dMinusDiscount(highestDeliver,allDeliver,deliverValue,orderPrice,priceValue,event)
+            }
+          }
+          couId = 0
+          createSubmitData()
+        }
+      }
+    }
+  }
+  function createSubmitData() {
+
+    // 쿠폰 ID가 설정된 경우 submitData에 추가
+    if (couId !== null) {
+      submitData.couponId = couId;
+    }
+
+    // 포인트 값이 설정된 경우 submitData에 추가
+    if (pointValue !== null) {
+      submitData.points = pointValue;
+    }
+
+    console.log("Submit Data:", submitData);
+    // submitData를 사용하여 서버에 전송하는 로직 추가 가능
+  }
+
+  function usePoint(event) {
+    const pointsId = document.getElementById('pointsId');
+    const allDiscount = document.querySelector('.AllPoint')
+    const orderPrice = document.querySelector('.OrderPrice')
+    let priceValue = orderPrice.innerText
+    let discountValue = allDiscount.innerText
+    if(event.target.innerText==='사용하기'){
+      if(Number(event.target.dataset.point) < Number(pointsId.value)){
+        pointsId.value = event.target.dataset.point;
+      }
+      if(Number(pointsId.value) > Number(document.querySelector('.OrderPrice').innerText) ){
+        pointsId.value = document.querySelector('.OrderPrice').innerText
+      }
+      pointValue = pointsId.value
+      createSubmitData()
+      wPlusDiscount(pointsId.value,allDiscount,discountValue,orderPrice,priceValue,event)
+    } else {
+      pointValue = 0
+      createSubmitData()
+      wMinusDiscount(pointsId.value,allDiscount,discountValue,orderPrice,priceValue,event)
+    }
+  }
+
+  function wPlusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event){
+    const currentDiscount = Number(discountValue);
+    const couponValue = Number(couponDiscount);
+    const currentPrice = Number(priceValue);
+    // 할인 금액 계산
+    const newDiscount = currentDiscount + couponValue;
+    const newPrice = currentPrice - couponValue;
+    allDiscount.innerText = newDiscount.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    event.target.innerText = '사용취소';
+    event.target.previousElementSibling.disabled = 'true';
+  }
+
+  function pPlusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event){
+    const currentDiscount = Number(discountValue);
+    const couponValue = Number(couponDiscount);
+    const currentPrice = Number(priceValue);
+
+    const newDiscount = currentDiscount + (currentPrice * couponValue / 100);
+    const newPrice = currentPrice - (currentPrice * couponValue / 100)
+    allDiscount.innerText = newDiscount.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    event.target.innerText = '사용취소';
+    event.target.previousElementSibling.disabled = 'true';
+  }
+
+  function pPlusDiscount2(priceValue,couponDiscount,allDiscount,discountValue,orderPrice,adjustCouponPrice,event){
+    const currentDiscount = Number(discountValue);
+    const couponValue = Number(couponDiscount);
+    const currentPrice = Number(priceValue);
+    const adjustPrice = Number(adjustCouponPrice);
+
+    const newDiscount = currentDiscount + (adjustPrice * couponValue / 100);
+    const newPrice = currentPrice - (adjustPrice * couponValue / 100)
+    allDiscount.innerText = newDiscount.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    event.target.innerText = '사용취소';
+    event.target.previousElementSibling.disabled = 'true';
+  }
+
+  function dPlusDiscount(couponDiscount,allDeliver,deliverValue,orderPrice,priceValue,event){
+    const currentDeliver = Number(deliverValue);
+    const couponValue = Number(couponDiscount);
+    const currentPrice = Number(priceValue);
+
+    const newDeliver = currentDeliver - couponValue
+    const newPrice = currentPrice - couponValue;
+
+    allDeliver.innerText = newDeliver.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    event.target.innerText = '사용취소';
+    event.target.previousElementSibling.disabled = 'true';
+  }
+
+  function wMinusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event){
+    const currentDiscount = Number(discountValue);
+    const couponValue = Number(couponDiscount);
+    const currentPrice = Number(priceValue);
+    // 할인 금액 계산
+    const newDiscount = currentDiscount - couponValue;
+    const newPrice = currentPrice + couponValue;
+    allDiscount.innerText = newDiscount.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    event.target.innerText = '사용하기';
+    event.target.previousElementSibling.disabled = false;
+  }
+
+  function pMinusDiscount(couponDiscount,allDiscount,discountValue,orderPrice,priceValue,event){
+    const currentDiscount = Number(discountValue); // 현재 적용된 총 할인 금액
+    const couponValue = Number(couponDiscount); // 쿠폰 할인율(%)
+    const currentPrice = Number(orderPrice.innerText); // 현재 화면에 표시된 주문 가격
+
+    // 쿠폰 적용된 할인 금액을 복원하여 주문 가격에 다시 더함
+    const removedDiscount = currentPrice * couponValue / (100 - couponValue); // 할인 전 금액 계산
+    const newDiscount = currentDiscount - removedDiscount; // 새로운 총 할인 금액
+    const newPrice = currentPrice + removedDiscount; // 새로운 주문 가격
+
+    // 화면 업데이트
+    allDiscount.innerText = newDiscount.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    // 버튼 상태 업데이트
+    event.target.innerText = '사용하기';
+    event.target.previousElementSibling.disabled = false;
+  }
+
+  function pMinusDiscount2(priceValue,couponDiscount,allDiscount,discountValue,orderPrice,adjustCouponPrice,event){
+    const currentDiscount = Number(discountValue); // 현재 적용된 총 할인 금액
+    const couponValue = Number(couponDiscount); // 쿠폰 할인율(%)
+    const currentPrice = Number(orderPrice.innerText); // 현재 화면에 표시된 주문 가격
+    const adjustPrice = Number(adjustCouponPrice);
+
+    const removedDiscount = adjustPrice * (couponValue / 100);
+    const newDiscount = currentDiscount - removedDiscount;
+    const newPrice = currentPrice + removedDiscount;
+
+    // 화면 업데이트
+    allDiscount.innerText = newDiscount.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    // 버튼 상태 업데이트
+    event.target.innerText = '사용하기';
+    event.target.previousElementSibling.disabled = false;
+  }
+
+  function dMinusDiscount(couponDiscount,allDeliver,deliverValue,orderPrice,priceValue,event) {
+    const currentDeliver = Number(deliverValue);
+    const couponValue = Number(couponDiscount);
+    const currentPrice = Number(priceValue);
+
+    const newDeliver = currentDeliver + couponValue
+    const newPrice = currentPrice + couponValue;
+
+    allDeliver.innerText = newDeliver.toString();
+    orderPrice.innerText = newPrice.toString();
+
+    event.target.innerText = '사용하기';
+    event.target.previousElementSibling.disabled = false;
+  }
+
+</script>
+<main style="margin-top: 230px; gap: 0">
+  <aside th:replace="layout/main/aside.html" style="margin: 0; margin-right: 30px"></aside>
+  <div id="wrap">
+    <!-- .aside -->
+    <main id="main" style="height: auto;">
+      <nav id="navi" style="width: 810px">
+        <h2 class="sub_tit">주문하기</h2>
+        <p class="location">
+          <span>HOME</span>
+          <span>장바구니</span>
+          <span>주문하기</span>
+        </p>
+      </nav>
+      <!-- .navi-->
+      <form class="order-form">
+        <table class="tb1">
+          <colgroup>
+            <col style="width: 10%" />
+            <col style="width: 25%" />
+            <col style="width: 10%" />
+            <col style="width: 10%" />
+            <col style="width: 10%" />
+            <col style="width: 7%" />
+            <col style="width: 7%" />
+            <col style="width: 10%" />
+            <col style="width: 10%" />
+          </colgroup>
+          <tr>
+            <th>상품이미지</th>
+            <th>상품명</th>
+            <th>옵션</th>
+            <th>수량</th>
+            <th>판매가</th>
+            <th>할인</th>
+            <th>포인트</th>
+            <th>배송비</th>
+            <th>총합</th>
+          </tr>
+          <tr class="couponMatchers" th:data-sellid="${order.products.sellId}" th:each="order: ${orders}">
+            <td>
+              <div class="img">
+                <img style="width: 80px; height: 80px;" th:src="@{'/file/'+${order.products.getProdListImg()}}" />
+              </div>
+            </td>
+            <td class="name_box" th:data-product-id="${order.products.id}">
+                <span th:text="${order.products.prodName}">상품명</span><br>
+                <span th:text="${order.products.prodSummary}">상품설명</span>
+            </td>
+            <td th:data-option="${order.optionId}" >
+                <th:block th:if="${order.optionValue.isEmpty()}" >
+                  <span>옵션없음</span>
+                </th:block>
+                <th:block th:unless="${order.optionValue.isEmpty()}">
+                  <th:block th:each="option : ${order.optionValue}">
+                    <span th:text="${option}">옵션있음</span>
+                  </th:block>
+                </th:block>
+
+            </td>
+            <td th:text="${order.cartItems.quantity}">1</td>
+            <td>[[${order != null ? #numbers.formatInteger(order.products.prodPrice, 1, 'COMMA') : 0}]]원</td>
+            <td>[[${order != null ? #numbers.formatInteger(order.products.prodDiscount, 1, 'COMMA') : 0}]] %</td>
+            <td>[[${order.products.prodPoint}]] P</td>
+            <td>[[${order.products.prodDeliver != 0 ? #numbers.formatInteger(order.products.prodDeliver, 1, 'COMMA') + '원' : '무료배송'}]]</td>
+            <td>[[${#numbers.formatInteger(order.products.totalPrice, 1, 'COMMA')}]]원</td>
+          </tr>
+        </table>
+        <!-- .tb1-->
+
+        <div>
+          <div class="order_info">
+            <h2 class="sub_tit2">배송정보</h2>
+            <table class="tb2">
+              <tr>
+                <th>수령자</th>
+                <td>
+                  <input type="text" class="recive" name="receiverName" th:value="${customer.custName}" />
+                  <button onclick="loadDiffAddress(event)" th:data-id="${customer.memUid}" class="btn_zip">변경하기</button>
+                </td>
+              </tr>
+              <tr>
+                <th>휴대폰</th>
+                <td><input type="text" class="hp" name="receiverHp" th:value="${customer.custHp}" /></td>
+              </tr>
+              <tr>
+                <th>우편번호</th>
+                <td>
+                  <input type="text" class="zip" id="addr1" title="우편번호 검색칸" name="receiverZip" th:value="${customer.custZip}" />
+                  <button type="button" class="btn_zip" id="btnAddrSearch">검색</button>
+                </td>
+              </tr>
+              <tr>
+                <th>기본주소</th>
+                <td>
+                  <input type="text" class="addr1" id="addr2" placeholder="기본주소 검색" name="receiverAddr1" th:value="${customer.custAddr1}" />
+                </td>
+              </tr>
+              <tr>
+                <th>상세주소</th>
+                <td>
+                  <input type="text" class="addr2" id="addr3" placeholder="상세주소" name="receiverAddr2" th:value="${customer.custAddr2}" />
+                </td>
+              </tr>
+              <tr>
+                <th>요청사항</th>
+                <td>
+                  <input type="text" class="req" placeholder="배송 요청사항을 입력해주세요." name="receiverReq" />
+                </td>
+              </tr>
+            </table>
+            <!-- .tb2-->
+            <h2 class="sub_tit3">할인정보</h2>
+            <table class="tb3">
+              <td>
+                <span>현재포인트 :</span>
+                <span th:text="${customer.points}">7200점</span> <br />
+                <span>포인트 5,000점 이상이면 </span> <br />
+                <span>현금처럼 사용 가능</span>
+              </td>
+              <td class="usedPoint">
+                <input id="pointsId" type="number" th:max="${customer.points}" class="point" />
+                <button type="button" th:disabled="${customer.points < 5000}" onclick="usePoint(event)" th:data-point="${customer.points}" class="btn_point">사용하기</button>
+              </td>
+            </table>
+            <table style="margin-top: 25px;" class="tb3">
+              <tr>
+                <th>
+                  <span>보유중인 쿠폰 :</span>
+                </th>
+                <td class="usedPoint">
+                  <select id="couponSelect" style="margin-left: 88px;" class="point">
+                    <option
+                            th:data-couponid="${coupon.id}"
+                            th:data-id="${coupon.sellId}"
+                            th:data-type="${coupon.couponType}"
+                            th:data-discount="${coupon.couponDiscount}"
+                            th:data-option="${coupon.couponDiscountOption}"
+                            th:each="coupon : ${coupons}" th:value="${coupon.id}" th:text="${coupon.couponType} + '/' + ${coupon.couponName} + '/' + ${coupon.couponDiscount}  + ${coupon.couponDiscountOption}"></option>
+                  </select>
+                  <button type="button" onclick="adjustCoupon(event)" class="btn_point">사용하기</button>
+                </td>
+              </tr>
+            </table>
+            <!-- .tb3-->
+            <h2 class="sub_tit4">결제방법</h2>
+            <table class="tb4">
+              <td>
+                <div>
+                  <label><input type="radio"  name="payment" value="1"/> <span>신용카드</span></label>
+                  <label><input type="radio"  name="payment" value="2"/> <span>체크카드</span></label>
+                  <label><input type="radio"  name="payment" value="3"/> <span>계좌이체</span></label>
+                </div>
+                <div>
+                  <label><input type="radio"  name="payment" value="4"/> <span>무통장입금</span></label>
+                  <label><input type="radio"  name="payment" value="5"/> <span>휴대폰결제</span></label>
+                  <label><input type="radio"  name="payment" value="6"/> <span>카카오페이</span><img th:src="@{/images/payment_icon_yellow_medium.png}" /></label>
+                </div>
+              </td>
+            </table>
+            <!-- .tb4-->
+          </div>
+          <!-- .order_info-->
+          <div class="total">
+            <table class="tb5">
+              <tr>
+                <th colspan="2">최종결제정보</th>
+              </tr>
+              <tr>
+                <th>상품수</th>
+                <td class="qty">1</td>
+              </tr>
+              <tr>
+                <th>상품금액</th>
+                <td class="AllPrice">27,000</td>
+              </tr>
+              <tr>
+                <th>할인금액</th>
+                <td class="AllDiscount">-1,350</td>
+              </tr>
+              <tr>
+                <th>배송비</th>
+                <td class="AllDeliver">0</td>
+              </tr>
+              <tr>
+                <th>포인트 할인</th>
+                <td class="AllPoint">0</td>
+              </tr>
+              <tr>
+                <th>전체주문금액</th>
+                <td class="OrderPrice">25,650</td>
+              </tr>
+              <tr>
+                <th>적립 포인트</th>
+                <td class="AllsavedPoint">270</td>
+              </tr>
+            </table>
+            <!-- .tb5-->
+            <button id="btnOrder" class="btn_order">결제하기</button>
+          </div>
+          <!-- .total-->
+        </div>
+
+      </form>
+      <div id="related-products">
+        <div th:each="prod : ${related}" class="relaties">
+          <a th:href="@{/prod/product(prodId=${prod.id})}"><img th:src="@{'/file/'+${prod.getProdBasicImg()}}"></a>
+          <div class="related-descriptions">
+            <dt style="font-weight: 400">
+              [[${prod.prodName}]]
+            </dt>
+            <dd style="display: flex; margin-top: 5px">
+              <p class="related-total">[[${#numbers.formatInteger(prod.getProdPrice() - prod.getProdPrice() * (prod.getProdDiscount()/100), 1,'COMMA')}]]원</p>
+              <p class="related-price" th:if="${prod.prodDiscount > 0.0}">[[${#numbers.formatInteger(prod.getProdPrice(), 1,'COMMA')}]]원&nbsp;</p>
+            </dd>
+            <div class="d-flex align-items-center">
+                            <span class="ratingBg" style="zoom: 0.8">
+                                <span class="rating" th:style="'width:'+ ${prod.prodRating * 2}+'%;'"></span>
+                            </span>
+              <span th:text="${prod.prodReviewCnt eq null?'(0)':'('+prod.prodReviewCnt+')'}" style="margin-left: 5px;color: #7b7b7b"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- #main-->
+  </div>
+  <div class="popup"></div>
+  <div class="bg"></div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+
+<script>
+
+  const btnAddrSearch = document.querySelector('#btnAddrSearch');
+
+  btnAddrSearch.addEventListener('click',function (e){
+    e.preventDefault();
+    postcode();
+  })
+
+  function postcode() {
+    new daum.Postcode({
+      oncomplete: function (data) {
+        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+        // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+        // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+        var addr = ''; // 주소 변수
+        var extraAddr = ''; // 참고항목 변수
+
+        //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+        if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+          addr = data.roadAddress;
+        } else { // 사용자가 지번 주소를 선택했을 경우(J)
+          addr = data.jibunAddress;
+        }
+
+        // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+        if (data.userSelectedType === 'R') {
+          // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+          // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+          if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+            extraAddr += data.bname;
+          }
+          // 건물명이 있고, 공동주택일 경우 추가한다.
+          if (data.buildingName !== '' && data.apartment === 'Y') {
+            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+          }
+          // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+          if (extraAddr !== '') {
+            extraAddr = ' (' + extraAddr + ')';
+          }
+          // 조합된 참고항목을 해당 필드에 넣는다.
+          //document.getElementById("sample6_extraAddress").value = extraAddr;
+
+        } else {
+          document.getElementById("sample6_extraAddress").value = '';
+        }
+
+        // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        document.getElementById('addr1').value = data.zonecode;
+        document.getElementById("addr2").value = addr;
+        // 커서를 상세주소 필드로 이동한다.
+        document.getElementById("addr3").focus();
+      }
+    }).open();
+  }
+  let memUid = `[[${customer.memUid}]]`
+
+  async function loadDiffAddress(event){
+    event.preventDefault();
+    try {
+      const resp = await axios.get(`/prod/order/address`,null,{
+        headers : {
+          "Content-Type" : "application/json"
+        }
+      })
+      const address = resp.data
+      document.querySelector('.popup').innerHTML = `<h1><span>나의 배송지</span></h1><section>`+address.map((addr, i) => `
+
+            <div class="address-wrapper" style="margin-bottom: 5px">
+                <div class="${addr.state === 1 ? 'address-box on' : 'address-box'}">
+                    <div style="display: flex; justify-content: space-between">
+                      <div class="address-nick" style="font-size: 17px">
+                          ${addr.addrNick === '기본배송지' ? '내 정보' : addr.addrNick}
+                      </div>
+                        <button onclick="changeAddress(event)" data-id="${addr.id}">선택하기</button>
+                    </div>
+                    <div style="margin-bottom: 30px; height: 15px;">
+                        <span>${addr.name}</span><span style="margin-left: 10px">${''+addr.hp1 + addr.hp2 + addr.hp3}</span>
+                    </div>
+                    <div style="margin-bottom: 5px; height: 25px;">
+                        <span>(${addr.addr1})</span><br>
+                        <span>${addr.addr2}</span>
+                    </div>
+                    <div style="margin-bottom: 30px; height: 15px;"><span>${addr.addr3}</span></div>
+                    <div height: 25px;">
+                        요청사항 :<span>${addr.request}</span>
+                    </div>
+                </div>
+            </div>
+
+        `).join('')+`
+</section><button onclick="addrClose()">닫기</button>`;
+      document.querySelector('.popup').style.display = 'flex'
+      document.querySelector('.bg').style.display = 'flex'
+    } catch (e) {
+
+    }
+  }
+
+  async function changeAddress(event){
+    event.preventDefault();
+    try {
+      const resp = await axios.get(`/prod/order/address-select?id=${event.target.dataset.id}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      const addr = resp.data
+      document.querySelector('.tb2').innerHTML = `
+              <tr>
+                <th>수령자</th>
+                <td>
+                  <input type="text" class="recive" name="receiverName" value="${addr.name}" />
+                  <button onclick="loadDiffAddress(event)" data-id="${memUid}" class="btn_zip">변경하기</button>
+                </td>
+              </tr>
+              <tr>
+                <th>휴대폰</th>
+                <td><input type="text" class="hp" name="receiverHp" value="${addr.hp1}-${addr.hp2}-${addr.hp3}" /></td>
+              </tr>
+              <tr>
+                <th>우편번호</th>
+                <td>
+                  <input type="text" class="zip" title="우편번호 검색칸" name="receiverZip" value="${addr.addr1}" />
+                  <button class="btn_zip"><a href="#">검색</a></button>
+                </td>
+              </tr>
+              <tr>
+                <th>기본주소</th>
+                <td>
+                  <input type="text" class="addr1" placeholder="기본주소 검색" name="receiverAddr1" value="${addr.addr2}" />
+                </td>
+              </tr>
+              <tr>
+                <th>상세주소</th>
+                <td>
+                  <input type="text" class="addr2" placeholder="상세주소" name="receiverAddr2" value="${addr.addr3}" />
+                </td>
+              </tr>
+              <tr>
+                <th>요청사항</th>
+                <td>
+                  <input type="text" class="req" placeholder="배송 요청사항을 입력해주세요." name="receiverReq" />
+                </td>
+              </tr>
+            `
+      document.querySelector('.popup').style.display = 'none';
+      document.querySelector('.bg').style.display = 'none'
+    } catch (e) {
+
+    }
+  }
+
+  function addrClose(){
+    document.querySelector('.popup').style.display = 'none'
+    document.querySelector('.bg').style.display = 'none'
+  }
+
+</script>
+

@@ -1,0 +1,392 @@
+<link rel="stylesheet" th:href="@{/css/product/cart.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<script th:src="@{/js/main.js}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.querySelector('.checkboxAll');
+    const itemCheckboxes = document.querySelectorAll('.checkboxItem');
+    const qtyElement = document.querySelector('.qty');
+    const priceElement = document.querySelector('.price');
+    const discountElement = document.querySelector('.discount');
+    const deliverElement = document.querySelector('.deliver');
+    const pointElement = document.querySelector('.point');
+    const realTotalElement = document.querySelector('.realtotal');
+
+    // 전체 선택 체크박스 클릭 시
+    selectAllCheckbox.addEventListener('change', function() {
+      const isChecked = selectAllCheckbox.checked; // 전체 체크박스가 체크되었는지 확인
+      itemCheckboxes.forEach(checkbox => {
+        checkbox.checked = isChecked; // 전체 체크박스의 상태를 개별 체크박스에 반영
+      });
+      updateSelectedItems();  // 전체 선택 시에도 선택된 항목 업데이트
+    });
+
+    // 개별 체크박스 상태 변경 시 선택된 항목을 업데이트
+    itemCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const allChecked = [...itemCheckboxes].every(item => item.checked); // 모든 체크박스가 체크되었는지 확인
+        selectAllCheckbox.checked = allChecked; // 전체 선택 체크박스 상태 갱신
+        updateSelectedItems(); // 상태 변경 시마다 선택된 항목 업데이트
+      });
+    });
+
+    // 체크된 항목들 업데이트
+    function updateSelectedItems() {
+      const selectedItems = [...document.querySelectorAll('.checkboxItem')]
+              .filter(checkbox => checkbox.checked)  // 체크된 항목만 필터링
+              .map(checkbox => {
+                const tr = checkbox.closest('tr');
+                const quantity = parseInt(tr.querySelector('td:nth-child(5) input').value); // 수량을 숫자로 변환
+                const price = parseInt(tr.querySelector('td:nth-child(6)').textContent.trim().replace(/[^0-9.-]+/g,""), 10); // 상품금액
+                const discount = parseFloat(tr.querySelector('td:nth-child(7)').textContent.trim().replace('%', '')); // 할인 (퍼센트)
+                const point = parseInt(tr.querySelector('td:nth-child(8)').textContent.trim().replace(/[^0-9.-]+/g,""), 10); // 포인트
+                const deliver = tr.querySelector('td:nth-child(9)').textContent.trim()=='무료배송'
+                        ? 0 :
+                        parseInt(tr.querySelector('td:nth-child(9)').textContent.trim().replace(/[^0-9.-]+/g,""), 10); // 배송비
+                const totalPrice = parseFloat(tr.querySelector('td:nth-child(10)').textContent.trim().replace(/[^0-9.-]+/g, ""));
+
+                return {
+                  quantity,
+                  price,
+                  discount,
+                  point,
+                  deliver,
+                  totalPrice
+                };
+              });
+
+      if (selectedItems.length === 0) {
+        // 선택된 항목이 없을 경우 모든 합계 값을 0으로 초기화
+        qtyElement.innerText = '0';
+        priceElement.innerText = '0';
+        discountElement.innerText = '0';
+        deliverElement.innerText = '0';
+        pointElement.innerText = '0';
+        realTotalElement.innerText = '0';
+        return;
+      }
+
+      // 수량, 가격, 할인금액, 배송비, 포인트, 실제 총합 계산
+      const totalQuantity = selectedItems.reduce((acc, item) => acc + item.quantity, 0);
+      const price = selectedItems.reduce((acc, item) => acc + item.price* item.quantity, 0);
+      const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice, 0);
+      const totalDiscount = parseInt(selectedItems.reduce((acc, item) => acc + (item.price * item.quantity * item.discount / 100), 0));
+      const totalDeliver = selectedItems.reduce((acc, item) => acc + item.deliver, 0)==0?'무료배송':selectedItems.reduce((acc, item) => acc + item.deliver, 0);
+      const totalPoint = selectedItems.reduce((acc, item) => acc + item.point * item.quantity, 0); // 포인트 합계
+      const realTotal = totalDeliver=='무료배송'?totalPrice:totalPrice + totalDeliver;
+
+
+      // 계산된 값들을 DOM에 업데이트
+      qtyElement.innerText = totalQuantity.toLocaleString(); // 콤마 추가
+      priceElement.innerText = price.toLocaleString(); // 가격에 콤마 추가
+      discountElement.innerText = totalDiscount.toLocaleString(); // 할인금액에 콤마 추가
+      deliverElement.innerText = totalDeliver.toLocaleString(); // 배송비에 콤마 추가
+      pointElement.innerText = selectedItems.length > 0 ? totalPoint.toLocaleString() + 'P' : 0; // 포인트 합계
+      realTotalElement.innerText = realTotal.toLocaleString(); // 실제 총합에 콤마 추가
+
+      console.log('현재 선택된 항목들:', selectedItems);  // 선택된 항목 출력
+    }
+
+    btnDel.addEventListener('click', function (e){
+      e.preventDefault();
+
+      // 선택된 체크박스들 중에서 value를 가져옴
+      const selectedValues = [...document.querySelectorAll('.checkboxItem')]
+              .filter(checkbox => checkbox.checked)
+              .map(checkbox => checkbox.value);
+
+      if (selectedValues.length > 0) {
+        console.log('선택된 항목의 ID들:', selectedValues);  // 선택된 체크박스의 value들 출력
+
+        console.log("셀렉티드밸류스 "+ selectedValues)
+        fetch('/prod/cart',{
+          method:'DELETE',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(selectedValues)
+        })
+                .then(resp => resp.json())
+                .then(data =>{
+                    console.log(data);
+                    if(data>0 && data!=null){
+                      alert(`선택한 상품 ${data}개를 장바구니에서 삭제하였습니다.`)
+                      location.reload();
+                    }
+                }).catch();
+
+      } else {
+        alert('선택된 항목이 없습니다.');
+      }
+    });
+
+    const btnOrder = document.querySelector('#btnOrder');
+    btnOrder.addEventListener('click', function (e){
+      e.preventDefault();
+
+      // 선택된 체크박스와 함께 해당 tr에서 product id를 가져옴
+      const selectedProducts = [...document.querySelectorAll('.checkboxItem')]
+              .filter(checkbox => checkbox.checked)
+              .map(checkbox => {
+                // 체크된 체크박스가 포함된 tr을 찾고 그 안의 product id를 추출
+                const tr = checkbox.closest('tr');
+                const productId = tr.getAttribute('data-product-id'); // 여기서 product id를 가져옴
+                const quantity = tr.getAttribute('data-quantity');
+                const optionId = tr.getAttribute('data-option-id');
+                const totalPrice =  parseFloat(tr.getAttribute('data-total-price'));
+                return {
+                  cartItemId: checkbox.value,
+                  productId: productId,
+                  quantity: quantity,
+                  optionId:optionId,
+                  totalPrice:totalPrice
+                };
+              });
+
+      if (selectedProducts.length > 0) {
+
+
+        console.log('선택된 항목들:', JSON.stringify(selectedProducts));
+
+        fetch('/prod/cart/save',{
+          method:'Post',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body:  JSON.stringify(selectedProducts)
+        })
+                .then(resp => resp.json())
+                .then(data =>{
+                  console.log(data);
+                  if (data){
+                    alert('주문서로 이동합니다.')
+                    location.replace('/prod/order')
+                  }else{
+                    alert('주문 정보를 확인할 수 없습니다. 장바구니를 다시 확인해 주세요.')
+                  }
+                }).catch();
+
+      } else {
+        alert('선택된 항목이 없습니다.');
+      }
+    })
+
+  });//dom
+
+</script>
+<header th:replace="layout/main/header.html"></header>
+<main style="margin-top: 230px; gap: 0">
+  <aside th:replace="layout/main/aside.html" style="margin: 0; margin-right: 30px"></aside>
+  <div id="wrap">
+
+    <!-- .aside -->
+    <div id="main" style="height: auto;">
+      <nav id="navi" style="width: 810px">
+        <h2 class="sub_tit">장바구니</h2>
+        <p class="location">
+          <span>HOME</span>
+          <span>패션·의류·뷰티</span>
+          <span>장바구니</span>
+        </p>
+      </nav>
+      <!-- .navi-->
+      <table class="tb1">
+        <colgroup>
+          <col style="width: 7%" />
+          <col style="width: 10%" />
+          <col style="width: 25%" />
+          <col style="width: 10%" />
+          <col style="width: 5%" />
+          <col style="width: 10%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+        </colgroup>
+        <tr>
+          <th><input type="checkbox" class="checkboxAll" /></th>
+          <th>상품이미지</th>
+          <th>상품명</th>
+          <th>옵션</th>
+          <th>수량</th>
+          <th>판매가</th>
+          <th>할인</th>
+          <th>포인트</th>
+          <th>배송비</th>
+          <th>총합</th>
+        </tr>
+        <th:block th:if="${!cartItems.isEmpty()}">
+          <tr class="parent-closet" th:each="cartItem : ${cartItems}" th:data-total-price="${cartItem.totalPrice}" th:data-option-id="${cartItem.optionId}" th:data-product-id="${cartItem.cartProductDto.id}" th:data-quantity="${cartItem.quantity}">
+            <td><input type="checkbox" class="checkboxItem" th:value="${cartItem.cartItemId}"/></td>
+            <td>
+              <a th:href="@{'/prod/product?prodId='+${cartItem.cartProductDto.id}}">
+              <div class="img">
+                <img style="width: 80px; height: 80px;" th:src="@{'/file/'+${cartItem.cartProductDto.getProdListImg()}}" />
+              </div>
+              </a>
+            </td>
+            <td class="name_box">
+              <a th:href="@{'/prod/product?prodId='+${cartItem.cartProductDto.id}}">
+              <span th:text="${cartItem.cartProductDto.prodName}">상품명</span><br>
+              <span th:text="${cartItem.cartProductDto.prodSummary}">상품설명</span>
+              </a>
+            </td>
+            <td>
+              <div class="cartOptions">
+                <th:block th:if="${cartItem.optionValue.isEmpty()}">
+                  <span>옵션없음</span>
+                </th:block>
+                <th:block th:unless="${cartItem.optionValue.isEmpty()}">
+                  <select class="option-select" onchange="changeOption(event)">
+                    <option th:each="option : ${options[cartItem.cartProductDto.id]}"
+                            th:value="${option.optionValue}"
+                            th:text="${option.optionStock == 0 ? option.optionValue + ' (매진)' : option.optionValue + ' (+' + option.optionPrice + ') '}"
+                            th:selected="${cartItem.optionId == option.optionId}"
+                            th:data-id="${option.optionId}"
+                            th:data-stock="${option.optionStock}"
+                            th:data-prod="${cartItem.cartItemId}"
+                            th:classappend="${option.optionStock == 0 ? 'disabled' : ''}"
+                            th:attr="disabled=${option.optionStock == 0 ? 'disabled' : null}"
+                    >
+                    </option>
+                  </select>
+                </th:block>
+              </div>
+            </td>
+            <td><input th:data-quant="${cartItem.quantity}" class="prod-quantity" th:data-id="${cartItem.cartItemId}" onchange="changeQuantity(event)" style="width: 40px;" type="number" th:value="${cartItem.quantity}"></td>
+            <td>[[${cartItem != null ? #numbers.formatInteger(cartItem.cartProductDto.prodPrice, 1, 'COMMA') : 0}]]원</td>
+            <td>[[${cartItem != null ? #numbers.formatInteger(cartItem.cartProductDto.prodDiscount, 1, 'COMMA') : 0}]] %</td>
+            <td>[[${cartItem.cartProductDto.prodPoint}]] P</td>
+            <td>[[${cartItem.cartProductDto.prodDeliver > 0 ? #numbers.formatInteger(cartItem.cartProductDto.prodDeliver, 1, 'COMMA')+'원' : '무료배송'}]]</td>
+            <td>[[${cartItem != null ? #numbers.formatInteger(cartItem.totalPrice, 1, 'COMMA') : 0}]]원</td>
+          </tr>
+        </th:block>
+        <th:block th:unless="${!cartItems.isEmpty()}">
+          <tr>
+            <td colspan="10" style="color: #000;">장바구니에 담긴 상품이 없어요.</td>
+          </tr>
+        </th:block>
+      </table>
+      <button class="btnDel" id="btnDel"><a href="#">선택삭제</a></button>
+      <!-- .tb1-->
+      <div class="total_yh" style="display: flex;">
+
+<!--        <p th:if="${related!=null}"> 이런 상품은 어떠세요? </p>-->
+        <div style="display: flex;">
+          <div id="related-products">
+            <div th:each="prod : ${related}" class="relaties">
+              <a target="_blank" th:href="@{/prod/product(prodId=${prod.id})}"><img th:src="@{'/file/'+${prod.getProdBasicImg()}}"></a>
+              <div class="related-descriptions">
+                <dt style="font-weight: 400">
+                  [[${prod.prodName}]]
+                </dt>
+                <div class="d-flex align-items-center">
+                            <span class="ratingBg" style="zoom: 0.8;margin-left: 0;">
+                                <span class="rating" th:style="'width:'+ ${prod.prodRating * 2}+'%;'"></span>
+                            </span>
+                  <span th:text="${prod.prodReviewCnt eq null?'(0)':'('+prod.prodReviewCnt+')'}" style="margin-left: 5px;color: #7b7b7b"></span>
+                </div>
+                <p class="related-price" th:if="${prod.prodDiscount > 0.0}">[[${#numbers.formatInteger(prod.getProdPrice(), 1,'COMMA')}]]원&nbsp;</p>
+                <dd style="display: flex;gap:3px">
+                  <span class="related-dc" th:if="${prod.prodDiscount > 0.0}">[[${#numbers.formatInteger(prod.getProdDiscount(), 1)}]]%</span>
+                  <p class="related-total">[[${#numbers.formatInteger(prod.getProdPrice() - prod.getProdPrice() * (prod.getProdDiscount()/100), 1,'COMMA')}]]원</p>
+                </dd>
+              </div>
+              </div>
+            </div>
+          </div>
+          <div class="total">
+            <table class="tb2">
+              <tr>
+                <th class="th">전체합계</th>
+              </tr>
+              <tr>
+                <th>상품수</th>
+                <td class="data qty">0</td>
+              </tr>
+              <tr>
+                <th>상품금액</th>
+                <td class="data price">0</td>
+              </tr>
+              <tr>
+                <th>할인금액</th>
+                <td class="data discount">0</td>
+              </tr>
+              <tr>
+                <th>배송비</th>
+                <td class="data deliver">0</td>
+              </tr>
+              <tr>
+                <th>적립 포인트</th>
+                <td class="data point">0</td>
+              </tr>
+              <tr>
+                <th>전체주문금액</th>
+                <td class="red data realtotal">0</td>
+              </tr>
+            </table>
+            <!-- .tb2-->
+            <div class="btn_order"><a th:href="@{/prod/order}" id="btnOrder">주문하기</a></div>
+          </div>
+          </div>
+        </div>
+        <!-- .total-->
+      </div>
+    </main>
+    <!-- main -->
+    <div style="display: none;" class="popup"></div>
+  </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+<script th:inline="javascript">
+
+  async function changeOption(event) {
+    const selectedOption = event.target.options[event.target.selectedIndex]
+    const optionId = selectedOption.dataset.id;
+    const prodId = selectedOption.dataset.prod;
+    const prodStock = selectedOption.dataset.stock;
+    const quantity = event.target.closest('.parent-closet').querySelector('.prod-quantity')
+    if(Number(prodStock) < Number(quantity.value)){
+      alert(`주문가능한 수량 : ${prodStock}`)
+      quantity.value = Number(prodStock)
+    }
+
+    try {
+      const resp = await axios.patch(`/prod/cart/option?id=${optionId}&&prod=${prodId}&quantity=${quantity.value}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status===200){
+        window.location.href = '/prod/cart'
+      }
+    } catch (e) {
+
+    }
+  }
+
+  async function changeQuantity(event){
+    let quantity = event.target.value;
+    const cartItemId = event.target.dataset.id;
+    const select = event.target.closest('.parent-closet').querySelector('.option-select');
+    const selectedOption = select.options[select.selectedIndex]
+    const prodStock = selectedOption.dataset.stock;
+    if(Number(prodStock) < Number(quantity)){
+      quantity = prodStock
+      alert(`주문가능한 수량 : ${prodStock}`)
+    }
+    try {
+      const resp = await axios.patch(`/prod/cart/quantity?cart=${cartItemId}&&quantity=${quantity}`,null,{
+        headers:{
+          "Content-Type" : "application/json"
+        }
+      })
+      if(resp.status===200){
+        window.location.href = '/prod/cart'
+      }
+
+    } catch (e) {
+
+    }
+  }
+</script>

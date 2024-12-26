@@ -1,0 +1,147 @@
+<link rel="stylesheet" th:href="@{/css/cs/cs_common.css}">
+<link rel="stylesheet" th:href="@{/css/cs/cs_qna.css}">
+<link rel="stylesheet" th:href="@{/css/basic.css}">
+<header th:replace="layout/main/header.html"></header>
+<main style="margin: 0 auto; margin-bottom: 50px; margin-top: 230px;">
+    <aside class="cs_aside">
+        <h3 class="aside_title">문의하기</h3>
+        <ul class="aside_cate">
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='user')}" th:classappend="${selectedCate1 == 'user'} ? 'active' : ''">회원</a></li>
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='coupon')}" th:classappend="${selectedCate1 == 'coupon'} ? 'active' : ''">쿠폰/이벤트</a></li>
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='order')}" th:classappend="${selectedCate1 == 'order'} ? 'active' : ''">주문/결제</a></li>
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='delivery')}" th:classappend="${selectedCate1 == 'delivery'} ? 'active' : ''">배송</a></li>
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='cancel')}" th:classappend="${selectedCate1 == 'cancel'} ? 'active' : ''">취소/반품/교환</a></li>
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='travel')}" th:classappend="${selectedCate1 == 'travel'} ? 'active' : ''">여행/숙박/항공</a></li>
+            <li class="cate_list"><a th:href="@{/cs/qnas(category='safe')}" th:classappend="${selectedCate1 == 'safe'} ? 'active' : ''">안전거래</a></li>
+        </ul>
+    </aside>
+    <div id="main" style=" height: auto">
+        <nav class="cs_nav">
+            <p class="cs_nav_tit"><span>홈</span> > <span>문의하기</span></p>
+        </nav>
+        <div class="box">
+            <section class="cs_qna_list">
+                <div class="cate_bar">
+                    <h3 class="cate_title">문의하기</h3>
+                    <p class="cate_des">상품에 대한 문의는 마이페이지 > 판매자 정보 > [문의하기] 를 통해 문의해주세요. </p>
+                </div>
+                <form action="/cs/qna/write" method="post">
+                    <table class="qna_table">
+                        <tr>
+                            <th>문의유형</th>
+                            <td>
+                                <select name="cate1Name" id="select1">
+                                    <option value="" selected disabled hidden>1차선택</option>
+                                    <option value="user">회원</option>
+                                    <option value="coupon">쿠폰/이벤트</option>
+                                    <option value="order">주문/결제</option>
+                                    <option value="delivery">배송</option>
+                                    <option value="cancel">취소/반품/환불</option>
+                                    <option value="travel">여행/숙박/항공</option>
+                                    <option value="safe">안전결제</option>
+                                </select>
+                                <select name="cate2Name" id="select2">
+                                    <option value="" selected disabled hidden>2차선택</option>
+                                    <option value="regi">가입</option>
+                                    <option value="leave">탈퇴</option>
+                                    <option value="info">회원정보</option>
+                                    <option value="login">로그인</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>제목</th>
+                            <td><input name="title" type="text" class="W_title"></td>
+                        </tr>
+                        <tr>
+                            <th>내용</th>
+                            <td><textarea name="content" id="" class="w_content"></textarea></td>
+                        </tr>
+                        <tr></tr>
+                    </table>
+                    <div class="qna_view_btn">
+                        <a th:href="@{/cs/qnas}" class="btn_gray btn_list">취소하기</a>
+                        <input type="submit" class="btn_blue btn_qblue" value="등록하기"></input>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+<footer th:replace="layout/main/footer.html"></footer>
+
+<script>
+
+
+    const secondOptions = {
+        "user": [
+            {value: "regi", text: "가입"},
+            {value: "leave", text: "탈퇴"},
+            {value: "info", text: "회원정보"},
+            {value: "login", text: "로그인"}
+        ],
+        "coupon": [
+            {value: "lpoint", text: "L.POINT"},
+            {value: "coupon2", text: "쿠폰"},
+            {value: "event", text: "이벤트/경품"},
+            {value: "attendance", text: "출석체크"},
+            {value: "gift", text: "사은품"}
+        ],
+        "order": [
+            {value: "orderMethod", text: "주문방법"},
+            {value: "orderChange", text: "주문변경"},
+            {value: "paymentMethod", text: "결제방법"},
+            {value: "easyPayment", text: "간편결제"},
+            {value: "giftReceive", text: "선물받기"},
+            {value: "mobileGift", text: "모바일상품권"},
+            {value: "phonePayment", text: "휴대폰결제"},
+            {value: "applePay", text: "애플페이"}
+        ],
+        "delivery": [
+            {value: "delivery2", text: "배송"},
+            {value: "deliveryFee", text: "배송비"},
+            {value: "deliveryMethod", text: "배송방법"},
+            {value: "deliverySchedule", text: "배송일정"},
+            {value: "deliveryAddress", text: "배송지"},
+            {value: "todayArrival", text: "오늘도착"},
+            {value: "overseas", text: "해외직구"},
+            {value: "notReceived", text: "미수령신고"},
+            {value: "recipient", text: "수취인"},
+            {value: "purchaseConfirm", text: "구매확정"}
+        ],
+        "cancel": [
+            {value: "orderCancel", text: "주문취소"},
+            {value: "refundMethod", text: "환불방법"},
+            {value: "cardRefund", text: "카드환불"},
+            {value: "refundSchedule", text: "환불일정"},
+            {value: "phoneRefund", text: "휴대폰결제환불"}
+        ],
+        "travel": [
+            {value: "ecoupon", text: "e쿠폰"},
+            {value: "flight", text: "항공"},
+            {value: "accommodation", text: "숙박"},
+            {value: "ticket", text: "티켓"}
+        ],
+        "safe": [
+            {value: "policyViolation", text: "법령 및 정책위반 상품"},
+            {value: "ipViolation", text: "지적재산권침해"},
+            {value: "serviceViolation", text: "서비스 이용규칙 위반"},
+            {value: "adViolation", text: "표시광고"}
+        ]
+
+    };
+    document.getElementById("select1").addEventListener("change", function() {
+        const selectedValue = this.value;
+        const select2 = document.getElementById("select2");
+        select2.innerHTML = '<option value="" selected disabled hidden>2차선택</option>'; // 초기화
+
+        if (secondOptions[selectedValue]) {
+            secondOptions[selectedValue].forEach(option => {
+                const newOption = document.createElement("option");
+                newOption.value = option.value;
+                newOption.text = option.text;
+                select2.appendChild(newOption);
+            });
+        }
+    });
+</script>

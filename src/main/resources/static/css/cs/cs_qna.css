@@ -1,0 +1,343 @@
+.box{display: flex;}
+.cs_notice{width: 100%; height: auto;}
+
+
+/* 공통 스타일 설정 */
+body, .box, .cs_aside, .qna_box, .view_content, .view_title, .autolink {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+}
+
+
+/* 사이드바 */
+.cs_aside {
+    width: 220px;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* QnA 리스트 스타일 */
+.qna_box {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    width: 100%;
+    padding: 15px;
+    background-color: transparent;
+    border-top: 2px solid #000000;
+    margin-left: 40px;
+}
+
+.qna {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.qna:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.qna .q_cate {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.qna .q_content {
+    flex: 1;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333333;
+}
+
+.qna .q_date, .qna .status {
+    font-size: 0.85em;
+    color: #999999;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* 카테고리와 제목 스타일 */
+.q_cate {
+    margin-right: 10px;
+}
+
+/* 문의하기 버튼 컨테이너 가운데 정렬 */
+.qna_write_btn {
+    display: flex;
+    justify-content: center; /* 버튼을 가운데 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    margin: 40px 0; /* 위아래 여백을 늘려 가운데 배치 효과 강화 */
+}
+
+/* 버튼 스타일 - 하늘색 계열로 변경 */
+.btn_qna {
+    display: inline-block;
+    padding: 10px 10px;
+    background-color: #5DADE2; /* 하늘색 계열 */
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.btn_qblue{
+    display: inline-block;
+    padding: 10px 10px;
+    background-color: #5DADE2; /* 하늘색 계열 */
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    text-align: center;
+    margin: 30px auto 0;
+}
+
+
+/* 버튼 호버 스타일 - 조금 더 어두운 하늘색으로 변경 */
+.btn_qna:hover {
+    background-color: #3498DB; /* 어두운 하늘색 계열 */
+}
+
+
+
+/* QnA 상세보기 스타일 */
+/* 공통 스타일 설정 */
+body, .cs_aside, .notice_box, .view_content, .view_title, .autolink {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.box {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    width: 1000px;
+    margin: 0 auto;
+    background-color: transparent; /* 회색 테두리 및 배경 제거 */
+}
+.notice_box {
+    width: 700px;
+}
+/* 사이드바 */
+.cs_aside {
+    width: 220px;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+/* 상단 네비게이션 */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 5px solid #333;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.top-bar .left {
+    font-weight: bold;
+    color: #333;
+}
+
+.top-bar .right {
+    color: #777;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+/* 공지사항 제목 및 날짜 */
+.view_title {
+    display: flex;
+    width: 900px;
+    align-items: center;
+    gap: 10px; /* 카테고리와 제목 사이의 간격 */
+    margin: 20px 0 10px 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    width: 100%;
+}
+
+.view_title .cate {
+    font-size: 1em;
+    font-weight: bold;
+    color: #d9534f;
+}
+.view_title .acate
+{
+    font-size: 1em;
+    font-weight: bold;
+    color: #d9534f;
+    margin: 2px;
+}
+.view_title .title {
+    flex: 1;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333333;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.view_title .rdate {
+    font-size: 0.9em;
+    color: #999999;
+    white-space: nowrap;
+    margin-left: 20px;
+    align-self: flex-end; /* 하단 정렬 */
+}
+
+/* 공지사항 본문 */
+.view_content {
+    margin-top: 15px; /* 제목과 본문 간의 간격 조정 */
+}
+
+.view_content p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #555;
+    margin: 40px;
+}
+
+.view_answer .answer_content{
+    margin-top: 15px; /* 제목과 본문 간의 간격 조정 */
+}
+
+.view_answer p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #555;
+    margin: 30px;
+}
+/* 답변 섹션을 위한 스타일 */
+.view_answer .view_title {
+    display: flex;
+    align-items: center; /* 텍스트와 아이콘을 수평 정렬 */
+    gap: 10px; /* 아이콘과 텍스트 간격 */
+}
+
+.view_answer .view_title img {
+    width: 32px;
+    height: auto;
+    margin-left: 20px;
+}
+
+
+
+
+
+/* 목록으로 돌아가기 버튼 */
+.btn_list {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    text-align: center;
+    margin: 30px auto 0;
+}
+
+.btn_list:hover {
+    background-color: #cccccc;
+}
+
+
+/* QnA 상세보기 테이블 스타일 */
+.qna_table {
+    width: 800px;
+    margin-left: 40px;
+    border-top: 2px solid #808080;
+    border-collapse: collapse;
+}
+
+.qna_table tr > th {
+    width: 150px;
+    height: auto;
+    text-align: left;
+    text-indent: 20px;
+    font-weight: 900;
+}
+
+.qna_table tr > td {
+    padding: 10px 10px;
+}
+
+.qna_table tr {
+    border-bottom: 1px solid #D9D9D9;
+}
+
+/* QnA 상세보기 입력 필드 */
+.W_title {
+    width: 450px;
+    height: 30px;
+    border: 1px solid #BFBFBF;
+}
+
+.w_content {
+    width: 450px;
+    height: 300px;
+    resize: none;
+    border: 1px solid #BFBFBF;
+}
+
+#select1, #select2 {
+    width: 120px;
+    height: 35px;
+    text-indent: 10px;
+    border: 1px solid #BFBFBF;
+}
+
+/* 버튼 중앙 정렬 */
+.qna_view_btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.qna_view_btn > button {
+    margin: 0 10px;
+}
+
+/* QnA 완료 상태 색상 */
+.confirm.answer-complete {
+    color: #0070C0;
+}
+
+.confirm {
+    color: #808080;
+}
+
+.complete {
+    color: #0070C0;
+}
+
+/* 활성화된 카테고리 링크 스타일 */
+.cate_list a.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
